@@ -3,7 +3,7 @@ title:    "병변 검출 AI 경진대회"
 author:
   name: JaeHo-YooN
   link: https://github.com/dkssud8150
-date: 2021-09-16 12:00:00 +0800
+date: 2021-12-20 12:00:00 +0800
 categories: [Review, DACON]
 tags: [DACON,Object Detection]
 toc: True

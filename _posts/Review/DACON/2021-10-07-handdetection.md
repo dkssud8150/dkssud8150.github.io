@@ -3,7 +3,7 @@ title:    "2021 Ego-Vision 손동작 인식 경진대회"
 author:
   name: JaeHo-YooN
   link: https://github.com/dkssud8150
-date: 2021-09-16 12:00:00 +0800
+date: 2021-10-07 12:00:00 +0800
 categories: [Review, DACON]
 tags: [DACON,keypoint, classification]
 toc: True

@@ -1,9 +1,9 @@
 ---
-title:    "MMDetection"
+title:    "MMDetection: Open MMLab Detection Toolbox and Benchmark"
 author:
   name: JaeHo-YooN
   link: https://github.com/dkssud8150
-date: 2021-09-16 12:00:00 +0800
+date: 2021-12-22 12:00:00 +0800
 categories: [Review, Object Detection]
 tags: [Object Detection, mmdetection]
 toc: True
