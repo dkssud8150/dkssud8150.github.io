@@ -1,13 +1,20 @@
 ---
-layout:   post
 title:    "Coding Test[Python] - 이진트리 구현하기"
-subtitle: "python 이진트리"
-category: Classlog
-tags:     coding-test binary-tree
+author:
+  name: JaeHo-YooN
+  link: https://github.com/dkssud8150
+date: 2022-01-13 12:00:00 +0800
+categories: [Classlog]
+tags: [coding-test, binary-tree]
+toc: True
+comments: True
+math: true
+mermaid: true
+#image:
+#  src: /commons/devices-mockup.png
+#  width: 800
+#  height: 500
 ---
-
-1. this ordered seed list will be replaced by the toc
-{:toc}
 
 <br>
 

@@ -1,13 +1,20 @@
 ---
-layout:   post
 title:    "Coding Test[Python] - 스택 / 큐"
-subtitle: "LIFO, FIFO, push & pop! 스택과 큐"
-category: Classlog
-tags:     coding-test push&pop
+author:
+  name: JaeHo-YooN
+  link: https://github.com/dkssud8150
+date: 2022-01-05 12:00:00 +0800
+categories: [Classlog]
+tags: [coding-test, push&pop]
+toc: True
+comments: True
+math: true
+mermaid: true
+#image:
+#  src: /commons/devices-mockup.png
+#  width: 800
+#  height: 500
 ---
-
-1. this ordered seed list will be replaced by the toc
-{:toc}
 
 프로그래머스에 올라와 있는 코딩테스트를 진행하면서 공부한 내용 및 막혔던 부분들에 대해 리뷰하고자 합니다. 저는 거의 대부분을 python을 사용하였습니다. 
 

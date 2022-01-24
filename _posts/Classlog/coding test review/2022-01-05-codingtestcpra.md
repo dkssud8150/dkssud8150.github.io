@@ -1,10 +1,22 @@
 ---
-layout:   post
 title:    "Coding Test [C++] - 연습문제"
-subtitle: "practice of C++ programming"
-category: Classlog
-tags:     coding-test pratice
+author:
+  name: JaeHo-YooN
+  link: https://github.com/dkssud8150
+date: 2022-01-05 12:00:00 +0800
+categories: [Classlog]
+tags: [coding-test, pratice]
+toc: True
+comments: True
+math: true
+mermaid: true
+#image:
+#  src: /commons/devices-mockup.png
+#  width: 800
+#  height: 500
 ---
+
+
 
 프로그래머스에 기재되어 있는 c++ coding test에 대해 리뷰하고자 합니다. 그 중에서도 연습문제에 해당하는 문제를 이 곳에 작성할 예정입니다. 다른 것을 참고하시려면 아래 링크를 클릭하시기 바랍니다.
 

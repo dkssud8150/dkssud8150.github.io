@@ -1,13 +1,20 @@
 ---
-layout:   post
 title:    "Coding Test[Python] - 재귀함수"
-subtitle: "재귀함수"
-category: Classlog
-tags:     coding-test recursion
+author:
+  name: JaeHo-YooN
+  link: https://github.com/dkssud8150
+date: 2022-01-13 12:00:00 +0800
+categories: [Classlog]
+tags: [coding-test, recursion]
+toc: True
+comments: True
+math: true
+mermaid: true
+#image:
+#  src: /commons/devices-mockup.png
+#  width: 800
+#  height: 500
 ---
-
-1. this ordered seed list will be replaced by the toc
-{:toc}
 
 <br>
 
