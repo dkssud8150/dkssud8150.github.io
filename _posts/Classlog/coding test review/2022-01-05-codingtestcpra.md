@@ -4,7 +4,7 @@ author:
   name: JaeHo-YooN
   link: https://github.com/dkssud8150
 date: 2022-01-05 12:00:00 +0800
-categories: [Classlog]
+categories: [Classlog,coding test review]
 tags: [coding-test, pratice]
 toc: True
 comments: True
