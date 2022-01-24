@@ -1,7 +1,7 @@
 ---
 title:    "Coding Test[Python] - 재귀함수"
 author:
-  name: JaeHo-YooN
+  name: JaeHo YooN
   link: https://github.com/dkssud8150
 date: 2022-01-13 12:00:00 +0800
 categories: [Classlog,coding test review]
@@ -19,11 +19,6 @@ mermaid: true
 <br>
 
 # 재귀함수
-
-
-
-
-
 
 ## 피보나치 수열
 

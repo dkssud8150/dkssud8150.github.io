@@ -18,11 +18,11 @@ timezone: Asia/Seoul
 # jekyll-seo-tag settings › https://github.com/jekyll/jekyll-seo-tag/blob/master/docs/usage.md
 # ↓ --------------------------
 
-title: JaeHo Yoon                    # the main title
+title: JaeHo Yoon                       # the main title
 
-tagline: Mamba Mentality     # it will display as the sub-title
+tagline: Mamba Mentality                # it will display as the sub-title
 
-description: >-                        # used by seo meta and the atom feed
+description: >-                         # used by seo meta and the atom feed
   Do focus on developing 'your ability' rather than waste time on making you famous.
 
 # fill in the protocol & hostname for your site, e.g., 'https://username.github.io'
@@ -37,7 +37,7 @@ twitter:
 social:
   # Change to your full name.
   # It will be displayed as the default author of the posts and the copyright owner in the Footer
-  name: JaeHo-YooN
+  name: JaeHo YooN
   email: dkssud8159@naver.com             # change to your email address
   links:
     # The first element serves as the copyright owner's link
