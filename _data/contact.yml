@@ -24,7 +24,7 @@
 #   type: linkedin
 #   icon: 'fab fa-linkedin'   # icons powered by <https://fontawesome.com/>
 #   url:  ''                  # Fill with your Linkedin homepage
-# -
-#   type: stack-overflow
-#   icon: 'fab fa-stack-overflow'
-#   url:  ''                  # Fill with your stackoverflow homepage
+-
+  type: instagram
+  icon: 'fab fa-instagram'
+  url:  'https://www.instagram.com/jai_ho8150/'                  # Fill with your stackoverflow homepage
