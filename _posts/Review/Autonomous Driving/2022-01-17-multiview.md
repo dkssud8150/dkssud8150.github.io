@@ -12,7 +12,7 @@ math: true
 mermaid: true
 pin: true
 image:
-  src: _site/assets/img/autodriving/MV3D/pointcloud.png
+  src: _site/_site/assets/img/autodriving/MV3D/pointcloud.png
   width: 800
   height: 500
 ---
@@ -39,7 +39,7 @@ Multi-View 3D Object Detection Network For Autonomous Driving 논문에 대한 �
 
 이 논문에서, 다방면의 데이터를 입력으로 받고 3D 공간에서 3D 물체를 예측하는 MV3D(Multi-View 3D object detection network)을 제안한다. 다방면의 정보를 활용하는 중심 아이디어는 지역기반의 특징 융합을 수행하는 것이다. 먼저 3D point cloud의 작고 효과적인 표현을 얻기 위한 체계를 인코딩하는 multi-view를 제안한다. 
 
-<img src="/assets/img/autodriving/MV3D/fig1.png">
+<img src="/_site/assets/img/autodriving/MV3D/fig1.png">
 
 이 그림에서 볼 수 있듯이 multi-view 3D dectection 네트워크는 `3D 제안 네트워크`, `Region-based 융합 네트워크` 2개로 구성되어 있다. 3D 제안 네트워크는 더 정확한 3D 후보 상자들을 발생시키기 위한 새 관점에서의 표현을 활용한다. 3D object 제안의 이점은 3D 공간에서 모든 뷰들을 투영할 수 있다는 것이다. multi-view 융합 네트워크는 다중 뷰들로부터 특징맵에 대한 3D 제안들을 투영함으로써 지역별 특징을 추출한다. 다른 뷰들로부터 중간 레이어들 간의 상호 작용을 가능하게 하기 위해 깊은 융합 방식을 설계했다. drop-path training과 보조 손실이 결합된 방식이 초기/후기 융합 체계에 비해 우수한 성능을 보여준다. 다중 뷰 특징 표현을 고려할 때, 네트워크는 3D 공간에서 물체의 정확한 3D 위치, 크기 및 방향을 예측하는 oriented 3D box regression을 수행한다. 
 
@@ -83,7 +83,7 @@ MV3D 네트워크는 이미지와 3D point cloud를 입력으로 하여 다중 �
 
 현존하는 모델들은 보통 3D LIDAR point cloud를 3D grid나 FV(front view) map로 인코딩한다. 대부분의 point cloud의 기초적인 정보들은 3D grid 표현들을 보존하는데, 이는 그 다음의 특징 추출을 위해 더 복잡한 계산을 요구하게 된다. 그래서 저자는 아래 그림에서 볼 수 있듯이 bird`s eye view와 FV에 대한 3D point cloud를 투영함으로써 더 간단한 표현을 제안한다. 
 
-<img src="/assets/img/autodriving/MV3D/fig2.png">
+<img src="/_site/assets/img/autodriving/MV3D/fig2.png">
 
 * Bird's eye view representation
 
@@ -97,11 +97,11 @@ bird's eye view, 즉 조감도는 **height**(높이), **intensity**(강도), **d
 
 전방 뷰는 조감도 표현에 대한 상호 보완적인 정보를 제공한다. LIDAR point cloud가 매우 밀도가 희박함에 따라, 이미지 평면에 이를 투영하는 것은 밀도가 희박한 2D point map를 얻는다. 따라서 밀도있는 전방 뷰 map을 발생시키기 위해 평면 대신 실린더 면(원통 면)에 투영한다. 3D point, *p = (x,y,z)*라고 할 때, 전방 뷰에 대한 point 표현은 *pfv = (r,c)*이고, r과 c에 대한 계산은 다음과 같다.
 
-<img src="/assets/img/autodriving/MV3D/fvpoint.png">
+<img src="/_site/assets/img/autodriving/MV3D/fvpoint.png">
 
 ∆ϴ와 ∆ø는 각각 레이저의 수평, 수직에 대한 표현이다. fig2애서 볼 수 있듯이 저자는 height, distance, intensity의 3채널 특징을 통해 FV map을 인코딩한다.
 
-<img src="/assets/img/autodriving/MV3D/fig2.png">
+<img src="/_site/assets/img/autodriving/MV3D/fig2.png">
 
 <br>
 
@@ -115,7 +115,7 @@ bird's eye view, 즉 조감도는 **height**(높이), **intensity**(강도), **d
 
 RPN과 유사하게 *t = (∆x,∆y,∆z,∆l,∆w,∆h)*에 대해 3D box regression한다. (∆x,∆y,∆z)는 anchor 크기에 의해 정규화된 중심 좌표이고, (∆l,∆w,∆h)는 다음과 같이 계산된 값이다.
 
-<img src="/assets/img/autodriving/MV3D/sizecompute.png">
+<img src="/_site/assets/img/autodriving/MV3D/sizecompute.png">
 
 물체/배경을 동시에 분류하고, 3D box regression을 수행하기 위해 multi-task loss를 사용한다. 특히, objectness loss와 smooth *l1*에 대한 cross-entropy를 사용하여 3D box regression loss를 구한다. box regresson loss를 구할 때는 배경 anchor는 무시한다. 
 
@@ -135,29 +135,29 @@ RPN과 유사하게 *t = (∆x,∆y,∆z,∆l,∆w,∆h)*에 대해 3D box regre
 
 다른 뷰/방식들에 대한 특징들은 다른 해상도들을 가지고 있기 때문에, 같은 길이에 대한 특징 벡터를 얻기 위해 각각의 뷰에 ROI pooling을 적용한다. 생성된 3D proposals를 고려할 때, 3D 공간에서 모든 뷰에 대해 투영할 수 있게 된다. 이 논문에서는 BV(bird's eye view), FV(front view), RGB(image plane) 총 3개의 뷰에 대해 투영하였다.
 
-<img src="/assets/img/autodriving/MV3D/ROIproposal.png">
+<img src="/_site/assets/img/autodriving/MV3D/ROIproposal.png">
 
 3D proposal, P*3D*를 고려할 때, T*3D -> v*는 각각 LIDAR 좌표계에서 조감도, 정면 뷰, 이미지 평면으로의 변환 기능을 나타내고, 위의 식에 따라 각 뷰에 대해 ROI를 얻을 수 있다. 각 뷰의 front-end network로부터 입력 특징 맵 x를 고려하여 ROI pooling에 의해 고정된 길이 특징,*fv*를 얻는다. 
 
-<img src="/assets/img/autodriving/MV3D/roipooling.png">
+<img src="/_site/assets/img/autodriving/MV3D/roipooling.png">
 
 <br>
 
 * Deep Fusion
 
-<img src="/assets/img/autodriving/MV3D/fig3.png">
+<img src="/_site/assets/img/autodriving/MV3D/fig3.png">
 
 다른 특징들과 정보를 결합하기 위해, 사전 작업은 보통 *초기 결합*이나 *후기 결합*을 사용한다. 하지만 저자는 다중 뷰 특징을 계층적으로 융합하는 *deep fusion* 방식을 적용한다. 초기/후기 결합 네트워크와 deep fusion 네트워크 아키텍쳐의 비교는 위의 그림에서 볼 수 있다.
 
-<img src="/assets/img/autodriving/MV3D/earlyfusion.png">
+<img src="/_site/assets/img/autodriving/MV3D/earlyfusion.png">
 
 L개의 layers를 가진 네트워크의 경우, **초기 결합**은 입력 단계에서 다중 뷰들의 특징, *fv*들을 결합한다. 이 떄, {Hl,l = 1,...L} 은 특징 변환 함수이고, ⊕는 concatenation, summation과 같은 결합 연산이다. 
 
-<img src="/assets/img/autodriving/MV3D/latefusion.png">
+<img src="/_site/assets/img/autodriving/MV3D/latefusion.png">
 
 대조적으로, **후기 결합**은 별도의 서브 네트워크를 사용하여 특징 변환을 독립적으로 수행하고 예측 단계에서 출력을 결합한다.
 
-<img src="/assets/img/autodriving/MV3D/intermediate.png">
+<img src="/_site/assets/img/autodriving/MV3D/intermediate.png">
 
 그러나, 이 논문에서는 다른 뷰들에서 **중간 레이어**의 특징들 사이에 더 많은 상호작용을 가능하게 하기 위해 다음과 같은 **deep fusion** 프로세스를 설계했다. drop-path 훈련과 결합할 때 더 유연하기 때문에 이 논문에서는 deep fusion을 위한 결합 작업에 요소별 평균을 사용한다.
 
@@ -177,7 +177,7 @@ L개의 layers를 가진 네트워크의 경우, **초기 결합**은 입력 단
 
 <br>
 
-<img src="/assets/img/autodriving/MV3D/fig4.png">
+<img src="/_site/assets/img/autodriving/MV3D/fig4.png">
 
 위의 그림에서 볼 수 있듯이, 보조 경로는 메인 네트워크와 같은 수의 layer를 가지고 있다. 보조 경로의 각 layer는 메인 네트워크의 연관된 층의 가중치를 공유한다. 그리고 동일하게 각 보조경로를 역전파하기 위해 classification loss와 3D box regression loss를 더한 multi-task loss를 사용한다. 보조 loss을 포함한 모든 loss는 동일하게 가중치를 부여한다. 보조 경로들은 추론에서는 삭제된다.
 
@@ -228,7 +228,7 @@ metrics에 따라 3D box recall을 사용한 3D object proposals를 평가한다
 
 * 3D Proposal Recall
 
-<img src="/assets/img/autodriving/MV3D/fig5.png">
+<img src="/_site/assets/img/autodriving/MV3D/fig5.png">
 
 위 그림은 3D box recall을 나타낸 것이다. 300개의 제안을 사용하여 IOU 임계값의 함수로서 recall을 구성한다. 또한, 위 그림에서 볼 수 있듯이, 이 논문의 접근 방식은 모든 threshold에서 3DOP와 Mono3D를 엄청나게 능가했다. 그리고 IOU threshold가 0.25와 0.5아래인 제안들의 갯수에 대한 함수로 3D recall을 볼 수 있다. 이 논문의 방식은 0.25 IOU threshold에서 99.1% recall을, 0.5 IOU threshold에서 91% recall을 얻어냈다. 대조적으로 3DOP에서의 0.5 IOU threshold에 대한 최대 recall은 73.9%를 얻는다고 한다. recall이 크다는 것은 이미지 기반 방법에 비해 LIDAR 기반 접근 방식이 더 좋다는 것을 의미한다. 
 
@@ -238,11 +238,11 @@ metrics에 따라 3D box recall을 사용한 3D object proposals를 평가한다
 
 3D localization 평가를 위해 0.5와 0.7 IOU threshold을 사용한다. 
 
-<img src="/assets/img/autodriving/MV3D/table1.png">
+<img src="/_site/assets/img/autodriving/MV3D/table1.png">
 
 KITTI validation set에서 APloc를 table 1에서 할 수 있다. 모든 LIDAR 기반 접근 방식은 스테레오 기반 방식인 3DOP 및 monocular 방식인 Mono3D보다 우수했다. LIDAR 기반 접근 방식중에서 BV+FV 방법은 0.5 IOU threshold에서 최대 25% APloc인 VeloFCN을 능가했다. IOU를 0.7로 기준을 잡으면, 이 모델의 성능은 더 높아지고, moderate와 hard 환경에서 최대 45% 더 높은 APloc를 달성할 수 있었다. RGB images와 결합하면, 성능은 더 개선된다. 아래 그림에서 몇 가지 사례의 localization result를 시각화했다.
 
-<img src="/assets/img/autodriving/MV3D/fig6.png">
+<img src="/_site/assets/img/autodriving/MV3D/fig6.png">
 
 <br>
 
@@ -250,7 +250,7 @@ KITTI validation set에서 APloc를 table 1에서 할 수 있다. 모든 LIDAR �
 
 3D 중첩에 대해 설명하자면 0.5 3D IOU threshold와 LIDAR 기반의 방법들에 대해 0.7 IOU threshold에 초점을 맞췄다. 이러한 threshold들은 이미지 기반 방법에는 다소 엄격하기 때문에, 0.25 IOU threshold도 평가에 사용했다. 
 
-<img src="/assets/img/autodriving/MV3D/table2.png">
+<img src="/_site/assets/img/autodriving/MV3D/table2.png">
 
 Table2에서 볼 수 있듯이, 우리의 BV+FV 방법은 moderate setting에서 86.75%를 달성하는 0.5 IOU threshold를 적용할 때 VeloFCN보다 AP3D를 30% 더 높게 얻을 수 있다. 0.7 IOU threshold를 사용할 때, multimodal 접근 방법은 easy data에서 71.29%의 AP3D를 달성했다. moderate 셋팅에서는 0.25 IOU threshold를 사용한 3DOP에 의해 달성될 수 있는 최대 AP3D는 68.82%인 반면, 이 논문의 접근 방식은 0.5 IOU threshold를 사용할 때 89.05% AP3D를 달성했다.
 
@@ -258,11 +258,11 @@ Table2에서 볼 수 있듯이, 우리의 BV+FV 방법은 moderate setting에서
 
 * Ablation Studies
 
-<img src="/assets/img/autodriving/MV3D/table3.png">
+<img src="/_site/assets/img/autodriving/MV3D/table3.png">
 
 먼저 초기/후기 결합 방식과 이 논문의 deep fusion 방식을 비교해보자. 결합 연산은 초기/후기 융합 방식에서 연결과 함께 인스턴스화된다. table 3에서 볼 수 있듯이 초기/후기 융합 접근은 매우 단순하다. 근사 loss의 사용없이, deep fusion 방법은 초기/후기 결합 방식보다 0.5% 더 향상된 결과를 얻을 수 있다. 근사 loss를 추가하면 1% 더 향상된다.
 
-<img src="/assets/img/autodriving/MV3D/table4.png">
+<img src="/_site/assets/img/autodriving/MV3D/table4.png">
 
 table4에서 볼 수 있듯이, 입력으로 단일 뷰만 사용한다면 조감도, 즉 bird's eye view 특징이 가장 높았고, front view가 가장 낮았다. 두개의 뷰를 섞는다면 단일 뷰보다 모든 뷰들이 더 높게 측정되었다. 이것은 서로 다른 뷰들의 특징들이 성호 보완적이라는 가정이 정당화된다. 세가지 뷰를 모두 결합하면 최상의 결과를 얻을 수 있다. 
 
@@ -272,7 +272,7 @@ table4에서 볼 수 있듯이, 입력으로 단일 뷰만 사용한다면 조�
 
 우리는 마지막으로 KITTI 테스트 셋에서 2D detection 수행을 평가했다. 결과는 다음과 같다.
 
-<img src="/assets/img/autodriving/MV3D/table5.png">
+<img src="/_site/assets/img/autodriving/MV3D/table5.png">
 
 LIDAR 기반의 방법들중에서 BV+FV 방식이 hard 셋팅에서 최근 제안된 Vote3Deep에 비해 AP2D가 14.93% 더 높게 결과가 나왔다. 전체적으로 이미지 기반의 방법들은 보통 2D detection에서 LIDAR 기반의 방법들보다 더 좋다. 이는 이미지 기반의 방법들이 3D boxes를 최적화하는 LIDAR 기반의 방법들과 달리 2D boxes를 직접적으로 최적화하기 때문이다. 하지만 이 논문의 방법이 3D boxes를 최적화함에도 불구하고 최첨단 2D detection 방법들보다 더 경쟁력있는 결과를 얻었다. 
 
