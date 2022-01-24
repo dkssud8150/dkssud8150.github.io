@@ -6,10 +6,16 @@ order: 4
 
 ## Hello, World!
 
-Hi, I'm **JaeHo YooN**.<br>
-I wish developing autonomous-driving program.<br>
-So, I'm currently studying **Object Detection** and starting **visual tracking**.<br>
-And I'm a *HEAVY SPORT MAN*.<br>
+👋 Hi, my name is Jae Ho YooN.<br>
+    👥 I have much experience about communication while doing many activities and project.<br>
+    👨‍💻 I'm interested in Computer Vision in Autonomous-Driving.<br>
+    🤖 I develop autonomous-driving program that do not require driver control via OpenCV or pytorch.<br>
+    💻 i'm putting down and share my studying entries on this Page and my <a class="highlight-link"
+    href="https://www.notion.so/18490713817d403696812c57d0abe730" target="_blank" rel="noreferrer"> Notion</a>.<br>
+    📚 I am passionate about studying with a many thesis and lots of lectures such as <a class="highlight-link" href="https://cs231n.github.io/" target="_blank"
+    rel="noreferrer"> CS231N </a> or <a class="highlight-link" href="https://kooc.kaist.ac.kr/" target="_blank"
+    rel="noreferrer"> KOOC</a>.<br>
+    📈 I'm planning to share my experiences on a blog later on.
 
 ***
 
