@@ -3,7 +3,7 @@ title:    "Yolov4 + Deep SORT 를 이용한 스포츠 선수 tracking"
 author:
   name: JaeHo-YooN
   link: https://github.com/dkssud8150
-date: 2022-01-05 12:00:00 +0800
+date: 2021-09-10 12:00:00 +0800
 categories: [Projects]
 tags: [Visual Tracking,Yolov4,Deep SORT]
 toc: True
@@ -14,19 +14,7 @@ image:
   src: /assets/img/2021-09-10/yolov4_deepsort.png
   width: 800
   height: 500
----
-
-
----
-layout:   post
-
-subtitle: ""
-category: Projects
-tags:     
-image:
-  path:   
-
----
+---d
 
 1. 논문 읽어보기
 2. Yolo v4 와 Deep Sort 를 통해 visual tracking 하는 블로그 찾아보기
