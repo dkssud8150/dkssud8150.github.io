@@ -1,13 +1,20 @@
 ---
-layout:   post
 title:    "overfitting 방지(prevent)하는 방법"
-subtitle: "overfitting(과적합)을 방지하는 방법"
-category: Classlog
-tags:     pytorch-tutorial prevent-overfitting
+author:
+  name: JaeHo-YooN
+  link: https://github.com/dkssud8150
+date: 2021-10-28 12:00:00 +0800
+categories: [Classlog,Pytorch Tutorial]
+tags: [pytorch tutorial,overfitting]
+toc: True
+comments: True
+math: true
+mermaid: true
+#image:
+#  src: /commons/devices-mockup.png
+#  width: 800
+#  height: 500
 ---
-
-1. this ordered seed list will be replaced by the toc
-{:toc}
 
 # overfitting
 

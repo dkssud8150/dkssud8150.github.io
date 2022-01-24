@@ -1,13 +1,20 @@
 ---
-layout:   post
 title:    "Custom augmentation class 정의해보기"
-subtitle: "Custom augmentation class 정의해보기"
-category: Classlog
-tags:     pytorch-tutorial custom-augmentation
+author:
+  name: JaeHo-YooN
+  link: https://github.com/dkssud8150
+date: 2021-10-28 12:00:00 +0800
+categories: [Classlog,Pytorch Tutorial]
+tags: [pytorch tutorial,custom augmentation]
+toc: True
+comments: True
+math: true
+mermaid: true
+#image:
+#  src: /commons/devices-mockup.png
+#  width: 800
+#  height: 500
 ---
-
-1. this ordered seed list will be replaced by the toc
-{:toc}
 
 # Data Augmentation
 

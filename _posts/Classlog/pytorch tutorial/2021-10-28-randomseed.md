@@ -1,13 +1,21 @@
 ---
-layout:   post
 title:    "random seed 설정"
-subtitle: "randomseed를 설정하는 이유"
-category: Classlog
-tags:     pytorch-tutorial randomseed
+author:
+  name: JaeHo-YooN
+  link: https://github.com/dkssud8150
+date: 2021-10-28 12:00:00 +0800
+categories: [Classlog,Pytorch Tutorial]
+tags: [pytorch tutorial,random seed]
+toc: True
+comments: True
+math: true
+mermaid: true
+#image:
+#  src: /commons/devices-mockup.png
+#  width: 800
+#  height: 500
 ---
 
-1. this ordered seed list will be replaced by the toc
-{:toc}
 
 # Random Seed
 

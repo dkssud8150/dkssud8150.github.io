@@ -1,13 +1,20 @@
 ---
-layout:   post
 title:    "TensorBoard 사용해보기"
-subtitle: "TensorBoard를 활용한 모델 평가"
-category: Classlog
-tags:     pytorch-tutorial TensorBoard
+author:
+  name: JaeHo-YooN
+  link: https://github.com/dkssud8150
+date: 2021-10-21 12:00:00 +0800
+categories: [Classlog,Pytorch Tutorial]
+tags: [pytorch tutorial,TensorBoard]
+toc: True
+comments: True
+math: true
+mermaid: true
+#image:
+#  src: /commons/devices-mockup.png
+#  width: 800
+#  height: 500
 ---
-
-1. this ordered seed list will be replaced by the toc
-{:toc}
 
 * 기본 모델 구조
 

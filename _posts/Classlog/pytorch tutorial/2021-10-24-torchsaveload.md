@@ -1,13 +1,20 @@
 ---
-layout:   post
 title:    "Torch Save and Load, data를 plot해보기"
-subtitle: "Torch Save and load, and plot"
-category: Classlog
-tags:     pytorch-tutorial Torchsave plot
+author:
+  name: JaeHo-YooN
+  link: https://github.com/dkssud8150
+date: 2021-10-24 12:00:00 +0800
+categories: [Classlog,Pytorch Tutorial]
+tags: [pytorch tutorial,Torch save,plot]
+toc: True
+comments: True
+math: true
+mermaid: true
+#image:
+#  src: /commons/devices-mockup.png
+#  width: 800
+#  height: 500
 ---
-
-1. this ordered seed list will be replaced by the toc
-{:toc}
 
 # 기본 구조
 
