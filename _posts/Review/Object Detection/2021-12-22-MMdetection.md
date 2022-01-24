@@ -83,7 +83,7 @@ MMDetection 안에 구성된 모델로는
 
 위의 과정들을 그림으로 나타내면 아래와 같다.
 
-<img src="assets/img/MMDetection_figure1.png" width = "100%">
+<img src="/assets/img/MMDetection_figure1.png" width = "100%">
 
 <br>
 
@@ -92,7 +92,7 @@ MMDetection 안에 구성된 모델로는
 
 또한, before_run, before_train_epoch, after_train_epoch 등의 다양한 시점을 정의하고 관찰했다. 
 
-<img src="assets/img/MMDetection_figure2.png" width = "100%">
+<img src="/assets/img/MMDetection_figure2.png" width = "100%">
 
 저자는 figure 2와 같이 다양한 시점으로 나누고, 사용자가 원하는대로 hook 설정을 변경할 수 있도록 했다. 이 figure2는 학습 과정이고, validation 과정은 평가 후크를 사용해 각 epoch 이후의 성능을 테스트 했기 때문에 보여주지 않았다. 아마 학습 과정과 비슷할 것이다.
 
@@ -117,11 +117,11 @@ MMDetection 안에 구성된 모델로는
 
 **Comparison with other codebases**: Detectron, maskrcnn-benchmark, SimpleDet 등을 비교했다. 결과는 table 2에서 확인가능하다.
 
-<img src="assets/img/MMDetection_figure3.png" width="50%"><img src="assets/img/MMDetection_figure4.png" width="50%">
+<img src="/assets/img/MMDetection_figure3.png" width="50%"><img src="/assets/img/MMDetection_figure4.png" width="50%">
 
 위의 결과처럼 hybrid task cascade 모델이 가장 성능이 좋았다.
 
-<img src="assets/img/MMDetection_table2.png" width="50%">
+<img src="/assets/img/MMDetection_table2.png" width="50%">
 
 <br>
 
@@ -129,7 +129,7 @@ MMDetection 안에 구성된 모델로는
 
 ## 5.1 Regression Losses
 
-<img src="assets/img/MMDetection_table5.png" width = "100%">
+<img src="/assets/img/MMDetection_table5.png" width = "100%">
 
 여러 가지의 loss를 적용해보았으며, loss weight를 증가시켜가며 성능을 비교했다. 간단하게 Smooth L1 Loss의 loss weight를 증가시켜봄으로써 0.5% 정도 향상되었다. 
 
@@ -144,7 +144,7 @@ GPU 메모리를 작게 하기 위해 detection 학습에서는 batch size가 �
 
 그렇다면 각각의 normalization을 비교하고, 성능을 좋게 만들기 위해서는 어떻게 해야 할까?
 
-<img src="assets/img/MMDetection_table7.png" width = "100%">
+<img src="/assets/img/MMDetection_table7.png" width = "100%">
 
 같은 method와 같은 ResNet-50-FPN을 사용하고 여기서 BN layer만 교체하면서 비교를 진행했다. 그 결과 BN layer를 업데이트하여도 성능에 큰 변화는 없었고, FPN이나 bbox/mask head를 추가해도 별다른 이점이 없었다. 하지만, bbox head를 2fc를 4conv-1fc로 바꾸고, normalization을 추가하면 1.5% 정도의 성능 향상을 보였다. 또한, 더 많은 conv 층을 추가할 때 더 좋은 성능을 보였다.
 
@@ -157,7 +157,7 @@ resize 하는 방법으로는
 1. value mode: 스케일셋을 미리 정해놓고 임의로 스케일을 선택한다.
 2. range mode: 스케일 범위를 미리 정해놓고 최솟값과 최댓값 사이의 스케일을 임의로 만든다.
 
-<img src="assets/img/MMDetection_table8.png" width = "100%">
+<img src="/assets/img/MMDetection_table8.png" width = "100%">
 
 표를 보게 되면 mask rcnn에서 다양한 scale을 적용했다. 1333x[640:800:32]의 표기는 긴 방향은 1333으로 고정하고 짧은 방향을 {640,672,704,736,768,800} 중 무작위로 1개 선택하는데, 위의 경우 640~800 중 32 단위로 1개 정하는 것이다. 이는 value mode에 해당된다. 여기서 만약 1333x[640:800]이라면 range mode가 된다.
 
@@ -167,13 +167,13 @@ resize 하는 방법으로는
 
 ## 5.4 Other Hyperparameter
 
-<img src="assets/img/MMDetection_table9.png" width = "100%">
+<img src="/assets/img/MMDetection_table9.png" width = "100%">
 
 간단하게 smoothL1_beta와 allowed_border을 볼 수 있다.
 
 **smoothL1_beta**: 대부분의 detection method는 regression loss로서 smoothL1 loss를 사용한다.
 
-<img src="assets/img/smoothl1_beta.png" width = "100%">
+<img src="/assets/img/smoothl1_beta.png" width = "100%">
 
 beta는 L1과 MSELoss에서 threshold를 뜻한다. 1/9를 기본으로 사용한다.
 
