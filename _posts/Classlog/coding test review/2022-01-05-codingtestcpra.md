@@ -1,5 +1,5 @@
 ---
-title:    "Coding Test [C++] - 연습문제"
+title:    Coding Test [C++] - 연습문제
 author:
   name: JaeHo-YooN
   link: https://github.com/dkssud8150

@@ -9,7 +9,7 @@ tags: [coding test, hash]
 toc: True
 comments: True
 math: true
-mermaid: true
+mermaid: False
 #image:
 #  src: /commons/devices-mockup.png
 #  width: 800
