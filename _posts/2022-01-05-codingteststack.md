@@ -24,8 +24,8 @@ mermaid: true
 * [해시](https://dkssud8150.github.io/classlog/codingtesthash.html)
 * [정렬](https://dkssud8150.github.io/classlog/codingtestsort.html)
 * [완전탐색](https://dkssud8150.github.io/classlog/codingtestsearch.html)
-* [연습문제]
-* [카카오]
+* [연습문제](https://dkssud8150.github.io/classlog/codingtestpra.html)
+* [카카오](https://dkssud8150.github.io/classlog/codingtestkakao.html)
 
 <br>
 
