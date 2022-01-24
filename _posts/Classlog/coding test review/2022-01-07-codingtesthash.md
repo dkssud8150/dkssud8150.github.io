@@ -5,7 +5,7 @@ author:
   link: https://github.com/dkssud8150
 date: 2022-01-07 12:00:00 +0800
 categories: [Classlog,coding test review]
-tags: [coding-test, hash]
+tags: [coding test, hash]
 toc: True
 comments: True
 math: true

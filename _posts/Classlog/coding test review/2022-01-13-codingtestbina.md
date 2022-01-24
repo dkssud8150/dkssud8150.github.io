@@ -5,7 +5,7 @@ author:
   link: https://github.com/dkssud8150
 date: 2022-01-13 12:00:00 +0800
 categories: [Classlog,coding test review]
-tags: [coding-test, binary-tree]
+tags: [coding test, binary-tree]
 toc: True
 comments: True
 math: true
