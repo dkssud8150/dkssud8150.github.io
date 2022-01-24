@@ -8,6 +8,7 @@ categories: [Classlog,coding test review]
 tags: [coding test, push&pop]
 toc: True
 comments: True
+pin: true
 math: true
 mermaid: true
 #image:

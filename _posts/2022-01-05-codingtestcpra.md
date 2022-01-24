@@ -9,6 +9,7 @@ tags: [coding test, pratice]
 toc: True
 comments: True
 math: true
+pin: true
 mermaid: true
 #image:
 #  src: /commons/devices-mockup.png
