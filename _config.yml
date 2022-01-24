@@ -18,11 +18,9 @@ timezone: Korea/Seoul
 # jekyll-seo-tag settings › https://github.com/jekyll/jekyll-seo-tag/blob/master/docs/usage.md
 # ↓ --------------------------
 
-title: >
-  Mamba Mentality                      # the main title
+title: Mamba Mentality                      # the main title
 
-tagline: >
-  Do focus on developing 'your ability' rather than waste time on making you famous.   # it will display as the sub-title
+tagline: Do focus on developing 'your ability' rather than waste time on making you famous.   # it will display as the sub-title
 
 description: >-                        # used by seo meta and the atom feed
   👋 Hi, my name is Jae Ho YooN.<br>
