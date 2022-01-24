@@ -12,7 +12,7 @@ math: true
 mermaid: true
 pin: true
 image:
-  src: _site/assets/img/autodriving/MV3D/pointcloud.png
+  src: /assets/img/autodriving/MV3D/pointcloud.png
   width: 800
   height: 500
 ---
