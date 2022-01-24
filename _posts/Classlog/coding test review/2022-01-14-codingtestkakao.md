@@ -1,13 +1,20 @@
 ---
-layout:   post
 title:    "Coding Test[Python] - 카카오 및 코딩테스트 기출문제"
-subtitle: "카카오 등등 코테 기출"
-category: Classlog
-tags:     coding-test
+author:
+  name: JaeHo-YooN
+  link: https://github.com/dkssud8150
+date: 2022-01-14 12:00:00 +0800
+categories: [Classlog]
+tags: [coding-test]
+toc: True
+comments: True
+math: true
+mermaid: true
+#image:
+#  src: /commons/devices-mockup.png
+#  width: 800
+#  height: 500
 ---
-
-1. this ordered seed list will be replaced by the toc
-{:toc}
 
 <br>
 

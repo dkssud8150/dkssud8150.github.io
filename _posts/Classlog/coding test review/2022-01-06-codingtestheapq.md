@@ -1,13 +1,20 @@
 ---
-layout:   post
 title:    "Coding Test[Python] - 힙"
-subtitle: "heapq 사용"
-category: Classlog
-tags:     coding-test heapq
+author:
+  name: JaeHo-YooN
+  link: https://github.com/dkssud8150
+date: 2022-01-06 12:00:00 +0800
+categories: [Classlog]
+tags: [coding-test, heapq]
+toc: True
+comments: True
+math: true
+mermaid: true
+#image:
+#  src: /commons/devices-mockup.png
+#  width: 800
+#  height: 500
 ---
-
-1. this ordered seed list will be replaced by the toc
-{:toc}
 
 프로그래머스에 올라와 있는 코딩테스트를 진행하면서 공부한 내용 및 막혔던 부분들에 대해 리뷰하고자 합니다. 
 
