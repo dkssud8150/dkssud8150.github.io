@@ -1,11 +1,16 @@
 ---
-layout:   post
 title:    "2021 Ego-Vision 손동작 인식 경진대회"
-subtitle: "key point를 활용한 손동작 인식"
-category: Review
-tags:     DACON Classification keypoint
+author:
+  name: JaeHo-YooN
+  link: https://github.com/dkssud8150
+date: 2021-09-16 12:00:00 +0800
+categories: [Review, DACON]
+tags: [DACON,keypoint, classification]
+toc: True
+comments: True
+math: true
+mermaid: true
 ---
-
 
 일단 제출은 하지 못했다.
 

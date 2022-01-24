@@ -1,14 +1,16 @@
 ---
-layout:   post
 title:    "병변 검출 AI 경진대회"
-subtitle: "병변의 위치 Bounding box 검출"
-category: Review
-tags:     DACON Object-Detection
+author:
+  name: JaeHo-YooN
+  link: https://github.com/dkssud8150
+date: 2021-09-16 12:00:00 +0800
+categories: [Review, DACON]
+tags: [DACON,Object Detection]
+toc: True
+comments: True
+math: true
+mermaid: true
 ---
-
-1. this ordered seed list will be replaced by the toc
-{:toc}
-
 
 ## 결과
 114/250 (상위 46%)

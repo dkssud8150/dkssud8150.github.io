@@ -1,11 +1,19 @@
 ---
-layout:   post
 title:    "Multi-View 3D Object Detection Network for Autonomous Driving"
-subtitle: "high-accuracy 3D object detection in Autonomous Driving scenario"
-category: Classlog
-tags:     Autonomous-Driving
+author:
+  name: JaeHo-YooN
+  link: https://github.com/dkssud8150
+date: 2022-01-17 12:00:00 +0800
+categories: [Review, Autonomous Driving]
+tags: [Autonomous Driving, MV3D]
+toc: True
+comments: True
+math: true
+mermaid: true
 image:
-  path:   /assets/img/autodriving/MV3D/pointcloud.png
+  src: _site/assets/img/autodriving/MV3D/pointcloud.png
+  width: 800
+  height: 500
 ---
 
 1. this ordered seed list will be replaced by the toc

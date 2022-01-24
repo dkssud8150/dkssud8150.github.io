@@ -1,11 +1,15 @@
 ---
-layout:   post
 title:    "Motion Keypoint Detection AI Contest with HRNet & YOLOv5"
-subtitle: "keypoint Detection"
-category: Review
-tags:     DACON keypoint-Detection
-#image:
-#  path:   /assets/img/.jpg
+author:
+  name: JaeHo-YooN
+  link: https://github.com/dkssud8150
+date: 2021-09-16 12:00:00 +0800
+categories: [Review, DACON]
+tags: [DACON,keypoint, Detection]
+toc: True
+comments: True
+math: true
+mermaid: true
 ---
 
 일단 yolo를 중점적으로 볼 예정이므로 test에 쓰이는 yolo만 보고 나중에 keypoint 를 공부한 후 hrnet 공부 후 볼 예정

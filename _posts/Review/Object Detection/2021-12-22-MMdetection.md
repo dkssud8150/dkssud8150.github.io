@@ -1,9 +1,15 @@
 ---
-layout:   post
 title:    "MMDetection"
-subtitle: "MMDetection"
-category: Classlog
-tags:     Object-Dedection mmdetection
+author:
+  name: JaeHo-YooN
+  link: https://github.com/dkssud8150
+date: 2021-09-16 12:00:00 +0800
+categories: [Review, Object Detection]
+tags: [Object Detection, mmdetection]
+toc: True
+comments: True
+math: true
+mermaid: true
 ---
 
 1. this ordered seed list will be replaced by the toc
