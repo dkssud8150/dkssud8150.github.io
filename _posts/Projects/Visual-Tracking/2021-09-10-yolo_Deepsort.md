@@ -14,7 +14,7 @@ image:
   src: /assets/img/2021-09-10/yolov4_deepsort.png
   width: 800
   height: 500
----d
+---
 
 1. 논문 읽어보기
 2. Yolo v4 와 Deep Sort 를 통해 visual tracking 하는 블로그 찾아보기
