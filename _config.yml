@@ -10,7 +10,7 @@ baseurl: ''
 # The language of the webpage › http://www.lingoes.net/en/translator/langcode.htm
 # If it has the same name as one of the files in folder `_data/locales`, the layout language will also be changed,
 # otherwise, the layout language will use the default value of 'en'.
-lang: ko-KR
+lang: en
 
 # Change to your timezone › http://www.timezoneconverter.com/cgi-bin/findzone/findzone
 timezone: Korea/Seoul
@@ -18,12 +18,12 @@ timezone: Korea/Seoul
 # jekyll-seo-tag settings › https://github.com/jekyll/jekyll-seo-tag/blob/master/docs/usage.md
 # ↓ --------------------------
 
-title: Mamba Mentality                      # the main title
+title: JaeHo Yoon                    # the main title
 
-tagline: Do focus on developing 'your ability' rather than waste time on making you famous.   # it will display as the sub-title
+tagline: Mamba Mentality     # it will display as the sub-title
 
 description: >-                        # used by seo meta and the atom feed
-  Do My Best
+  Do focus on developing 'your ability' rather than waste time on making you famous.
 
 # fill in the protocol & hostname for your site, e.g., 'https://username.github.io'
 url: 'https://dkssud8150.github.io'
@@ -77,7 +77,7 @@ theme_mode: light  # [light|dark]
 # will be added to all image (site avatar & posts' images) paths starting with '/'
 #
 # e.g. 'https://cdn.com'
-img_cdn: 'https://cdn.com'
+img_cdn: '_site/assets/img/shin_chan.png'
 
 # the avatar on sidebar, support local or CORS resources
 avatar: _site/assets/img/shin_chan.png
