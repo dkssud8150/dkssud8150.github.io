@@ -4,7 +4,7 @@ author:
   name: JaeHo-YooN
   link: https://github.com/dkssud8150
 date: 2022-01-09 12:00:00 +0800
-categories: [Classlog]
+categories: [Classlog,coding test review]
 tags: [coding-test, sort]
 toc: True
 comments: True
