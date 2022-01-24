@@ -5,48 +5,55 @@ theme: jekyll-theme-chirpy
 
 # Change the following value to '/PROJECT_NAME' ONLY IF your site type is GitHub Pages Project sites
 # and doesn't have a custom domain.
-baseurl: ''
+baseurl: 'dkssud8150.github.io'
 
 # The language of the webpage › http://www.lingoes.net/en/translator/langcode.htm
 # If it has the same name as one of the files in folder `_data/locales`, the layout language will also be changed,
 # otherwise, the layout language will use the default value of 'en'.
-lang: en
+lang: kr
 
 # Change to your timezone › http://www.timezoneconverter.com/cgi-bin/findzone/findzone
-timezone: Asia/Shanghai
+timezone: Korea/Seoul
 
 # jekyll-seo-tag settings › https://github.com/jekyll/jekyll-seo-tag/blob/master/docs/usage.md
 # ↓ --------------------------
 
-title: Chirpy                          # the main title
+title: Mamba Mentality                      # the main title
 
-tagline: A text-focused Jekyll theme   # it will display as the sub-title
+tagline: Do focus on developing 'your ability' rather than waste time on making you famous.   # it will display as the sub-title
 
 description: >-                        # used by seo meta and the atom feed
-  A minimal, portfolio, sidebar,
-  bootstrap Jekyll theme with responsive web design
-  and focuses on text presentation.
+  👋 Hi, my name is Jae Ho YooN.<br>
+  👥 I have much experience about communication while doing many activities and project.<br>
+  👨‍💻 I'm interested in Computer Vision in Autonomous-Driving.<br>
+  🤖 I develop autonomous-driving program that do not require driver control via OpenCV or pytorch.<br>
+  💻 i'm putting down and share my studying entries on this Page and my <a class="highlight-link"
+  href="https://www.notion.so/18490713817d403696812c57d0abe730" target="_blank" rel="noreferrer"> Notion</a>.<br>
+  📚 I am passionate about studying with a many thesis and lots of lectures such as <a class="highlight-link" href="https://cs231n.github.io/" target="_blank"
+  rel="noreferrer"> CS231N </a> or <a class="highlight-link" href="https://kooc.kaist.ac.kr/" target="_blank"
+  rel="noreferrer"> KOOC</a>.<br>
+  📈 I'm planning to share my experiences on a blog later on.
 
 # fill in the protocol & hostname for your site, e.g., 'https://username.github.io'
 url: 'https://dkssud8150.github.io'
 
 github:
-  username: github_username             # change to your github username
+  username: dkssud8150             # change to your github username
 
 twitter:
-  username: twitter_username            # change to your twitter username
+  username: ''            # change to your twitter username
 
 social:
   # Change to your full name.
   # It will be displayed as the default author of the posts and the copyright owner in the Footer
-  name: your_full_name
-  email: example@doamin.com             # change to your email address
+  name: JaeHo-YooN
+  email: dkssud8159@naver.com             # change to your email address
   links:
     # The first element serves as the copyright owner's link
     - https://twitter.com/username      # change to your twitter homepage
-    - https://github.com/username       # change to your github homepage
+    - https://github.com/dkssud8150.github.io     # change to your github homepage
     # Uncomment below to add more social links
-    # - https://www.facebook.com/username
+    - https://www.notion.so/18490713817d403696812c57d0abe730
     # - https://www.linkedin.com/in/username
 
 google_site_verification:               # fill in to your verification string
@@ -72,17 +79,17 @@ google_analytics:
 #     light  - Use the light color scheme
 #     dark   - Use the dark color scheme
 #
-theme_mode:   # [light|dark]
+theme_mode: light  # [light|dark]
 
 # The CDN endpoint for images.
 # Notice that once it is assigned, the CDN url
 # will be added to all image (site avatar & posts' images) paths starting with '/'
 #
 # e.g. 'https://cdn.com'
-img_cdn:
+img_cdn: 
 
 # the avatar on sidebar, support local or CORS resources
-avatar:
+avatar: _site/assets/img/shin_chan.png
 
 # boolean type, the global switch for ToC in posts.
 toc: true
@@ -94,7 +101,7 @@ comments:
     shortname:    # fill with the Disqus shortname. › https://help.disqus.com/en/articles/1717111-what-s-a-shortname
   # utterances settings › https://utteranc.es/
   utterances:
-    repo:         # <gh-username>/<repo>
+    repo: https://github.com/dkssud8150/        # <gh-username>/<repo>
     issue_term:   # < url | pathname | title | ...>
 
 paginate: 10

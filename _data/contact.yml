@@ -11,8 +11,9 @@
   icon: 'fas fa-envelope'
   noblank: true            # open link in current tab
 -
-  type: rss
-  icon: 'fas fa-rss'
+  type: notion
+  icon: 'fas fa-battle-net'
+  url: 'https://www.notion.so/18490713817d403696812c57d0abe730'
   noblank: true
 
 # Uncomment and complete the url below to enable more contact options
