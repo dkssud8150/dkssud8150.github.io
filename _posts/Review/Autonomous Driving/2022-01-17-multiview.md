@@ -1,7 +1,7 @@
 ---
 title:    "Multi-View 3D Object Detection Network for Autonomous Driving"
 author:
-  name: JaeHo-YooN
+  name: JaeHo YooN
   link: https://github.com/dkssud8150
 date: 2022-01-17 12:00:00 +0800
 categories: [Review, Autonomous Driving]
