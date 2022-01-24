@@ -8,7 +8,7 @@ categories: [Classlog,coding test review]
 tags: [coding test, heapq]
 toc: True
 comments: True
-math: False
+math: true
 mermaid: true
 #image:
 #  src: /commons/devices-mockup.png

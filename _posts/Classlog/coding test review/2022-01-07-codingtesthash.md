@@ -8,8 +8,8 @@ categories: [Classlog,coding test review]
 tags: [coding test, hash]
 toc: True
 comments: True
-math: true
-mermaid: False
+math: True
+mermaid: True
 #image:
 #  src: /commons/devices-mockup.png
 #  width: 800
