@@ -1,11 +1,30 @@
 ---
-layout:   post
-title:    "A Sport Athlete Object Tracking Based on Deep Sort and Yolo V4 in Case of Camera Movement"
-subtitle: "Yolov4 + Deep SORT 를 이용한 스포츠 선수 tracking"
-category: Projects
-tags:     Visual-Tracking Yolov4 Deep-SORT
+title:    "Yolov4 + Deep SORT 를 이용한 스포츠 선수 tracking"
+author:
+  name: JaeHo-YooN
+  link: https://github.com/dkssud8150
+date: 2022-01-05 12:00:00 +0800
+categories: [Projects]
+tags: [Visual Tracking,Yolov4,Deep SORT]
+toc: True
+comments: True
+math: true
+mermaid: true
 image:
-  path:   /assets/img/2021-09-10/yolov4_deepsort.png
+  src: /assets/img/2021-09-10/yolov4_deepsort.png
+  width: 800
+  height: 500
+---
+
+
+---
+layout:   post
+
+subtitle: ""
+category: Projects
+tags:     
+image:
+  path:   
 
 ---
 
