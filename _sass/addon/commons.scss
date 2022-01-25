@@ -646,7 +646,7 @@ $sidebar-display: "sidebar-display";
   overflow-y: auto;
   width: $sidebar-width;
   z-index: 99;
-  background: linear-gradient(30deg, --sidebar-bg, #fff);
+  background: linear-gradient(30deg, #b0eafd8f, #fff);
 
   /* Hide scrollbar for Chrome, Safari and Opera */
   &::-webkit-scrollbar {
