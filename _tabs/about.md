@@ -1,6 +1,6 @@
 ---
 title: About
-icon: fab fa-acquisitions-incorporated
+icon: fab fa-angelist
 order: 4
 ---
 
@@ -16,3 +16,4 @@ order: 4
 
 ***
 
+acquisitions-incorporated
