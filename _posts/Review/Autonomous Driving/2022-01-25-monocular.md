@@ -9,6 +9,7 @@ tags: [Autonomous Driving, monocular]
 toc: True
 comments: True
 math: true
+mermaid: true
 image:
   src: /assets/img/autodriving/mono/fig7.png
   width: 800
