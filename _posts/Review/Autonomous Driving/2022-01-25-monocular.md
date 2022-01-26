@@ -74,15 +74,15 @@ t를 사용하여 bounding box의 사이즈를 정의한다. 각 클래스마다
 
 맨 앞부분부터 보자면, 이 부분은 픽셀 단위의 의미 분할(semantic segmentation)을 입력으로 받는다. 그 후 두 가지의 특징을 통합하여 의미 분할을 수행한다. 첫번째 특징은 관련 클래스로 분류된 픽셀들의 확률을 활용해서 객체의 bounding box를 구성한다. 사용하는 식은 다음과 같다.
 
-<img src='/assets/img/autodriving/mono/cseg.png' width="30%">
+<img src='/assets/img/autodriving/mono/cseg.png' width="60%">
 
-이 때, Ω(y)는 이미지 평면으로 3D 박스, y를 투영하여 생성된 2D 박스의 픽셀 집합이고, Sc는 클래스,c 의 세그멘테이션 마스크이다. 
+이 때, Ω(y)는 이미지 평면으로 3D 박스, y를 투영하여 생성된 2D 박스의 픽셀 집합이고, Sc는 클래스,c의 세그멘테이션 마스크이다.
 
 <br>
 
 두번째 특징은 픽셀들이 해당 클래스 대비 다른 클래스로 속할 확률을 계산한다.
 
-<img src='/assets/img/autodriving/mono/nonseg.png' width="30%">
+<img src='/assets/img/autodriving/mono/nonseg.png' width="60%">
 
 이는 크게 두 가지로 구성되어 있는데, 1개는 길을 뜻하고, 다른 1개는 다른 모든 클래스들을 합친 것을 의미한다. 이 식을 통해 bounding box안에 다른 객체를 뜻하는 픽셀의 비율을 최소화한다. 
 
