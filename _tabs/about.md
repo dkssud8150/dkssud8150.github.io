@@ -1,6 +1,6 @@
 ---
 title: About
-icon: fas fa-acquisitions-incorporated
+icon: fab fa-acquisitions-incorporated
 order: 4
 ---
 
