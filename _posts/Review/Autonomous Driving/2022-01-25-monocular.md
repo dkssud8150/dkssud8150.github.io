@@ -68,11 +68,13 @@ t를 사용하여 bounding box의 사이즈를 정의한다. 각 클래스마다
 
 이 함수를 좀 더 디테일하게 들여다 보자.
 
+<br>
+
 * Semantic segmentation
 
 맨 앞부분부터 보자면, 이 부분은 픽셀 단위의 의미 분할(semantic segmentation)을 입력으로 받는다. 그 후 두 가지의 특징을 통합하여 의미 분할을 수행한다. 첫번째 특징은 관련 클래스로 분류된 픽셀들의 확률을 활용해서 객체의 bounding box를 구성한다. 사용하는 식은 다음과 같다.
 
-<img src='/assets/img/autodriving/mono/cseg.png'>
+<img src='/assets/img/autodriving/mono/cseg.png' width="30">
 
 이 때, Ω(y)는 이미지 평면으로 3D 박스, y를 투영하여 생성된 2D 박스의 픽셀 집합이고, Sc는 클래스,c 의 세그멘테이션 마스크이다. 
 
@@ -80,10 +82,15 @@ t를 사용하여 bounding box의 사이즈를 정의한다. 각 클래스마다
 
 두번째 특징은 픽셀들이 해당 클래스 대비 다른 클래스로 속할 확률을 계산한다.
 
-<img src='/assets/img/autodriving/mono/nonseg.png'>
+<img src='/assets/img/autodriving/mono/nonseg.png' width="30">
 
 이는 크게 두 가지로 구성되어 있는데, 1개는 길을 뜻하고, 다른 1개는 다른 모든 클래스들을 합친 것을 의미한다. 이 식을 통해 bounding box안에 다른 객체를 뜻하는 픽셀의 비율을 최소화한다. 
 
 이 특징들은 클래스 수만큼의 통합 이미지만을 사용하여 매우 효율적으로 계산할 수 있다. 
 
-SegNet의 경우, fully convolutional 인코더-디코더를 통해 semantic 라벨링을 수행한다. 특히 저자는 PASCAL VOC + COCO에서 차량 세그멘테이션에 대해 pretrained model을 사용한다. 그리고, 다른 클래스의 불일치를 줄이기 위해, 보행자와 자전거 이용자에 대한 pretrained SegNet model을 사용한다. KITTI에 대해 
+SegNet의 경우, fully convolutional 인코더-디코더를 통해 semantic 라벨링을 수행한다. 저자는 PASCAL VOC + COCO에서 차량 세그멘테이션에 대해 pretrained model을 사용한다. 그리고, 다른 클래스의 불일치를 줄이기 위해, 보행자와 자전거 이용자에 대한 pretrained SegNet model을 사용한다. KITTI에는 semantic 주석(annotation)이 거의 없으므로 모델을 fine-tune을 하지 않았다. 게다가 KITTI의 로드 benchmark에서 주석을 추출했고, 로드에 대해 네트워크를 fine-tune했다.
+
+* Shape
+
+여기서는 객체의 형상을 포착한다. 특히, 먼저 원래의 이미지 대신 세그멘테이션의 출력에서 윤곽을 계산한다. 
+
