@@ -1,5 +1,5 @@
 ---
-title:    "[논문 리뷰] Multi-View 3D Object Detection Network for Autonomous Driving 논문 리뷰"
+title:    "[논문 리뷰] Multi-View 3D Object Detection Network for Autonomous Driving"
 author:
   name: JaeHo YooN
   link: https://github.com/dkssud8150
