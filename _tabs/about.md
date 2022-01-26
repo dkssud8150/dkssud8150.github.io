@@ -1,6 +1,6 @@
 ---
 title: About
-icon: fab fa-angelist
+icon: fab fa-angellist
 order: 4
 ---
 
