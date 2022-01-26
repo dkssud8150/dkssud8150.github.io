@@ -2,7 +2,7 @@
 
 # JaeHo's Blog
 
-if you know more about me, you click ## [About Me](https://dkssud8150.github.io/about/).
+if you know more about me, you click [About Me](https://dkssud8150.github.io/about/).
 
 Hello, there!<br>
 
