@@ -132,4 +132,22 @@ SegNet의 경우, fully convolutional 인코더-디코더를 통해 semantic 라
 
 * Networks Setup
 
+ImageNet으로 훈련된 VGG16모델을 사용하여 네트워크를 초기화했고, VGG16의 FC layer의 가중치를 통해 2개의 브런치를 초기화했다. KITTI 이미지들안의 매우 작은 객체들을 다루기 위해, 입력 이미지의 크기를 3.5배 키우는 방법을 사용했다. 그리고 훈련과 테스트시에 이미지에 대한 단일 스케일을 사용했다. 그리고 이미지에 대한 배치 사이즈는 N = 1, 제안에 대한 베치 사이즈는 R = 128로 설정하고, 30K 반복까지는 lr = 0.001의 SGD를, 그 후의 10K 반복은 lr = 0.0001을 사용했다.
+
+<br>
+
+# 4. Experimental Evaluation
+
+까다로운 KITTI 데이터셋에서 평가헸다. KITTI 데이터셋은 자동차, 보행자, 자전거 이용자 총 3개의 클래스에 대한 7481개의 훈련 이미지와 7518개의 테스트 이미지로 구성되어 있다. 각 클래스에 대한 검출은 객체의 겹침이나 절단의 레벨에 따른 3개의 난이도로 평가되는데, 각 easy, moderate, hard이다.
+
+* Metrics
+
+가장 높은 리콜을 사용하여 제안들을 평가했다. 이 논문에서 가장 높은 리콜을 오라클 리콜(oracle recall)이라 부르는데, 이 오라클 리콜은 GT(ground truth)와의 IOU가 특정 threshold이상으로 중복되는 제안들의 퍼센트를 계산한다. 차에 대해서는 0.7 threshold, 보행자와 자전거 이용자에 대해서는 0.5 threshold를 적용한다. 또한 AR(average recall)도 정리했다. 3D 객체 검출 모델의 전체 파이프라인을 KITTI의 2가지 태스크에 대해 평가했다. 이는 *객체 검출*과 *객체 검출 및 방향 추정*이다. 표준 KITTI 세팅에 따라 객체 검출 태스크에서는 AP(average precision) 지표를 사용하고, 객체 검출 및 방향 추정 태스크에서는 AOS(Average Orientation Similarity) 지표를 사용했다. 
+
+* Baseline
+
+validation set에서 이 논문에서의 제안 발생 방법과 몇몇의 가장 높은 성능의 접근법(3DOP, MCG-D, MCG, SS(Selective Search), BING, EB(Edges Boxes)과 비교했다. 3DOP과 MCG-D는 깊이 정보를 활용하는 반면, 나머지 방법과 이 논문에서의 방법은 오직 단일 RGB 이미지를 사용한다. 3DOP를 제외한 모든 방법들은 모든 전방 객체를 탐지하도록 훈련되는 클래스-독립적이지만, 이 논문의 방법은 클래스별 가중치와 semantic segmentation을 사용한다. 
+
+* Proposal Recall
+
 
