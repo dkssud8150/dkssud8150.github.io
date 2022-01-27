@@ -1,0 +1,30 @@
+#  The contact options.
+
+-
+  type: github
+  icon: 'fab fa-github'
+#-
+#  type: twitter
+#  icon: 'fab fa-twitter'
+-
+  type: email
+  icon: 'fas fa-envelope'
+  noblank: true            # open link in current tab
+#-
+#  type: rss
+#  icon: 'fas fa-rss'
+#  noblank: true
+
+# Uncomment and complete the url below to enable more contact options
+-
+  type: notion
+  icon: 'fab fa-battle-net'   # icons powered by <https://fontawesome.com/>
+  url:  'https://www.notion.so/18490713817d403696812c57d0abe730'                  # Fill with your mastodon account page
+# -
+#   type: linkedin
+#   icon: 'fab fa-linkedin'   # icons powered by <https://fontawesome.com/>
+#   url:  ''                  # Fill with your Linkedin homepage
+-
+  type: instagram
+  icon: 'fab fa-instagram'
+  url:  'https://www.instagram.com/jai_ho8150/'                  # Fill with your stackoverflow homepage
