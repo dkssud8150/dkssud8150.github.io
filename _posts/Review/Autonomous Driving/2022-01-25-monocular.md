@@ -150,4 +150,54 @@ validation set에서 이 논문에서의 제안 발생 방법과 몇몇의 가�
 
 * Proposal Recall
 
-  
+<img src='/assets/img/autodriving/mono/fig4.png'>
+
+이 실험에서는 validation 셋에서 발생되는 제안에 대한 오라클 리콜을 평가했다. 위의 그림은 제안의 수에 대한 모델들의 리콜을 보여준다. 이 논문의 접근이 차와 보행차에 대한 500개의 제안보다 작게 사용할 때 모든 베이스라인들보다 엄청 더 높은 리콜을 달성한다. 그리고, easy 난이도에서 오직 100개의 차량에 대한 제안과 300개의 보행자에 대한 제안을 통해 90%의 리콜을 달성한다. 이는 다른 2D 방법들보다 훨씬 더 적은 제안을 필요로 한다는 것이다. 2k개 제안을 사용할 때, 3D 접근법 중 가장 좋은 성능을 보이는 것은 3DOP로 20% 정도 다른 베이스라인들보다 높았다. 3DOP와 MCG는 깊이 정보를 사용함으로써 단안 이미지를 사용하는 우리의 접근 방식과 조금 달라 비교하기가 어렵다. 
+
+<br>
+
+<img src='/assets/img/autodriving/mono/fig5.png'>
+
+그런 다음, 탑 500개의 제안에 대한 IOU별 리콜을 측정했다. 모든 IOU threshold에서 스테레오를 사용하는 3DOP를 제외한 모든 베이스라인을 능가했다. 그러나 보행자와 자전거 이용자에 대한 높은 IOU threshold를 사용할 때, 3DOP보다 조금 낮게 나왔다.
+
+* Ablation Study
+
+<img src='/assets/img/autodriving/mono/fig6.png'>
+
+특징별 객체 제안 리콜에 대한 효과를 연구했다. 인스턴스나 시멘틱 특징들은 300개 보다 더 작은 제안을 사용했을 때 리콜을 향상시켰다. 인스턴스 특징없이도 1000개의 제안을 사용하면 90% 리콜을 달성할 수 있었다. 인스턴스와 형상 정보를 둘 다 제거했을 때, 90% 리콜을 달성하려면 2배 더 많은, 즉 2000개의 제안이 필요했다.
+
+* Object Detection and Orientation Estimation
+
+객체 검출에 대한 제안을 점수매기기 위해서 섹션 3.3에서 설명된 네트워크를 사용했다. KITTI 테스트 셋에서 검출을 평가한 내용은 다음과 같다.
+
+<img src='/assets/img/autodriving/mono/table1.png' width='50%'><img src='/assets/img/autodriving/mono/table2.png' width='50%'>
+
+테이블을 보면 공개된 단안 방법들을 능가했다는 것을 볼 수 있다. AP의 관점에서 2단계 중 최고 방법인 Fast R-CNN을 차, 보행자, 자전거 이용자 각각 어려움 난이도에서 7.84%, 2.26%, 2.97% 정도의 엄청난 차이를 보이며 능가했다. 방향 측정에 대해서는 어려움 난이도에서 3DVP보다 12.73% AOS 더 높게 달성했다. 
+
+* Comparison with Baselines
+
+저자의 CNN을 평가하기 위해 강력한 다른 제안 방법인 3DOP, EB(EdgeBoxes), SS(Selective Search)을 사용했다.
+
+<img src='/assets/img/autodriving/mono/table3.png'>
+
+위의 테이블은 KITTI 검증셋에서 검출과 방향 측정에 대한 결과를 보여준다. 이를 통해 EB, SS를 20% AP와 20% AOS 더 능가했다는 것을 볼 수 있다. 3DOP는 단안 이미지를 사용하는 우리와 달리 스테레오 이미지를 사용하기에 비교하기 어렵다. 그럼에도 불구하고, 비슷한 성능을 보여주었다. 
+
+중간 난이도에서의 차에 대한 제안의 수의 함수로서 AP를 평가했다. 오직 각 이미지당 10개의 제안을 사용할 때, 35.7%를 달성하는 3DOP를 능가하여 53.7%의 AP를 달성했다. 100개보다 더 많이 사용하게 되면, AP는 3DOP와 거의 비슷했다. 5000개를 사용해야 EB는 최고 성능인 78.7% AP를 달성하는데 반해, 이 논문의 방법은 200개의 제안만을 사용해도 80.6% AP를 달성할 수 있었다.
+
+* Qualitative Results
+
+<img src='/assets/img/autodriving/mono/fig7.png'>
+
+3D 검출에 대한 결과는 위의 그림과 같다. 
+
+<br>
+
+# 5. Conclusions
+
+높은 퀄리티의 객체 검출을 얻기 위해 기본적인 CNN 파이프라인을 통해 실행되는 후보 클래스별 객체 제안을 생성하는 단안 3D 객체 검출에 대한 접근 방식을 제안해왔다. 이 목표를 위해, 물체가 지면 위에 있어야 한다는 사실을 이용하여 객체 후보를 3D로 배치한 후, semantic segmentation, 맥락 정보, 이전의 크기 및 위치 및 일반적인 객체 모양을 인코딩하는 여러 직관적인 잠재력을 통해 각 후보 상자에 점수를 매기는 에너지 최소화 방법을 제안했다. 이 논문의 객체 제안 발생 접근법은 모든 단안 접근법을 상당히 능가했고, KITTI benchmark에서 최고의 성능을 보여주었다.
+
+<br>
+
+# Reference
+
+* [Monocular 3D Object Detection for Autonomous Driving](https://www.cv-foundation.org/openaccess/content_cvpr_2016/papers/Chen_Monocular_3D_Object_CVPR_2016_paper.pdf)
