@@ -5,7 +5,7 @@ author:
   link: https://github.com/dkssud8150
 date: 2022-02-02 00:17:00 +0800
 categories: [Review, Autonomous Driving]
-tags: [Autonomous Driving, pointrcnn]
+tags: [Autonomous Driving, PointRCNN]
 toc: True
 comments: True
 math: true
