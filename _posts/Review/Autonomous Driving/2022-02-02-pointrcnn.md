@@ -120,4 +120,3 @@ image:
 
 <img src='/assets/img/autodriving/pointrcnn/loss.png'>
 
-
