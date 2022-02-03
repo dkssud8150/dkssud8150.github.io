@@ -272,3 +272,24 @@ KITTI 데이터셋에서 검증 셋과 테스트 셋에서 최첨단 3D 객체 �
 
 위의 테이블에서 서로 다른 풀링된 맥락적 넓이인 η의 영향을 볼 수 있다. η = 1.0m일 때, 제안된 프레임워크가 최고 성능을 보였다. 맥락적 정보가 없이 풀링되면 특히 어려움 난이도에서, 정확도가 상당히 떨어진다. 어려움 난이도는 객체가 폐색되거나 센서로부터 멀리 떨어져있어 제안 정제와 분류를 위한 더 많은 맥락적 정보가 필요하기 떄문에, 일반적으로 제안안에 점이 별로 없다. 위의 테이블을 보면, 매우 큰 η는 현재 제안의 풀링된 지역이 다른 객체들의 전경 점들을 포함하기 때문에 성능을 떨어뜨린다.
 
+* Losses of 3D bounding box regression
+
+세션 3.1에서 3D 박스 제안을 생성하기 위한 bin 기반의 위치화 loss를 제시했다. 이번 파트에서는 각기 다른 타입의 3D 박스 회귀 loss를 사용했을 때의 성능을 평가하고자 한다. loss의 종류는 RB loss(residual-based loss), RCB loss(residual-cos-based loss), CN loss(corner loss), PBB loss(partial-bin-based loss), BB loss(full bin-based loss)이 있다. 여기서 RCB loss는 각도 회귀의 모호성을 제거하기 위해 (cos(∆θ),sin(∆θ))에 의한 residual based loss의 ∆θ를 인코딩한다. 
+
+1단계에서 100개의 제안에 대한 마지막 리콜(0.5,0.7 IOU)는 평가 방식으로서 사용되고, 이 결과는 아래 그림에서 볼 수 있다.
+
+<img src='/assets/img/autodriving/pointrcnn/fig5.png'>
+
+그래프는 전체 bin 기반의 3D 바운딩 박스 회귀 loss의 영향을 보여준다. 특히, BB loss를 사용한 1단계 서브 네트워크는 더 높은 리콜을 달성하고, 다른 loss보다 더 빠르게 수렴하는데, 사전 지식으로 타겟 즉 위치화를 제한함으로서 효과를 얻는다. 부분 bin 기반의 loss는 비슷한 리콜을 달성하지만, 수렴 속도가 다소 느리다. 전체와 부분 bin 기반의 loss는 0.7 IOU threshold에서 다른 함수들보다 더 높은 리콜을 가진다. RCB loss는 각도 회귀 타겟을 개선함으로서 RB loss보다 더 높은 리콜을 얻는다. 
+
+<br>
+
+# 5. Conclusion
+
+원시 포인트 클라우드로부터 3D 객체를 탐지하기 위해 새로운 3D 객체 탐지기인 PointRCNN을 제시했다. 제시된 1단계 서브 네트워크는 상향식으로 포인트 클라우드로부터 3D 제안을 직접 생성하는데, 이 제안 발생방법이 이전의 방법들보다 상당히 더 높은 리콜을 가진다. 2단계 서브 네트워크에서는 지역적인 공간 특징과 의미론적 특징을 결합하여 그 제안을 표준좌표로 정제한다. 게다가 새로 제안된 bin 기반의 loss는 3D 바운딩 박스 회귀에 대한 효과를 볼 수 있었다. 실험을 통해 KITTI 데이터셋의 3D 탐지 벤치마크에서 PointRCNN이 이전의 최첨단 방법들을 큰 차이로 능가했다.
+
+<br>
+
+# Reference
+
+* [PointRCNN: 3D Object Proposal Generation and Detection From Point Cloud](https://openaccess.thecvf.com/content_CVPR_2019/papers/Shi_PointRCNN_3D_Object_Proposal_Generation_and_Detection_From_Point_Cloud_CVPR_2019_paper.pdf)
