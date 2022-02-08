@@ -10,7 +10,6 @@ toc: True
 comments: True
 math: true
 mermaid: true
-pin: true
 image:
   src: /assets/img/autodriving/MV3D/pointcloud.png
   width: 800
