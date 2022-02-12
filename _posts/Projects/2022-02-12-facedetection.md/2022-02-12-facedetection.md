@@ -16,3 +16,26 @@ image:
   height: 500
 ---
 
+[깃허브 주소](https://github.com/dkssud8150/face)
+
+# Abstract
+
+업로드된 이미지에 대해 어떤 동물을 닮았는지 분류하는 테스트를 만들었다. 
+
+![image](/assets/img/facedet/upimg.jpg "before upload image")
+![image](/assets/img/facedet/upedimg.jpg "prediction result about upload image")
+
+
+
+사용한 언어는 `python`, `flask`, `html`이다. 
+
+
+
+
+
+
+
+
+# Summary
+
+
