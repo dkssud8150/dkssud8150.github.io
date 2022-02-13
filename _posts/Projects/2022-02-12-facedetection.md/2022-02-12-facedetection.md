@@ -22,7 +22,7 @@ image:
 
 업로드된 이미지에 대해 어떤 동물을 닮았는지 분류하는 테스트를 만들었다. 
 
-![](/assets/img/facedet/upimg.jpg)
+![image](/assets/img/facedet/upimg.jpg)
 *before upload image*
 
 ![image](/assets/img/facedet/upedimg.jpg) 
