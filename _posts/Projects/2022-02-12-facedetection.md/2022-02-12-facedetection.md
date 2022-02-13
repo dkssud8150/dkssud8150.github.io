@@ -22,10 +22,11 @@ image:
 
 업로드된 이미지에 대해 어떤 동물을 닮았는지 분류하는 테스트를 만들었다. 
 
-![image](/assets/img/facedet/upimg.jpg "before upload image")
-![image](/assets/img/facedet/upedimg.jpg "prediction result about upload image")
+![](/assets/img/facedet/upimg.jpg)
+*before upload image*
 
-`python + flask + html + css`
+![image](/assets/img/facedet/upedimg.jpg) 
+*prediction result about upload image*
 
 python을 통해 딥러닝 모델을 구축하고, flask로 서버와 html을 연결했다. 
 
@@ -85,11 +86,16 @@ face
 
 <br>
 
-INDEX
+* INDEX
 1. 이미지 크롤링 (data/, google.py, chromedriver.exe)
 2. 훈련/테스트 (weight/, train.py)
 3. 서버와 연결 (html, templates/, app.py)
 4. 구동 테스트 (static/)
+
+<br>
+
+---
+
 <br>
 
 # 이미지 크롤링
@@ -135,6 +141,43 @@ os.makedirs(k, exist_ok=True)
 - 다운로드해줄 동물 이름을 설정한다.
 - 기본 폴더 경로인 `baseurl`을 설정해준다.
 
+<br>
+
+---
+
+<br>
+
+```python
+# solving chrome error
+    options = webdriver.ChromeOptions()
+    options.add_argument('headless')
+    options.add_experimental_option('excludeSwitches', ['enable-logging'])
+    
+    # chrome excute
+    driver = webdriver.Chrome(options=options)
+    
+    driver.get("https://www.google.co.kr/imghp?hl=ko&authuser=0&ogbl")
+    elem = driver.find_element(By.NAME, "q")
+    elem.send_keys(name)
+    elem.send_keys(Keys.RETURN)
+```
+
+- 
+- 
+- 
+
+<br>
+
+---
+
+<br>
+
+
+
+
+
+
+<br>
 
 * 전체 코드
 
