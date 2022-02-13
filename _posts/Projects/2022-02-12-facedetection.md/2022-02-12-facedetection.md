@@ -22,11 +22,8 @@ image:
 
 업로드된 이미지에 대해 어떤 동물을 닮았는지 분류하는 테스트를 만들었다. 
 
-![](/assets/img/facedet/upimg.jpg)
-*before upload image*
-
-![image](/assets/img/facedet/upedimg.jpg) 
-*prediction result about upload image*
+![](/assets/img/facedet/upimg.jpg "before upload image")
+![](/assets/img/facedet/upedimg.jpg "prediction result about upload image")
 
 python을 통해 딥러닝 모델을 구축하고, flask로 서버와 html을 연결했다. 
 
