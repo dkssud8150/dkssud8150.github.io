@@ -1,5 +1,5 @@
 ---
-title:    "[데브코스] 5주차 - print image file using OpenCV and setting for OpenCV "
+title:    "[데브코스] 5주차 - Print image file using OpenCV and Setting for OpenCV "
 author:
   name: JaeHo YooN
   link: https://github.com/dkssud8150
