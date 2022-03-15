@@ -5,7 +5,7 @@ author:
   link: https://github.com/dkssud8150
 date: 2022-03-15 01:45:00 +0800
 categories: [Classlog, devcourse]
-tags: [opencv, devcourse]
+tags: [devcourse, opencv]
 toc: True
 comments: True
 # image:
