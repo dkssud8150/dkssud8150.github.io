@@ -3,7 +3,7 @@ title:    "[데브코스] 5주차 - OpenCV Function with Mat class and useful fe
 author:
   name: JaeHo YooN
   link: https://github.com/dkssud8150
-date: 2022-03-16 00:45:00 +0800
+date: 2022-03-16 13:01:00 +0800
 categories: [Classlog, devcourse]
 tags: [devcourse, event]
 toc: True
