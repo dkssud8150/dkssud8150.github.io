@@ -378,3 +378,7 @@ Mat crop = src(Rect(10, 10, logo.cols, logo.rows));
 ```
 
 <img src="/assets/img/dev/week5/day3/crop.png">
+
+<br>
+
+<img src="/assets/img/dev/week5/day3/final.png">
