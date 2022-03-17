@@ -381,4 +381,12 @@ Mat crop = src(Rect(10, 10, logo.cols, logo.rows));
 
 <br>
 
+```cpp
+logo.copyTo(crop, mask); // cv 함수로 mask연산이 옵션으로 되어 있다. 즉, 0이 아닌 값들에 대해서만 logo를 copy하여 crop에 추가한다.
+
+imshow("src", src);
+waitKey();
+destroyAllWindows();
+```
+
 <img src="/assets/img/dev/week5/day3/final.png">
