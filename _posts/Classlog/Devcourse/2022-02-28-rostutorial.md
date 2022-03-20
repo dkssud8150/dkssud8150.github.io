@@ -506,7 +506,7 @@ angular:
 ---
 ```
 
-![Untitled](ROS%20%E1%84%80%E1%85%B5%E1%84%8E%E1%85%A9%204ef87/Untitled%2019.png)
+<img src="/assets\img\dev\week3\day1\topiclist.png">
 
 조금 더 자세히 보기 위해서는
 
@@ -546,7 +546,7 @@ geometry_msgs/Vector3 angular
 
 ### 토픽 직접 발행하기
 
-$ rostopic pub [발행 횟수] [토픽 이름] [메시지 타입] — ‘메시지 내용’
+- rostopic pub [발행 횟수] [토픽 이름] [메시지 타입] — ‘메시지 내용’
 
 ```bash
 1번만 보내기
@@ -554,15 +554,16 @@ $ rostopic pub -1 /turtle1/cmd_vel geometry_msgs/Twist -- '[2.0,0.0,0.0]' '[0.0,
 publishing and latching message for 3.0 seconds
 ```
 
-![실행 전](ROS%20%E1%84%80%E1%85%B5%E1%84%8E%E1%85%A9%204ef87/Untitled%2020.png)
-
 실행 전
 
-![실행 후](ROS%20%E1%84%80%E1%85%B5%E1%84%8E%E1%85%A9%204ef87/Untitled%2021.png)
+<img src="/assets\img\dev\week3\day1\turtle1.png">
 
 실행 후
 
-$ rostopic pub [토픽 이름] [메시지 타입] [-r #Hz] — ‘메시지 내용’
+<img src="/assets\img\dev\week3\day1\turtle2.png">
+
+
+- rostopic pub [토픽 이름] [메시지 타입] [-r #Hz] — ‘메시지 내용’
 
 ```bash
 1초에 1번씩 보내기
@@ -581,9 +582,7 @@ $ rostopic pub /turtle1/cmd_vel geometry_msgs/Twist -r 1 -- '[2.0,0.0,0.0]' '[0.
 
 패키지 : ROS에서 개발되는 소프트웨어를 논리적 묶음으로 만든 것
 
-![Untitled](ROS%20%E1%84%80%E1%85%B5%E1%84%8E%E1%85%A9%204ef87/Untitled%2022.png)
-
-보행자 추적 패키지, 차선인식 패키지 등..
+- e.g. 보행자 추적 패키지, 차선인식 패키지 등..
 
 ## ros가 제공하는 편리한 명령들
 
@@ -683,7 +682,7 @@ $ rosrun my_pkg1 pub.py
 $ rqt_graph
 ```
 
-![Untitled](ROS%20%E1%84%80%E1%85%B5%E1%84%8E%E1%85%A9%204ef87/Untitled%2023.png)
+<img src="/assets\img\dev\week3\day1\turtlerqt.png">
 
 ```bash
 $ rosnode list
@@ -776,11 +775,15 @@ $ rosrun my_pkg1 sub.py
 $ rqt_graph
 ```
 
-![Untitled](ROS%20%E1%84%80%E1%85%B5%E1%84%8E%E1%85%A9%204ef87/Untitled%2024.png)
+<img src="/assets\img\dev\week3\day1\turtlerqt2.png">
 
-![rostopic echo를 하나 더 실행할 때](ROS%20%E1%84%80%E1%85%B5%E1%84%8E%E1%85%A9%204ef87/Untitled%2025.png)
+<br>
 
 rostopic echo를 하나 더 실행할 때
+
+<img src="/assets\img\dev\week3\day1\turtlerqt3.png">
+
+
 
 ---
 
@@ -792,7 +795,7 @@ roslaunch
 
 *.launch 파일 내용에 따라 여러 노드들을 한꺼번에 실행시킬 수 있음, 파라미터 값을 노드에 전달할 수도 있다.
 
-![Untitled](ROS%20%E1%84%80%E1%85%B5%E1%84%8E%E1%85%A9%204ef87/Untitled%2026.png)
+<img src="/assets\img\dev\week3\day1\roslaunch.png">
 
 roslaunch [패키지이름] [실행시킬 launch 파일 이름]
 
@@ -803,8 +806,6 @@ roslaunch [패키지이름] [실행시킬 launch 파일 이름]
 ### *.launch 파일
 
 실행시킬 노드들의 정보가 XML 형식으로 기록되어 있다. launch 파일은 my_pkg1/launch/*.launch 경로로 생성해야 한다. 
-
-![Untitled](ROS%20%E1%84%80%E1%85%B5%E1%84%8E%E1%85%A9%204ef87/Untitled%2027.png)
 
 - node 태그: 실행할 노드 정보를 입력할 때 사용되는 태그
     - <node pkg=”패키지 명” type=”노드가 포함된 소스파일 명” name=”노드 이름” />
@@ -897,7 +898,7 @@ process[sub_node-4]: started with pid [60612]
 ...
 ```
 
-![Untitled](ROS%20%E1%84%80%E1%85%B5%E1%84%8E%E1%85%A9%204ef87/Untitled%2028.png)
+<img src="/assets\img\dev\week3\day1\turtlerqt4.png">
 
 ---
 
@@ -1014,17 +1015,17 @@ while not rospy.is_shutdown():
 
 msg.linear.x 대신 linear_X를 통해 즉, circle_size를 통해 linear.x를 받는다.
 
-![value = 3](ROS%20%E1%84%80%E1%85%B5%E1%84%8E%E1%85%A9%204ef87/Untitled%2029.png)
+<img src="/assets\img\dev\week3\day1\turtlecircle3.png">
 
 value = 3
 
-![value = 1](ROS%20%E1%84%80%E1%85%B5%E1%84%8E%E1%85%A9%204ef87/Untitled%2030.png)
+<img src="/assets\img\dev\week3\day1\turtlecircle1.png">
 
 value = 1
 
-![Untitled](ROS%20%E1%84%80%E1%85%B5%E1%84%8E%E1%85%A9%204ef87/Untitled%2031.png)
+<img src="/assets\img\dev\week3\day1\turtlerqt5.png">
 
 ### 참고 자료
 
 - [https://goldenboylife.com/elementor-2890/](https://goldenboylife.com/elementor-2890/)
-- [ROS 공식 사이트]([http://wiki.ros.org/melodic/Installation/Ubuntu](http://wiki.ros.org/melodic/Installation/Ubuntu))
+- [ROS 공식 사이트](http://wiki.ros.org/melodic/Installation/Ubuntu)
