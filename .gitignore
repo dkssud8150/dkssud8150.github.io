@@ -25,3 +25,5 @@ package-lock.json
 
 # can't upload image
 2022*.png
+
+rviz_all*
