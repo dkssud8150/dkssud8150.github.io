@@ -19,3 +19,6 @@ package-lock.json
 # non upload files
 *ros1.md
 *cpp.md
+
+# can't upload image
+^2022*.png
