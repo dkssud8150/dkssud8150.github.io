@@ -457,7 +457,7 @@ enabled  enabled  enabled  enabled
 
 <br>
 
-## nmcli c[onnection s[how](default)
+## nmcli c[onnection] s\[how]\(default)
 
 디바이스와 이름의 연결 상태와 넘버,타입 등
 
