@@ -69,232 +69,245 @@ $ mkdir rviz_all/launch rviz_all/urdf rviz_all/rviz
 ```xml
 <?xml version="1.0" ?>
 <robot name="xycar" xmlns:xacro="http://www.ros.org/wiki/xacro">
-    <link name="base_link"/>
+  <link name="base_link"/>
 
-        <!-- baselink => baseplate -->
-        <link name="baseplate">
-            <visual>
-                <material name="acrylic"/>
-                <origin rpy="0 0 0" xyz="0 0 0"/>
-                <geometry>
-                    <box size="0.5 0.2 0.07"/>
-                </geometry>
-            </visual>
-        </link>
+  <!-- baselink => baseplate -->
+  <link name="baseplate">
+    <visual>
+      <material name="acrylic"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <box size="0.5 0.2 0.07"/>
+      </geometry>
+    </visual>
+  </link>
 
-        <joint name="base_link_to_baseplate" type="fixed">
-            <parent link="base_link"/>
-            <child link="baseplate"/>
-            <origin rpy="0 0 0" xyz="0 0 0"/>
-        </joint>
-
-
-        <!-- baseplate => front_mount -->
-        <link name="front_mount">
-            <visual>
-                <material name="blue"/>
-                <origin rpy="0 0 0" xyz="-0.105 0 0"/>
-                <geometry>
-                    <box size="0.5 0.12 0.01"/>
-                </geometry>
-            </visual>
-        </link>
-
-        <joint name="baseplate_to_front_mount" type="fixed">
-            <parent link="baseplate"/>
-            <child link="front_mount"/>
-            <origin rpy="0 0 0" xyz="0.105 0 -0.059"/>
-        </joint>
-
-        <!-- lidar data -->
-        <!-- front -->
-        <link name="front" />
-        <joint name="baseplate_to_front" type="fixed">
-            <parent link="baseplate"/>
-            <child link="front"/>
-            <origin rpy="0 0 0" xyz="0.25 0 0"/>
-        </joint>
-
-        <!-- back -->
-        <link name="back" />
-        <joint name="baseplate_to_back" type="fixed">
-            <parent link="baseplate"/>
-            <child link="back"/>
-            <origin rpy="0 0 3.14" xyz="-0.25 0 0"/>
-        </joint>
-
-        <!-- left -->
-        <link name="left" />
-        <joint name="baseplate_to_left" type="fixed">
-            <parent link="baseplate"/>
-            <child link="left"/>
-            <origin rpy="0 0 1.57" xyz="0 0.1 0"/>
-        </joint>
-
-        <!-- right -->
-        <link name="right" />
-        <joint name="baseplate_to_right" type="fixed">
-            <parent link="baseplate"/>
-            <child link="right"/>
-            <origin rpy="0 0 -1.57" xyz="0 -0.1 0"/>
-        </joint>
+  <joint name="base_link_to_baseplate" type="fixed">
+    <parent link="base_link"/>
+    <child link="baseplate"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+  </joint>
 
 
+  <!-- baseplate => front_mount -->
+  <link name="front_mount">
+    <visual>
+      <material name="blue"/>
+      <origin rpy="0 0 0" xyz="-0.105 0 0"/>
+      <geometry>
+        <box size="0.5 0.12 0.01"/>
+      </geometry>
+    </visual>
+  </link>
 
-        <link name="front_shaft">
-            <visual>
-                <material name="black"/>
-                <origin rpy="1.57 0 0" xyz="0 0 0"/>
-                <geometry>
-                    <cylinder radius="0.018" length="0.285"/>
-                </geometry>
-            </visual>
-        </link>
+  <joint name="baseplate_to_front_mount" type="fixed">
+    <parent link="baseplate"/>
+    <child link="front_mount"/>
+    <origin rpy="0 0 0" xyz="0.105 0 -0.059"/>
+  </joint>
 
-        <joint name="front_mount_to_front_shaft" type="fixed">
-            <parent link="front_mount"/>
-            <child link="front_shaft"/>
-            <origin rpy="0 0 0" xyz="0.105 0 -0.059"/>
-        </joint>
-        
-        <link name="rear_shaft">
-            <visual>
-                <material name="black"/>
-                <origin rpy="1.57 0 0" xyz="0 0 0"/>
-                <geometry>
-                    <cylinder radius="0.018" length="0.285"/>
-                </geometry>
-            </visual>
-        </link>
+  <!-- lidar data -->
+  <!-- front -->
+  <link name="front" />
+  <joint name="baseplate_to_front" type="fixed">
+    <parent link="baseplate"/>
+    <child link="front"/>
+    <origin rpy="0 0 0" xyz="0.25 0 0"/>
+  </joint>
 
-        <joint name="front_mount_to_rear_shaft" type="fixed">
-            <parent link="front_mount"/>
-            <child link="rear_shaft"/>
-            <origin rpy="0 0 0" xyz="-0.305 0 -0.059"/>
-        </joint>
+  <!-- back -->
+  <link name="back" />
+  <joint name="baseplate_to_back" type="fixed">
+    <parent link="baseplate"/>
+    <child link="back"/>
+    <origin rpy="0 0 3.14" xyz="-0.25 0 0"/>
+  </joint>
+
+  <!-- left -->
+  <link name="left" />
+  <joint name="baseplate_to_left" type="fixed">
+    <parent link="baseplate"/>
+    <child link="left"/>
+    <origin rpy="0 0 1.57" xyz="0 0.1 0"/>
+  </joint>
+
+  <!-- right -->
+  <link name="right" />
+  <joint name="baseplate_to_right" type="fixed">
+    <parent link="baseplate"/>
+    <child link="right"/>
+    <origin rpy="0 0 -1.57" xyz="0 -0.1 0"/>
+  </joint>
 
 
 
-        <link name="front_right_hinge">
-            <visual>
-                <material name="white"/>
-                <origin rpy="0 0 0" xyz="0 0 0"/>
-                <geometry>
-                    <cylinder radius="0.015"/>
-                </geometry>
-            </visual>
-        </link>
-
-        <joint name="front_right_hinge_joint" type="revolute">
-            <parent link="front_shaft"/>
-            <child link="front_right_hinge"/>
-            <origin rpy="0 0 0" xyz="0 -0.1425 0"/>
-            <axis xyz="0.0 0.0 1.0"/>
-            <limit lower="-0.34" upper="0.34" effort="10" velocity="100"/>
-        </joint>
+  <link name="front_shaft">
+    <visual>
+      <material name="black"/>
+      <origin rpy="1.57 0 0" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.285" radius="0.018"/>
+      </geometry>
+    </visual>
+  </link>
+  <joint name="front_mount_to_front_shaft" type="fixed">
+    <parent link="front_mount"/>
+    <child link="front_shaft"/>
+    <origin rpy="0 0 0" xyz="0.105 0 -0.059"/>
+  </joint>
 
 
-        <link name="front_left_hinge">
-            <visual>
-                <material name="white"/>
-                <origin rpy="0 0 0" xyz="0 0 0"/>
-                <geometry>
-                    <cylinder radius="0.015"/>
-                </geometry>
-            </visual>
-        </link>
+  <link name="rear_shaft">
+    <visual>
+      <material name="black"/>
+      <origin rpy="1.57 0 0" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.285" radius="0.018"/>
+      </geometry>
+    </visual>
+  </link>
+  <joint name="rear_mount_to_rear_shaft" type="fixed">
+    <parent link="front_mount"/>
+    <child link="rear_shaft"/>
+    <origin rpy="0 0 0" xyz="-0.305 0 -0.059"/>
+  </joint>
+  
 
-        <joint name="front_left_hinge_joint" type="revolute">
-            <parent link="front_shaft"/>
-            <child link="front_left_hinge"/>
-            <origin rpy="0 0 0" xyz="0 0.1425 0"/>
-            <axis xyz="0.0 0.0 1.0"/>
-            <limit lower="-0.34" upper="0.34" effort="10" velocity="100"/>
-        </joint>
-
-
-
-
-
-        <link name="front_right_wheel">
-            <visual>
-                <material name="black"/>
-                <origin rpy="1.57 0 0" xyz="0 0 0"/>
-                <geometry>
-                    <cylinder length="0.064" radius="0.07"/>
-                </geometry>
-            </visual>
-        </link>
-
-        <joint name="front_right_wheel_joint" type="continuous">
-            <parent link="front_right_hinge"/>
-            <child link="front_right_wheel"/>
-            <origin rpy="0 0 0" xyz="0 0 0"/>
-            <axis xyz="0.0 1.0 0.0"/>
-            <limit effort="10" velocity="100"/>
-        </joint>
-        
-
-        <link name="front_left_wheel">
-            <visual>
-                <material name="black"/>
-                <origin rpy="1.57 0 0" xyz="0 0 0"/>
-                <geometry>
-                    <cylinder length="0.064" radius="0.07"/>
-                </geometry>
-            </visual>
-        </link>
-
-        <joint name="front_left_wheel_joint" type="continuous">
-            <parent link="front_left_hinge"/>
-            <child link="front_left_wheel"/>
-            <origin rpy="0 0 0" xyz="0 0 0"/>
-            <axis xyz="0.0 1.0 0.0"/>
-            <limit effort="10" velocity="100"/>
-        </joint>
+  <link name="front_right_hinge">
+    <visual>
+      <material name="white"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <sphere radius="0.015"/>
+      </geometry>
+    </visual>
+  </link>
+  <joint name="front_right_hinge_joint" type="revolute">
+    <parent link="front_shaft"/>
+    <child link="front_right_hinge"/>
+    <origin rpy="0 0 0" xyz="0 -0.1425 0"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="10" lower="-0.34" upper="0.34" velocity="100"/>
+  </joint>
 
 
-        <link name="rear_right_wheel">
-            <visual>
-                <material name="black"/>
-                <origin rpy="1.57 0 0" xyz="0 0 0"/>
-                <geometry>
-                    <cylinder length="0.064" radius="0.07"/>
-                </geometry>
-            </visual>
-        </link>
+  <link name="front_left_hinge">
+    <visual>
+      <material name="white"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <sphere radius="0.015"/>
+      </geometry>
+    </visual>
+  </link>
+  <joint name="front_left_hinge_joint" type="revolute">
+    <parent link="front_shaft"/>
+    <child link="front_left_hinge"/>
+    <origin rpy="0 0 0" xyz="0 0.1425 0"/>
+    <axis xyz="0 0 1"/>
+    <limit effort="10" lower="-0.34" upper="0.34" velocity="100"/>
+  </joint>
 
-        <joint name="rear_right_wheel_joint" type="continuous">
-            <parent link="rear_shaft"/>
-            <child link="rear_right_wheel"/>
-            <origin rpy="0 0 0" xyz="0 -0.14 0"/>
-            <axis xyz="0.0 1.0 0.0"/>
-            <limit effort="10" velocity="100"/>
-        </joint>
+
+  <link name="front_right_wheel">
+    <visual>
+      <material name="black"/>
+      <origin rpy="1.57 0 0" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.064" radius="0.07"/>
+      </geometry>
+    </visual>
+  </link>
+  <joint name="front_right_wheel_joint" type="continuous">
+    <parent link="front_right_hinge"/>
+    <child link="front_right_wheel"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit effort="10" velocity="100"/>
+  </joint>
 
 
-        <link name="rear_left_wheel">
-            <visual>
-                <material name="black"/>
-                <origin rpy="1.57 0 0" xyz="0 0 0"/>
-                <geometry>
-                    <cylinder length="0.064" radius="0.07"/>
-                </geometry>
-            </visual>
-        </link>
+  <link name="front_left_wheel">
+    <visual>
+      <material name="black"/>
+      <origin rpy="1.57 0 0" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.064" radius="0.07"/>
+      </geometry>
+    </visual>
+  </link>
+  <joint name="front_left_wheel_joint" type="continuous">
+    <parent link="front_left_hinge"/>
+    <child link="front_left_wheel"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit effort="10" velocity="100"/>
+  </joint>
 
-        <joint name="rear_left_wheel_joint" type="continuous">
-            <parent link="rear_left_hinge"/>
-            <child link="rear_left_wheel"/>
-            <origin rpy="0 0 0" xyz="0 0.14 0"/>
-            <axis xyz="0.0 1.0 0.0"/>
-            <limit effort="10" velocity="100"/>
-        </joint>
+  
+  <link name="rear_right_wheel">
+    <visual>
+      <material name="black"/>
+      <origin rpy="1.57 0 0" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.064" radius="0.07"/>
+      </geometry>
+    </visual>
+  </link>
+  <joint name="rear_right_wheel_joint" type="continuous">
+    <parent link="rear_shaft"/>
+    <child link="rear_right_wheel"/>
+    <origin rpy="0 0 0" xyz="0 -0.14 0"/>
+    <axis xyz="0 1 0"/>
+    <limit effort="10" velocity="100"/>
+  </joint>
 
-    <material name="black">
-        <color rgba="0.0 0.0 0.0 1.0"/>
-    </material>
-    ...
+
+  <link name="rear_left_wheel">
+    <visual>
+      <material name="black"/>
+      <origin rpy="1.57 0 0" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.064" radius="0.07"/>
+      </geometry>
+    </visual>
+  </link>
+  <joint name="rear_left_wheel_joint" type="continuous">
+    <parent link="rear_shaft"/>
+    <child link="rear_left_wheel"/>
+    <origin rpy="0 0 0" xyz="0 0.14 0"/>
+    <axis xyz="0 1 0"/>
+    <limit effort="10" velocity="100"/>
+  </joint>
+
+
+  <material name="black">
+      <color rgba="0.0 0.0 0.0 1.0"/>
+  </material>
+  <material name="blue">
+      <color rgba="0.0 0.0 0.8 1.0"/>
+  </material>
+  <material name="green">
+      <color rgba="0.0 0.8 0.0 1.0"/>
+  </material>
+  <material name="grey">
+      <color rgba="0.2 0.2 0.2 1.0"/>
+  </material>
+  <material name="orange">
+      <color rgba="1.0 0.423529411765 0.0392156862745 1.0"/>
+  </material>
+  <material name="brown">
+      <color rgba="0.870588235294 0.811764705882 0.764705882353 1.0"/>
+  </material>
+  <material name="red">
+      <color rgba="0.8 0.0 0.0 1.0"/>
+  </material>
+  <material name="white">
+      <color rgba="1.0 1.0 1.0 1.0"/>
+  </material>
+  <material name="acrylic">
+      <color rgba="1.0 1.0 1.0 0.4"/>
+  </material>
 </robot>
 ```
 
@@ -319,18 +332,22 @@ $ mkdir rviz_all/launch rviz_all/urdf rviz_all/rviz
 
 ```xml
 <launch>
-  <param name="robot_description" ... />
-  <prarm name="use_gui" value="true"/>
-  <node name="rviz_visualizer" .../>
-  <node name="robot_state_publisher" .../>
+    <param name="robot_description" textfile="$(find rviz_all)/urdf/rviz_all.urdf" />
+    <param name="use_gui" value="true"/>
 
-  <node name="driver" pkg="rviz_xycar" type="odom_8_drive.py"/>
-  <node name="odometry" pkg="rviz_all" type="odom_imu.py"/>
-  <node name="motor" pkg="rviz_xycar" type="converter.py"/>
+    <node name="rviz_visualizer" pkg="rviz" type="rviz" required="true"
+    args="-d $(find rviz_all)/rviz/rviz_all.rviz"/>
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher"/>
 
-  <node name="rosbag_play" pkg="rosbag" type="play" output="screen" required="true" args="$(find rviz_lidar)/src/lidar_topic.bag"/>
-  <node name="lidar" pkg="rviz_lidar" type="lidar_urdf.py" outout="screen"/>
-  <node name="imu" pkg="rviz_imu" type="imu_generator.py"/>
+    <node name="driver" pkg="rviz_xycar" type="odom_8_drive.py" />
+    <node name="odometry" pkg="rviz_xycar" type="rviz_odom.py" />
+    <node name="converter" pkg="rviz_xycar" type="converter.py" />
+
+    <node name="rosbag_play" pkg="rosbag" type="play" output="screen" 
+        required="true" args="$(find rviz_lidar)/src/lidar_topic.bag" />
+
+    <node name="lidar" pkg="rviz_lidar" type="lidar_urdf.py" output="screen" />
+	<node name="imu" pkg="rviz_imu" type="imu_generator.py" />
 </launch>
 ```
 
@@ -341,22 +358,83 @@ $ mkdir rviz_all/launch rviz_all/urdf rviz_all/rviz
 imu데이터를 차량의 odometry에 적용한다. odometry 데이터를 생성하는 rviz_odom.py를 수정하여 odom_imu를 제작한다. imu토픽을 구독하여 획득한 쿼터니언 값을 odometry 데이터에 넣는다.
 
 ```python
+#!/usr/bin/env python
+
+import math, rospy, tf
+from nav_msgs.msg import Odometry
+from geometry_msgs.msg import Point, Pose, Quaternion, Twist, Vector3
+from sensor_msgs.msg import JointState
+from sensor_msgs.msg import Imu
+
+
+
+
+def callback(msg):
+    global Angle
+    Angle = msg.position[msg.name.index("front_left_hinge_joint")]
+
+rospy.Subscriber('joint_states', JointState, callback)
+
 def callback_imu(msg):
-  global Imudata
-  Imudata[0] = msg.orientation.x
-  Imudata[1] = msg.orientation.y
-  Imudata[2] = msg.orientation.z
-  Imudata[3] = msg.orientation.w
+    global Imudata
+    Imudata[0] = msg.orientation.x
+    Imudata[1] = msg.orientation.y
+    Imudata[2] = msg.orientation.z
+    Imudata[3] = msg.orientation.w    
 
-odom_quat = Imudata
+rospy.Subscriber('imu', Imu, callback_imu)
 
-odom_broadcaster.sendTransform(
-  (x_,y_,0.),
-  odom_quat,
-  current_time,
-  "base_link",,
-  "odom"
-)
+rospy.init_node("odometry_publisher")
+
+odom_pub = rospy.Publisher("odom", Odometry, queue_size=50)
+
+odom_broadcaster = tf.TransformBroadcaster()
+
+cur_time = rospy.Time.now()
+prv_time = rospy.Time.now()
+
+rate = rospy.Rate(30.0)
+
+cur_speed = 0.4
+wheel_base = 0.2
+x = 0
+y = 0
+yaw = 0
+Angle = 0
+
+while not rospy.is_shutdown():
+    cur_time = rospy.Time.now() 
+    dt = (cur_time - prv_time).to_sec()
+
+    cur_steering_ang = Angle
+    cur_angluar_velocity = cur_speed * math.tan(cur_steering_ang) / wheel_base
+
+    x_dot = cur_speed * math.cos(yaw)
+    y_dot = cur_speed * math.sin(yaw)
+    x += x_dot * dt
+    y += y_dot * dt
+    yaw += cur_angluar_velocity * dt
+
+    odom_quat = Imudata
+
+    odom_broadcaster.sendTransform(
+        (x, y, 0),
+        odom_quat,
+        cur_time,
+        "base_link",
+        "odom"
+    )   
+
+    odom = Odometry()
+    odom.header.stamp = cur_time
+    odom.header.frame_id = "odom"
+    
+    odom.pose.pose = Pose(Point(x, y, 0), Quaternion(*odom_quat))
+    odom.child_frame_id = "base_link"
+    odom_pub.publish(odom)
+
+    prv_time = cur_time
+    rate.sleep()
 ```
 
 <br>
@@ -367,4 +445,26 @@ odom_broadcaster.sendTransform(
 $ roslaunch rviz_all rviz_all.launch
 ```
 
+<br>
 
+<img src="/assets/img/dev/week4/day4/rviz_all_frame.png">
+
+이 그림은 urdf의 구성도이다. 어떻게 연결되었는지 볼 수 있다.
+
+```bash
+$ rosrun tf view_frames
+```
+
+이 식을 실행하면 구성도를 pdf로 추출해준다.
+
+<br>
+
+<img src="/assets/img/dev/week4/day4/rviz_all_rviz.png">
+
+이는 실행한 rviz화면이다. 8자 주행을 하고 있고, lidar 센서를 통해 얻은 거리 정보를 활용하여 원뿔 모양이 나타나고 있으며, Imu 센서를 통해 얻은 기울기 정보를 활용하여 차체가 기울기가 어떻게 되고 있는지를 볼 수 있다.
+
+<br>
+
+<img src="/assets/img/dev/week4/day4/rviz_all_rqtgraph.png">
+
+이는 rqt_graph이다.
