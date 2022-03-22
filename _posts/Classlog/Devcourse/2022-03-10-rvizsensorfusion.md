@@ -140,7 +140,7 @@ $ mkdir rviz_all/launch rviz_all/urdf rviz_all/rviz
   </joint>
 
 
-
+  <!-- 차체 -->
   <link name="front_shaft">
     <visual>
       <material name="black"/>
@@ -280,7 +280,7 @@ $ mkdir rviz_all/launch rviz_all/urdf rviz_all/rviz
     <limit effort="10" velocity="100"/>
   </joint>
 
-
+  <!-- 색상 정보 -->
   <material name="black">
       <color rgba="0.0 0.0 0.0 1.0"/>
   </material>
