@@ -10,18 +10,20 @@ toc: True
 comments: True
 math: true
 mermaid: true
-#image:
+# image:
 #  src: /commons/devices-mockup.png
 #  width: 800
 #  height: 500
 ---
 
+<br>
+
 프로그래머스에 기재되어 있는 c++ coding test에 대해 리뷰하고자 합니다. 그 중에서도 연습문제에 해당하는 문제를 이 곳에 작성할 예정입니다. 다른 것을 참고하시려면 아래 링크를 클릭하시기 바랍니다.
 
 1. [해시](https://dkssud8150.github.io/classlog/codingtestchash.html)
 2. [정렬](https://dkssud8150.github.io/classlog/codingtestcsort.html)
-4. [연습문제](https://dkssud8150.github.io/classlog/codingtestcpra.html)
-5. [카카오 블라인드 채용 문제](https://dkssud8150.github.io/classlog/codingtestckakao.html)
+3. [연습문제](https://dkssud8150.github.io/classlog/codingtestcpra.html)
+4. [카카오 블라인드 채용 문제](https://dkssud8150.github.io/classlog/codingtestckakao.html)
 
 <br>
 
@@ -40,16 +42,6 @@ int num, N, M, n;
 deque<int> dq;
 
 int main(void) {
-	//  테스트를 위해 작성한 lists
-	//	vector<vector<int>> lists{{1,2,3},{2,9,5},{27,16,30,11,6,23},{1,6,3,2,7,9,8,4,10,5}};
-
-	//  lists의 몇번째 데이터인지 입력
-	//	cout << "Number : ";
-	//	cin >> num;
-
-	//  입력한 숫자에 대한 vector 가져오기
-	//	vector<int> index = lists[num-1];
-
 	//  배열 크기와 출력하고 싶은 원소 개수 입력
 	cin >> N >> M;
 
@@ -98,66 +90,23 @@ int main(void) {
 }
 ```
 
-lists에 대한 것들은 다 테스트를 위해 작성한 부분들이다. lists를 사용한 정확한 코드는 다음과 같다.
+아래는 테스트를 위해 추가한 코드다. `int main()` 함수 밖에 추가해주면 된다.
 
 ```cpp
-#include <iostream>
-#include <deque>
-#include <vector>
-#include <algorithm>
+// 테스트를 위해 작성한 lists
+vector<vector<int>> lists{{1,2,3},
+							{2,9,5},
+							{27,16,30,11,6,23},
+							{1,6,3,2,7,9,8,4,10,5}};
 
-using namespace std;
+// lists의 몇번째 데이터인지 입력
+cout << "Number : ";
+cin >> num;
 
-int num, N, M, n;
-
-deque<int> dq;
-
-int main()
-{
-    vector<vector<int>> lists{{1,2,3},
-                                {2,9,5},
-                                {27,16,30,11,6,23},
-                                {1,6,3,2,7,9,8,4,10,5}};
-
-    cout << "list Number : ";
-    cin >> num;
-
-    vector<int> index = lists[num-1];
-
-	cin >> N >> M;
-
-	for (auto i = 1; i <= N; ++i) {
-		dq.push_back(i);
-	}
-
-	int cnt{ 0 };
-
-	for (auto n : index) {
-
-		int range = distance(dq.begin(), find(dq.begin(), dq.end(), n));
-
-		int size = dq.size();
-
-		if (range <= int(size / 2)) {
-			while (n != dq.front()) {
-				dq.push_back(dq.front());
-				dq.pop_front();
-				++cnt;
-			}
-		}
-		else {
-			while (n != dq.front()) {
-				dq.push_front(dq.back());
-				dq.pop_back();
-				++cnt;
-			}
-		}
-
-		dq.pop_front();
-	}
-	cout << cnt;
-}
+// 입력한 숫자에 대한 vector 가져오기
+vector<int> index = lists[num-1];
 ```
+
 
 ### deque
 
