@@ -1,9 +1,9 @@
 ---
-title:    "Coding Test[C++] - 덱"
+title:    "Coding Test[C++] - 덱(deque)"
 author:
   name: JaeHo-YooN
   link: https://github.com/dkssud8150
-date: 2022-01-10 12:00:00 +0800
+date: 2022-03-24 01:10:00 +0800
 categories: [Classlog,coding test review]
 tags: [coding test, deque]
 toc: True
@@ -39,25 +39,24 @@ int num, N, M, n;
 
 deque<int> dq;
 
-int main()
-{
-	// 설명 : 테스트를 위해 작성한 lists
+int main(void) {
+	//  테스트를 위해 작성한 lists
 	//	vector<vector<int>> lists{{1,2,3},
 	//								{2,9,5},
 	//								{27,16,30,11,6,23},
 	//								{1,6,3,2,7,9,8,4,10,5}};
 
-	// lists의 몇번째 데이터인지 입력
+	//  lists의 몇번째 데이터인지 입력
 	//	cout << "Number : ";
 	//	cin >> num;
 
-	// 입력한 숫자에 대한 vector 가져오기
+	//  입력한 숫자에 대한 vector 가져오기
 	//	vector<int> index = lists[num-1];
 
-	// 배열 크기와 출력하고 싶은 원소 개수 입력
+	//  배열 크기와 출력하고 싶은 원소 개수 입력
 	cin >> N >> M;
 
-	// N 크기의 배열 생성
+	//  N 크기의 배열 생성
 	for (auto i = 1; i <= N; ++i) {
 		dq.push_back(i);
 	}
