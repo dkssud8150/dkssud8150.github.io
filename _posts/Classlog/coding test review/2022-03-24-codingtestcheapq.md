@@ -1,5 +1,5 @@
 ---
-title:    "Coding Test[C++] - 덱(deque)"
+title:    "Coding Test[C++] - 덱"
 author:
   name: JaeHo-YooN
   link: https://github.com/dkssud8150
