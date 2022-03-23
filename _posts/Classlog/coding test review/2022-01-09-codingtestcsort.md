@@ -37,36 +37,46 @@ mermaid: true
 ```cpp
 #include <string>
 #include <vector>
-#include <algorithm>
 #include <iostream>
+#include <algorithm>
 
 using namespace std;
 
+bool compare(const int& a, const int& b) {
+    return a < b;
+}
+
 vector<int> solution(vector<int> array, vector<vector<int>> commands) {
     vector<int> answer;
-    vector<int> arr;
-    
-    for(int i=0;i<commands.size();i++) {
-        arr = array;
-        cout << arr[commands[i][0]-1] << endl;
-        cout << "arr" << arr[commands[i][0]+commands[i][2]-2] << endl;
-        sort(arr.begin() + commands[i][0] -1, arr.begin() + commands[i][1]);
-        answer.push_back(arr[commands[i][0]+commands[i][2]-2]);  
+
+    for (auto c : commands) {
+        vector<int> arr(c[1] - c[0] + 1);
+
+        // 특정 범위의 부분을 복사하기 위해 copy함수 사용, copy(원본 시작지점, 원본 끝지점, 복사될 시작지점);
+        copy(array.begin() + c[0] - 1, array.begin() + c[1], arr.begin());
+
+        // 정렬을 위해 sort함수 사용, 정확하게 파악하기 위해 compare함수 선언해보았습니다. sort(정렬 시작지점, 정렬 끝지점, 정렬 타입);
+        sort(arr.begin(), arr.end(), compare);
+
+        // 정렬된 백터에서 c[2] -1 번째 요소를 정답 vector에 삽입
+        answer.push_back(arr[c[2] - 1]);
     }
-        
+
     return answer;
+}
+
+int main() {
+    vector<int> array { 1, 5, 2, 6, 3, 7, 4 }; 
+    vector<vector<int>> commands{ {2, 5, 3}, { 4, 4, 1 }, { 1, 7, 3 } };
+
+    cout << solution(array,commands);
 }
 ```
 
 ```cpp
 입력값 〉	[1, 5, 2, 6, 3, 7, 4], [[2, 5, 3], [4, 4, 1], [1, 7, 3]]
 출력 〉	
-start point: 5
-answer point: 6
-start point: 6
-answer point: 6
-start point: 1
-answer point: 2
+[5,6,3]
 ```
 
 ### vector 함수
