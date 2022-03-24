@@ -94,8 +94,8 @@ int main(void) {
 
 ```cpp
 // 테스트를 위해 작성한 lists
-vector<vector<int>> lists{{1,2,3},
-		{2,9,5},
+vector<vector<int>> lists{ {1,2,3}, 
+    {2,9,5},
 		{27,16,30,11,6,23},
 		{1,6,3,2,7,9,8,4,10,5}};
 
