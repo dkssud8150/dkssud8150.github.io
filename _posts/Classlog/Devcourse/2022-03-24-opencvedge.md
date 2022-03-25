@@ -543,7 +543,7 @@ openCV에 함수가 잘 되어 있다.
 <br>
 
 ```cpp
-void Canny(InputArray image, OutputArray edges, double threshold1, double threshold2, int aperturesize , L2gradient)
+void Canny(InputArray image, OutputArray edges, double threshold1, double threshold2, int aperturesize = 3, L2gradient = false)
 ```
 
 - image : 입력 영상

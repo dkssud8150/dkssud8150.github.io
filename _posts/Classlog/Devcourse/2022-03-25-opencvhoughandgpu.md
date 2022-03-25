@@ -108,7 +108,7 @@ void HoughLinesP(InputArray image, OutputArray lines, double rho, double theta, 
 - image : 그레이스케일 에지 영상
 - lines : 선분의 시작, 끝 좌표(x1,y1,x2,y2)를 저장할 출력 벡터 vector\<Vec4i>
 - rho : 축적 배열에서 rho값의 해상도, 픽셀 단위 1.0 -\> 1픽셀 간격
-- theta : 축적 배열에서 theta값의 간격, 라디안 단위 CV_PI/180 -\> 1도 간견
+- theta : 축적 배열에서 theta값의 간격, 라디안 단위 CV_PI/180 -\> 1도 간격
 - threshold : 축적 배열에서 직선으로 판단할 임계값
 - minLineLength : 검출할 선분의 최소 길이, 특정 길이보다 짧은 것은 검출하지 않을 길이를 정하는 것
 - maxLineGap : 직선으로 간주할 최대 에지 점 간격, 직선이 끊어져서 있을 경우 어느 정도의 거리보다 작을 때는 항상 이어주라는 간격을 정하는 것
@@ -395,6 +395,115 @@ Canny(crop_thr, crop_edge, 50, 150);
 ```
 
 <img src="/assets\img\dev\week6\day5/srcthreshold.png">
+
+<br>
+
+otsu 대신 threshold에 존재하는 다양한 방식을 적용하여 차선인식을 해보았다.
+
+```cpp
+#include <iostream>
+#include "opencv2/opencv.hpp"
+
+using namespace std;
+using namespace cv;
+
+int main()
+{
+	VideoCapture cap("../data/test_video.mp4");
+
+	if (!cap.isOpened()) {
+		cerr << "video open failed!" << endl;
+		return -1;
+	}
+
+	int w = cvRound(cap.get(CAP_PROP_FRAME_WIDTH));
+	int h = cvRound(cap.get(CAP_PROP_FRAME_HEIGHT));
+
+	Mat mask = Mat::zeros(h, w, CV_8UC1);
+
+	vector<Point> pts;
+	pts.push_back(Point(400, 340));
+	pts.push_back(Point(680, 340));
+	pts.push_back(Point(1200, 720));
+	pts.push_back(Point(0, 720));
+	pts.push_back(Point(0, 480));
+
+	fillPoly(mask, pts, Scalar(255));
+
+	Mat frame, dst_mask, dst, roi;
+	while (true) {
+		cap >> frame;
+
+		if (frame.empty())
+			break;
+
+		copyTo(frame, roi, mask);
+
+		Mat roi_gray, roi_edge;
+		cvtColor(roi, roi_gray, COLOR_BGR2GRAY);
+
+
+
+		GaussianBlur(roi_gray, roi_gray, Size(), 1.0);
+
+#if 0
+		roi_gray = roi_gray > 100;
+#else
+		/*  추가로 otsu 알고리즘 및 다양한 threshold 방식을 적용하여 threshold를 적용하여 이진화해보았습니다.*/
+		threshold(roi_gray, roi_gray, 100, 255, THRESH_BINARY);
+//		threshold(roi_gray, roi_gray, 100, 255, THRESH_BINARY_INV); // 반전된 에지 영상이 출력되지만, 선은 에지에 대한 검출이므로 잘 적용됨
+//		threshold(roi_gray, roi_gray, 80, 255, THRESH_TRUNC); // 점선은 인식이 잘 되지 않음
+//		threshold(roi_gray, roi_gray, -1, 255, THRESH_OTSU); // -1을 적용함으로서 경계를 지정하지 않음, 차선인식이 잘 되지 않음
+#endif
+		Canny(roi_gray, roi_edge, 50, 150);
+
+		vector<Vec4i> lines;
+		HoughLinesP(roi_edge, lines, 1, CV_PI/180, 100, 20, 100);
+
+		for (Vec4i line : lines) {
+			float dx = float(line[2] - line[0]);
+			float dy = float(line[3] - line[1]);
+			float angle = float(atan2f(dy, dx) * 180 / CV_PI);
+
+			if (fabs(angle) <= 10)
+				continue;
+
+//			if (line[2] <= 400 || line[2] >= 1190 && line[0] >= 680)
+//				continue;
+
+			cv::line(frame, Point(line[0], line[1]), Point(line[2], line[3]), Scalar(0, 0, 255), 2);
+		}
+
+		imshow("dst", frame);
+		imshow("roi_edge", roi_edge);
+
+		if (waitKey(10) == 27)
+			break;
+	}
+}
+```
+
+- THRESH_BINARY
+
+<img src="/assets\img\dev\week6\day5\thresh_binary.png">
+
+<br>
+
+- THRESH_BINARY_INV
+
+<img src="/assets\img\dev\week6\day5\thresh_binary_inv.png">
+
+<br>
+
+- THRESH_TRUNC
+
+<img src="/assets\img\dev\week6\day5\thresh_trunc.png">
+
+<br>
+
+- THRESH_OTSU
+
+<img src="/assets\img\dev\week6\day5\thresh_otsu.png">
 
 <br>
 
