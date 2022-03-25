@@ -8,10 +8,10 @@ categories: [Classlog, devcourse]
 tags: [devcourse, OpenCV]
 toc: True
 comments: True
-image:
-  src: /assets/img/dev/week6/day3/main.jpg
-  width: 500
-  height: 500
+# image:
+#   src: /assets/img/dev/week6/day3/main.jpg
+#   width: 500
+#   height: 500
 ---
 
 <br>
@@ -114,6 +114,20 @@ src.copyTo(dst, backproj);
 ```
 
 copyto는 0이 아닌 픽셀들에 대해 복사하므로 다 수행된다.
+
+- selectROI
+
+```cpp
+Mat src = imread("cropland.png", IMREAD_COLOR);
+Rect rc = selectROI(src);
+
+Mat src_ycrcb;
+cvtColor(src, src_ycrcb, COLOR_BGR2YCrCb);
+
+Mat crop = src_ycrcb(rc);
+```
+
+selectROI라는 함수를 사용하면 window에서 사용자가 관심 공간을 지정해줄 수 있다. 지정된 공간을 잘라서 여기에 대해서만 관심을 두겠다는 것이다.
 
 <br>
 
