@@ -3,7 +3,7 @@ title:    "[데브코스] 5주차 - OpenCV Hough transform and using GPU "
 author:
   name: JaeHo YooN
   link: https://github.com/dkssud8150
-date: 2022-03-24 13:01:00 +0800
+date: 2022-03-25 13:01:00 +0800
 categories: [Classlog, devcourse]
 tags: [devcourse, OpenCV]
 toc: True
@@ -171,7 +171,9 @@ using namespace cv;
 
 int main()
 {
-	Mat src = imread("lane01.bmp", IMREAD_GRAYSCALE);
+	Mat src = imread("../data/lane03.bmp");
+
+	imshow("src", src);
 
 	if (src.empty()) {
 		cerr << "Image load failed!" << endl;
@@ -181,14 +183,45 @@ int main()
 	TickMeter tm;
 	tm.start();
 
-	Mat src_edge;
-	Canny(src, src_edge, 50, 150);
-	
-	Mat dst;
-	cvtColor(src, dst, COLOR_GRAY2BGR);
+//	Rect roi = selectROI(src); 
+//	Mat roi_crop = src(roi);
+//	imshow("crop",roi_crop);
+
+//	int roi_crop_mean = mean(roi_crop)[0];
+
+	vector<Point> pts;
+	pts.push_back(Point(70, 350));
+	pts.push_back(Point(300, 200));
+	pts.push_back(Point(390, 200));
+	pts.push_back(Point(640, 350));
+
+
+	Mat mask = Mat::zeros(src.rows, src.cols, CV_8UC1);
+//	mask = roi_crop_mean;
+
+	fillPoly(mask, pts, Scalar(255), LINE_AA);
+
+	Mat crop;
+	copyTo(src, crop, mask);
+
+	cvtColor(crop, crop, COLOR_BGR2GRAY);
+
+	Mat crop_edge;
+	GaussianBlur(crop, crop, Size(), 1);
+#if 0
+	crop = crop > 150;
+#else
+	threshold(crop, crop, 170, 255, THRESH_BINARY);
+#endif
+
+	Canny(crop, crop_edge, 50, 150);
+	imshow("crop_edge",crop_edge);
 
 	vector<Vec4i> lines;
-	HoughLinesP(src_edge, lines, 1, CV_PI / 180, 50, 20, 100);
+	HoughLinesP(crop_edge, lines, 1, CV_PI / 180, 30, 20, 100);
+
+//	for (auto line : lines) 
+//		cout << line << endl;
 
 	tm.stop();
 	cout << tm.getTimeMilli() << "ms." << endl;
@@ -197,31 +230,32 @@ int main()
 		float dx = float(line[2] - line[0]);
 		float dy = float(line[3] - line[1]);
 		float angle = float(atan2f(dy, dx) * 180 / CV_PI); // x,y 변위를 통해 삼각함수를 사용하여 직선의 각도를 구함
-
+		
 		if (fabs(angle) <= 10)
-			continue;           // 하늘과 나무 등 차선이 아닌 것들에 대한 직선도 많이 그려지기 때문에 이를 삭제하기 위한 코드
+			continue;	// 하늘과 나무 등 차선이 아닌 것들에 대한 직선도 많이 그려지기 때문에 이를 삭제하기 위한 코드
 
 		if (angle > 0)
-			cv::line(dst, Point(line[0], line[1]), Point(line[2], line[3]), Scalar(0, 0, 255), 1); // 각도가 +이면 빨강
+			cv::line(src, Point(line[0], line[1]), Point(line[2], line[3]), Scalar(0, 0, 255), 1); // 각도가 +이면 빨강
 		else
-			cv::line(dst, Point(line[0], line[1]), Point(line[2], line[3]), Scalar(0, 255, 0), 1); // 각도가 -이면 초록
+			cv::line(src, Point(line[0], line[1]), Point(line[2], line[3]), Scalar(0, 255, 0), 1); // 각도가 -이면 초록
 	}
 
 	imshow("src", src);
-	imshow("dst", dst);
+//	imshow("dst", dst);
 
 	waitKey();
 	return 0;
 }
+
 ```
 
 <img src="/assets\img\dev\week6\day5\linedetect.png">
 
 이 차선을 동영상에서 잘 인식하기 위해서는 과거의 데이터, 즉 1~2초 전에 라인을 인식한 데이터를 가져와서 찾는 것이 잘 찾아진다. 왜냐하면 현재의 사진에 대해서만 검출한다면 점선인 차선이 너무 띄엄띄엄 있을 경우 잘 인식을 못하기도 하고, 노이즈가 많이 생기기도 한다. 
 
-또는 select ROI를 설정해서 관심 영역을 설정해서 그 안에서만 검출하는 방법도 있다. 아니면 차선이 거의 흰색이므로 그런 색상 정보를 이용할 수 있다. 그림자의 경우에도 에지로 찾아질 수 있다. 그러므로 도로의 픽셀값보다 커지는(차선이 흰색) 에지에 대해서만 검출을 시키면 될 것이다.
-
 <img src="/assets\img\dev\week6\day5\linedetect2.png">
+
+또는관심 영역을 설정해서 그 안에서만 검출하는 방법도 있다. 아니면 차선이 거의 흰색이므로 그런 색상 정보를 이용할 수 있다. 그림자의 경우에도 에지로 찾아질 수 있다. 그러므로 도로의 픽셀값보다 커지는(차선이 흰색) 에지에 대해서만 검출을 시키면 될 것이다.
 
 관심영역을 설정하는데는 두가지가 있다.
 1. selectROI 함수 사용
@@ -234,6 +268,7 @@ int main()
 
 ```cpp
 #include <iostream>
+#include <iostream>
 #include "opencv2/opencv.hpp"
 
 using namespace std;
@@ -241,7 +276,9 @@ using namespace cv;
 
 int main()
 {
-	Mat src = imread("../data/lane03.bmp", IMREAD_GRAYSCALE);
+	Mat src = imread("../data/lane03.bmp");
+
+	imshow("src", src);
 
 	if (src.empty()) {
 		cerr << "Image load failed!" << endl;
@@ -250,13 +287,14 @@ int main()
 
 	TickMeter tm;
 	tm.start();
-    
-    // 1. selectROI 사용
-//	Rect roi = selectROI(src); 
-//	Mat crop = src(roi);
-//	imshow("crop",crop);
 
-    // 2. polylines mask 사용
+//	Rect roi = selectROI(src); 
+//	Mat roi_crop = src(roi);
+//	imshow("crop",roi_crop);
+
+//	int roi_crop_mean = mean(roi_crop)[0];
+
+	/* lane03.bmp point */
 	vector<Point> pts;
 	pts.push_back(Point(70, 350));
 	pts.push_back(Point(300, 200));
@@ -265,24 +303,31 @@ int main()
 
 
 	Mat mask = Mat::zeros(src.rows, src.cols, CV_8UC1);
-	fillPoly(mask, pts, Scalar(255, 255, 255), LINE_AA);
+//	mask = roi_crop_mean;
+
+	fillPoly(mask, pts, Scalar(255), LINE_AA);
 
 	Mat crop;
 	copyTo(src, crop, mask);
 
-//	imshow("mask", mask);
-//	imshow("out", crop);
+	cvtColor(crop, crop, COLOR_BGR2GRAY);
 
 	Mat crop_edge;
+	GaussianBlur(crop, crop, Size(), 1);
+#if 0
+	crop = crop > 150;
 	Canny(crop, crop_edge, 50, 150);
-
-	Mat dst;
-	cvtColor(crop, dst, COLOR_GRAY2BGR);
+#else
+	threshold(crop, crop, 170, 255, THRESH_BINARY);
+	Canny(crop, crop_edge, 50, 150);
+#endif
+	
 
 	vector<Vec4i> lines;
-	HoughLinesP(crop_edge, lines, 1, CV_PI / 180, 50, 20, 100);
-	for (auto line : lines) 
-		cout << line << endl;
+	HoughLinesP(crop_edge, lines, 1, CV_PI / 180, 30, 20, 100);
+
+//	for (auto line : lines) 
+//		cout << line << endl;
 
 	tm.stop();
 	cout << tm.getTimeMilli() << "ms." << endl;
@@ -291,29 +336,28 @@ int main()
 		float dx = float(line[2] - line[0]);
 		float dy = float(line[3] - line[1]);
 		float angle = float(atan2f(dy, dx) * 180 / CV_PI);
-
-		if (line[0] <= 70 && line[2] <= 300 || line[0] >=380) // mask를 사용하여 만들게 되면 배경 과 관심 영역 사이의 픽셀값 차이에서도 엣지를 발생시키기 때문에 자름
-			continue;
-		
 		
 		if (fabs(angle) <= 10)
 			continue;
 
 		if (angle > 0)
-			cv::line(dst, Point(line[0], line[1]), Point(line[2], line[3]), Scalar(0, 0, 255), 1);
+			cv::line(src, Point(line[0], line[1]), Point(line[2], line[3]), Scalar(0, 0, 255), 1);
 		else
-			cv::line(dst, Point(line[0], line[1]), Point(line[2], line[3]), Scalar(0, 255, 0), 1);
+			cv::line(src, Point(line[0], line[1]), Point(line[2], line[3]), Scalar(0, 255, 0), 1);
 	}
 
 	imshow("src", src);
-	imshow("dst", dst);
+//	imshow("dst", dst);
 
 	waitKey();
 	return 0;
 }
+
 ```
 
 <img src="/assets\img\dev\week6\day5\polylineline.png">
+
+이 때, roi를 설정해서 직선을 그리게 되면, 배경과 mask사이에도 직선이 그려진다. mask의 배경의 픽셀값으 0이고, 관심 영역안의 픽셀과 차이가 나기 때문이다. 따라서 픽셀 값의 차에 대한 이진화를 추가해야 테두리에 대한 직선을 제거시킬 수 있다.
 
 <br>
 
@@ -442,8 +486,6 @@ int main()
 		Mat roi_gray, roi_edge;
 		cvtColor(roi, roi_gray, COLOR_BGR2GRAY);
 
-
-
 		GaussianBlur(roi_gray, roi_gray, Size(), 1.0);
 
 #if 0
@@ -454,6 +496,11 @@ int main()
 //		threshold(roi_gray, roi_gray, 100, 255, THRESH_BINARY_INV); // 반전된 에지 영상이 출력되지만, 선은 에지에 대한 검출이므로 잘 적용됨
 //		threshold(roi_gray, roi_gray, 80, 255, THRESH_TRUNC); // 점선은 인식이 잘 되지 않음
 //		threshold(roi_gray, roi_gray, -1, 255, THRESH_OTSU); // -1을 적용함으로서 경계를 지정하지 않음, 차선인식이 잘 되지 않음
+
+		/* adaptivethreshold라는 것도 있어 참고해서 추가해보았지만, mask를 통한 경계선도 같이 인식되어 threshold가 잘 되지 않았습니다. */
+//		adaptiveThreshold(roi_gray, roi_gray, 255, ADAPTIVE_THRESH_MEAN_C, THRESH_BINARY, 5, 5);
+//		adaptiveThreshold(roi_gray, roi_gray, 255, ADAPTIVE_THRESH_GAUSSIAN_C, THRESH_BINARY, 7, 3);
+
 #endif
 		Canny(roi_gray, roi_edge, 50, 150);
 
@@ -504,6 +551,23 @@ int main()
 - THRESH_OTSU
 
 <img src="/assets\img\dev\week6\day5\thresh_otsu.png">
+
+<br>
+
+- ADAPTIVE_THRESH_MEAN_C
+
+<img src="/assets\img\dev\week6\day5\adaptive_thresh_mean.png">
+
+<br>
+
+- ADAPTIVE_THRESH_GAUSSIAN_C
+
+<img src="/assets\img\dev\week6\day5\adaptive_thresh_gaussian.png">
+
+<br>
+
+[참고 사이트](https://docs.opencv.org/4.x/d7/d4d/tutorial_py_thresholding.html)
+[참고 사이트](https://docs.opencv.org/4.x/d7/d1b/group__imgproc__misc.html#ga72b913f352e4a1b1b397736707afcde3)
 
 <br>
 
