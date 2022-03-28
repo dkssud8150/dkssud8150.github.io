@@ -17,7 +17,7 @@ node_modules
 package-lock.json
 
 # non upload files
-*ros1.md
+*cameraros.md
 *cpp.md
 *remotenetwork.md
 *xycar.md
