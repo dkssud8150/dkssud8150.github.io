@@ -1,5 +1,5 @@
 ---
-title:    "[데브코스] 5주차 - OpenCV specific color and edge extraction "
+title:    "[데브코스] 6주차 - OpenCV specific color and edge extraction "
 author:
   name: JaeHo YooN
   link: https://github.com/dkssud8150

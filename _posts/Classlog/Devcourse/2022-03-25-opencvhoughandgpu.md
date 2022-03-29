@@ -1,5 +1,5 @@
 ---
-title:    "[데브코스] 5주차 - OpenCV Hough transform and using GPU "
+title:    "[데브코스] 6주차 - OpenCV Hough transform and using GPU "
 author:
   name: JaeHo YooN
   link: https://github.com/dkssud8150
