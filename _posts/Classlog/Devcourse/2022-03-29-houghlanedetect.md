@@ -64,9 +64,23 @@ comments: True
 
 ```xml
 <launch>
-    <!-- 노드 실행 : 자이카 모터 제어기 구동 -->
-    <!-- 노드 실행 : 자이카 카메라 구동 -->
-    <!-- 노드 실행 : 허프변환 기반 차선인식 주행 프로그램인 hough_drive.py 실행 -->
+  <!-- 노드 실행 : 자이카 모터 제어기 구동 -->
+  <include file="$(find xycar_motor)/launch/xycar_motor.launch" />
+
+  <!-- 노드 실행 : 자이카 카메라 구동 -->
+  <node name="usb_cam" output="screen" pkg="usb_cam" type="usb_cam_node">
+    <param name="video_device" value="/dev/videoCAM" />
+    <param name="autoexposure" value="false" />
+    <param name="exposure" value="50" />
+    <param name="image_width" value="640" />
+    <param name="image_height" value="480" />
+    <param name="pixel_format" value="yuyv" />
+    <param name="camera_frame_id" value="usb_cam" />
+    <param name="io_method" value="mmap" />
+  </node>
+
+  <!-- 노드 실행 : 허프변환 기반 차선인식 주행 프로그램인 hough_drive.py 실행 -->
+  <node name="auto_drive" output="screen" pkg="hough_drive" type="hough_drive.py" />
 </launch>
 ```
 
@@ -86,6 +100,14 @@ comments: True
 4. 차선의 위치 찾고 화면 중앙에서 어느쪽으로 치우쳤는지 파악
 5. 핸들을 얼마나 꺽을지 결정 (조향각 설정 각도 계산)
 6. 모터제어 토픽을 발행해서 차량의 움직임을 조종
+
+<br>
+
+- hough_drive.py
+
+```python
+
+```
 
 <br>
 
