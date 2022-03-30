@@ -1,5 +1,5 @@
 ---
-title:    "[데브코스] 7주차 - Lane Detection using Hough transformation "
+title:    "[데브코스] 7주차 - ROS Lane Detection using Hough transformation "
 author:
   name: JaeHo YooN
   link: https://github.com/dkssud8150
@@ -88,4 +88,8 @@ comments: True
 6. 모터제어 토픽을 발행해서 차량의 움직임을 조종
 
 <br>
+
+<br>
+
+# RVIZ 차선 인식 주행
 
