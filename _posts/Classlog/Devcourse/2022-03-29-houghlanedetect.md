@@ -1,5 +1,5 @@
 ---
-title:    "[데브코스] 7주차 - Lane Detection using Hough transformation "
+title:    "[데브코스] 7주차 - ROS Lane Detection using Hough transformation "
 author:
   name: JaeHo YooN
   link: https://github.com/dkssud8150
