@@ -783,7 +783,7 @@ while (true){
 
 <br>
 
-`MAT -> UMAT` 로만 바꿔줌으로서 최소한의 소스 코드 변경을 통해 gpu를 사용하여 HW 가속이 가능하다. `cap >> frame;` 이 UMat에서 사용이 가능하게 되어 있다. 선언으로 이동해보면 UMat에 대한 동작이 되도록 선언되어 있다. 또한 `cvtColor`도 확인해보면 UMat인지에 대한 판단이 들어가 있다.
+`MAT -> UMAT` 로만 바꿔줌으로서 최소한의 소스 코드 변경을 통해 gpu를 사용하여 HW 가속이 가능하다. `cap >> frame;` 이 UMat에서 사용이 가능하게 되어 있다. 선언으로 이동해보면 UMat에 대한 동작이 되도록 선언되어 있다. 처음에는 Mat으로 받아서 알아서 UMat으로 변환해준다. 또한 `cvtColor`도 확인해보면 UMat인지에 대한 판단이 들어가 있다. 
 
 그러나 `imshow`를 하거나, `cap>>frame`과 같이 frame을 받아오는 과정에서 gpu형태에서 cpu형태로 바꿔지기 때문에 이 것들에 대한 시간을 고려해야 한다. 그래서 UMat 사용이 항상 좋은 것은 아니나, 영상 관련해서는 분명히 빨라진다고 한다.
 
@@ -796,4 +796,66 @@ while (true){
 - cpu 사용
 
 <img src="/assets/img/dev/week6/day5/cpu.png">
+
+
+- Mat to UMat
+
+```cpp
+Mat mat = imread("lenna.bmp")
+
+UMat umat1;
+
+mat.copyTo(umat1);
+UMat umat2 = mat.getUMat(ACCESS_READ); // transform to UMat
+```
+
+ACCESS_READ는 opencv에 설명이 부실하다. ACCESS_WRITE와 두개가 있는데 대체로 ACCESS_READ를 하면 잘 작동한다.
+
+<br>
+
+- UMat to Mat
+
+```cpp
+UMat umat;
+videoCap >> umat;
+
+Mat mat1;
+umat.copyTo(mat1);
+
+Mat mat2 = umat.getMat(ACCESS_READ);
+```
+
+UMat이 연산 속도가 빠르긴 하나 변환하는데도 속도가 조금 걸리기 때문에, 영상을 표현하는 Mat에 대해서만 UMat을 사용하는 것이 좋다. border 처리 연산시에도 `BORDER_REPLICATE`옵션을 사용하는 것이 조금 더 좋다고 한다. 
+
+getUMat, getMat을 사용할 때 주의해야 할 것이 있다. getUMat 함수를 통해 UMat객체를 생성할 경우, 원본과 UMat, 이 두 개는 얕은 복사가 된 것이므로, 나중에 원본을 사용하기 전에 새로 생성한 UMat 객체가 완전히 소멸한 후 원본 Mat 객체를 사용해야 한다.
+
+```cpp
+cv::Mat mat1(height, width, CV_32FC1);
+mat1.setTo(0);
+{
+	cv::UMat umat1 = mat1.getMat(cv::ACCESS_READ);
+}
+```
+
+
+
+<br>
+
+<br>
+
+> 딥러닝 학습은 파이토치나 텐서플로우로 하고, 결과를 저장한 후 그 파일을 opencv에서 불러와 사용할 수 있다. 파이토치의 경우 onnx로 변환해서 불러오는 방법을 사용해야 한다고 한다.
+
+<br>
+
+> 실제로 차선 검출에서 hough변환을 사용하지는 않는다. 속도나 정확도가 뛰어나지 않기 때문이다. 그러나 컴퓨터비전을 처음 배우는 사람들에게는 적용해보기 쉬운 알고리즘이라서 필수적으로 배우는 내용이다.
+
+- cv::LineSegmentDetector
+
+[https://docs.opencv.org/4.5.5/db/d73/classcv_1_1LineSegmentDetector.html](https://docs.opencv.org/4.5.5/db/d73/classcv_1_1LineSegmentDetector.html)
+
+<img src="/assets/img/dev/week6/day5/lsd.png">
+
+<br>
+
+cv 클래스에 라인을 따주는 클래스가 있다. 그러나 허프변환과 속도가 비슷하기도 하고, 정확도가 더 뛰어나다고 할 수도 없다. 어떤 경우든 튜닝을 잘 해야 한다.
 
