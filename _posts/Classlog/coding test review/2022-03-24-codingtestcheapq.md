@@ -1,5 +1,5 @@
 ---
-title:    "Coding Test[C++] - 덱"
+title:    "Coding Test[C++] - 덱과 우선 슌위 큐"
 author:
   name: JaeHo-YooN
   link: https://github.com/dkssud8150
@@ -28,6 +28,8 @@ mermaid: true
 <br>
 
 # 회전하는 큐
+
+- deque, list 사용
 
 ```cpp
 #include <iostream>
@@ -139,4 +141,61 @@ int distance(dq.begin(), find(dq.begin(), dq.end(), n));
 ### cin >> m
 
 입력 스트림으로 출력 스트림의 반대로 입력을 받는다.  >> 연산자는 피연산자의 타입에 따라 적절하게 입력값을 가공하여 넣어준다. int나 double을 입력데이터를 받는다면 입력 데이터를 수로 판단하여 가공한다. 위 코드를 실행하면 입력을 받게 되고, 입력을 하면 그 값이 m으로 들어간다. m의 타입은 >> 연산자가 알아서 판단해준다.
+
+<br>
+
+<br>
+
+# 더 맵게
+
+- priority_queue 사용
+
+```cpp
+#include <iostream>
+#include <queue>
+
+using namespace std;
+
+int solution(vector<int> scoville, int K) {
+    int answer = 0;
+
+    // 우선 순위 큐를 사용하여 삽입 시 알아서 들어가도록 만듦, greater를 넣어서 오름차순이 되도록 했다.
+    priority_queue<int, vector<int>, greater<int>> pq(scoville.begin(), scoville.end());
+
+    // 맨 앞의 값, 즉 제일 작은 값이 K보다 크다면, 모든 리스트의 값들이 k보다 큼을 의미
+    while (pq.top() < K) {
+
+        // 크기가 1이라면 더이상 축소가 안되므로 리턴
+        if (pq.size() == 1) return -1;
+
+        // 제일 작은 값 2개를 추출
+        auto f = pq.top();
+        pq.pop();
+        auto s = pq.top();
+        pq.pop();
+
+        auto mix_value = f + (s * 2);
+        pq.push(mix_value);
+
+        ++answer;
+    }
+    return answer;
+}
+```
+
+### priority_queue
+
+우선순위 큐는 선입선출 순이 아니라 우선순위가 높은 항목이 가장 앞에 오도록 하는 큐이다.
+
+```cpp
+template <typename _Ty, typename _Container = vector<_Ty>, typename _Pr = less<_Ty>> class priority_queue;
+```
+
+- _Ty : 요소의 타입을 지정
+- _container : 바탕 컨테이너로 vector 이나 deque을 사용할 수 있다.
+- _Pr : 우선순위의 비교에 사용될 비교 연산을 나타내는 타입이다. less나 greater를 사용하여 오름차순, 내림차순을 정할 수 있다. 기본값은 less로 operator \<를 기준으로 비교하게 되어 있다.
+
+우선순위 큐는 front()나 back()을 지원하지 않고, top()메서드를 사용하여 룩업(검색)을 한다. 
+
+원소 삽입 시 우선순위 큐는 힙 구조를 유지하면서 넣어주기 때문에 O(NlogN)의 시간복잡도를 가진다.
 

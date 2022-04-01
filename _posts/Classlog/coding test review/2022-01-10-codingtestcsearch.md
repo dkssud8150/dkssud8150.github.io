@@ -38,7 +38,7 @@ mermaid: true
 ### Index
 
 1. 모의고사
-2. 
+2. 사전순 부분 문자열
 
 <br>
 
@@ -90,3 +90,57 @@ cout << max_element(count.begin(), count.end()) << endl;
 int count_max = *max_element(count.begin(), count.end());
 ```
 
+<br>
+
+<br>
+
+# 사전순 부분문자열
+
+- string과 사전순의 특성을 사용하여 진행
+
+```cpp
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+// 테스트를 위한 변수 선언
+string ss{ "xyb" };
+
+// 미리 메모리 크기를 지정해서 변수 선언
+string answer{ "" };
+
+string solution(string ss, string answer)
+{	
+	// 출력값을 담을 변수 선언
+	string lists;
+
+	for (auto s : ss) {
+		// 에러를 방지하기 위해 비어 있는지를 체크하고, 
+		// 현재 값이 순서상 가장 맨 뒤가 될 때까지 맨 뒤 값들을 뺀다.
+		while (!lists.empty() && lists.back() < s)
+			lists.pop_back();
+
+		// 처리가 완료된 리스트에 삽입
+		lists.push_back(s);
+	}
+	return lists;
+}
+
+int main()
+{	
+	// 정답 확인을 위한 변수 선언
+	string correction;
+
+	// 입력 인자를 통해 정답을 입력
+	cin >> correction;
+
+	// 출력한 리스트와 정답이 같으면 correct, 아니면 No를 출력
+	if (solution(ss, answer) == correction)
+		cout << "correct" << endl;
+	else
+		cout << "No" << endl;
+}
+```
+
+이 문제에서는 특별한 함수나 익숙치 않은 메서드를 사용한 것이 아니라, 사전 순에 따라 알고리즘을 생각해내는 것이 중요했다.
