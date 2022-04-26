@@ -102,7 +102,7 @@ tail_includes:
       <img src="http://hits.dwyl.com/{{ site.url | remove_first: 'https://' | remove_first: 'http://' }}{{page.url | slice: 0, -1}}.svg" />
     </a>
   </div>
-
+  <!-- https://shopify.github.io/liquid/filters/slice/ -->
   <!-- categories -->
   {% if page.categories.size > 0 %}
   <div class="post-meta mb-3">
