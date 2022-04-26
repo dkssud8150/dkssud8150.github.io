@@ -845,7 +845,11 @@ for epoch in range(epochs):
 
     optimizer.step()
 
-    _, prediction = torch.max(output, dim=1)
+    print(output)
+    confidence, prediction = torch.max(output, dim=1)
+    print("pred",prediction, prediction.shape)
+    print("conf",confidence, confidence.shape)
+
     accur = (prediction == y).sum().item()
     epoch_loss += loss.item()
     epoch_accur += accur
@@ -858,13 +862,43 @@ for epoch in range(epochs):
   accures.append(epoch_accur)
 ```
 
-- iris로 데이터를 불러오면 numpy로 되어 있으므로 이를 tensor로 변환한다. 
--dataloader이라는 함수를 통해 학습에 필요한 차원으로 변경시킨다. batch_size를 지정해주고, shuffle이란 데이터 샘플의 순서를 섞을지 말지에 대한 인자이다. 
-- 최적화 알고리즘은 SGD(stochastic gradient descent)를 사용했다. 
-- 손실함수로는 crossentropy를 사용했다. 
+- iris로 데이터를 불러오면 numpy로 되어 있으므로 이를 tensor로 변환한다.
+- dataloader이라는 함수를 통해 학습에 필요한 차원으로 변경시킨다. batch_size를 지정해주고, shuffle이란 데이터 샘플의 순서를 섞을지 말지에 대한 인자이다.
+- 최적화 알고리즘은 SGD(stochastic gradient descent)를 사용했다.
+- 손실함수로는 crossentropy를 사용했다.
 - epoch이란 학습 반복 횟수를 지정해주는 것이다.
 
-반복을 하면서 에측에 대한 loss를 구하고, 역전파를 진행하고, 그에 대해 가중치를 최적화 한다. 그리고 출력은 [4,1]과 같은 형태로 출력이 되는데, 이는 확률이다. 특정 라벨에 대한 출력이므로 여기서 가장 큰 것을 예측 라벨이라고 지정해준다. 그것이 정답과 같은지를 다 비교해서 더하면 정확도가 나올 것이다. 마지막에는 평균 loss와 accuracy를 알아야 하므로 데이터 샘플 개수만큼 나눠준다. 
+반복을 하면서 에측에 대한 loss를 구하고, 역전파를 진행하고, 그에 대해 가중치를 최적화 한다. 
+
+<br>
+
+```bash
+output :tensor([[-0.1946, -0.2287, -0.1576],
+        [-0.4010, -0.0588,  0.0440],
+        [-0.1065, -0.0667, -0.1870],
+        [ 0.0362, -0.2685,  0.0521]], grad_fn=<AddmmBackward0>) torch.Size([4, 3])
+
+pred : tensor([2, 2, 1, 2]) torch.Size([4])
+
+conf : tensor([-0.1576,  0.0440, -0.0667,  0.0521], grad_fn=<MaxBackward0>) torch.Size([4])
+
+ground truth : tensor([1, 2, 1, 0])
+```
+
+torch.max를 하게 되면, 2가지가 출력된다. confidence라는 최대 확률값들과 prediction이라는 최대값들의 index를 리턴하게 된다. output의 shape은 [batch size, n_classes]이다. 즉 1 batch마다의 출력값들이 존재하는데, 이는 총 class의 개수만큼의 길이를 가지고 있다. 이는 각 클래스마다의 분류 확률값을 의미한다. dim=1이므로 각 한 행마다, 즉 batch마다의 최대값에 대한 값(confidence), 인덱스(prediction)을 출력할 수 있다. prediction과 GT값을 비교하여 정확도를 계산할 수 있다.
+
+이 때, argmax를 사용하면 confidence값은 받지 않고, prediction 값, 즉 index 값만 받아올 수 있다.
+
+```python
+_, pred = torch.max(output, dim=1)
+pred = torch.argmax(output, dim=1)
+```
+
+<br>
+
+<br>
+
+마지막에는 평균 loss와 accuracy를 알아야 하므로 데이터 샘플 개수만큼 나눠준다. 
 
 <br>
 
