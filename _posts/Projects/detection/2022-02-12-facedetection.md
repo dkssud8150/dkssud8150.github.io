@@ -4,7 +4,7 @@ author:
   name: JaeHo-YooN
   link: https://github.com/dkssud8150
 date: 2022-02-12 18:02:00 +0800
-categories: [Projects, face detection]
+categories: [Projects, detection]
 tags: [projects, Detection]
 toc: True
 comments: True
