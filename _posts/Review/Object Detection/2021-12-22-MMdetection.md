@@ -12,9 +12,6 @@ math: true
 mermaid: true
 ---
 
-1. this ordered seed list will be replaced by the toc
-{:toc}
-
 MMDetection에 대한 논문을 리뷰한 내용입니다. 혼자 공부하기 위해 정리한 내용으로 이해가 안되는 부분들이 많을 거라 생각됩니다. 참고용으로만 봐주세요.
 
 # Abstract
