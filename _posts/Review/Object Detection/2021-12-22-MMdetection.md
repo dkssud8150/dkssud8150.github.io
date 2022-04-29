@@ -1,5 +1,5 @@
 ---
-title:    "MMDetection: Open MMLab Detection Toolbox and Benchmark"
+title:    "[논문 리뷰] MMDetection: Open MMLab Detection Toolbox and Benchmark"
 author:
   name: JaeHo-YooN
   link: https://github.com/dkssud8150
