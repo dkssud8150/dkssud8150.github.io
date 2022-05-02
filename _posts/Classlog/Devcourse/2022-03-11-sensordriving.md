@@ -1,5 +1,5 @@
 ---
-title:    "[데브코스] 4주차 - 센서를 활용한 자율주행 "
+title:    "[데브코스] 4주차 - ROS Self-driving using sensors "
 author:
   name: JaeHo YooN
   link: https://github.com/dkssud8150

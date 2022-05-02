@@ -1,5 +1,5 @@
 ---
-title:    "[데브코스] 4주차 - RVIZ에서 모터와 센서 통합 "
+title:    "[데브코스] 4주차 - ROS Motor and sensor integration in RVIZ "
 author:
   name: JaeHo YooN
   link: https://github.com/dkssud8150
