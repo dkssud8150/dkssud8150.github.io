@@ -409,7 +409,7 @@ ret, mat, dist, revecs, tvecs = cv.calibrateCamera(objpoints, imgpoints, gray.sh
 
 여기서 rvecs, tvecs는 카메라의 위치와 calibration을 수행할 때의 가상의 카메라 위치(캘리브레이션 보드의 좌상단 좌표를 (0,0,0)으로 가정)에 대한 값이다.
 
-<img src="/asset/img/dev/week12/day4/extrinsic.png">
+<img src="/assets/img/dev/week12/day4/extrinsic.png">
 
 objpoints를 카메라 좌표계인 (0,0,0)으로 시작하면 첫번째 인덱스를 기준으로 카메라가 해당 위치에 존재한다고 가정이 된다. 즉 원래의 위치에서 캘리브레이션 보드의 좌상단의 위치로 카메라 위치를 가정한다. 그렇다면 calibration은 가상의 카메라 위치를 기준으로 계산하지만, 실제로는 실제 카메라 위치와의 차이가 존재한다. 좌표계 변환을 위한 rotation, translation matrix를 반환한다. 이 extrinsic matrix들은 이미지를 어떻게 찍냐에 따라, 즉 캘리브레이션 보드의 위치에 따라 값이 다 달라진다.
 
