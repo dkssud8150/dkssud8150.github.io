@@ -93,7 +93,7 @@ comments: True
 
 <br>
 
-포인트맵은 라이다를 이용해서 만든 지도이다. 벡터맵은 카메라로 한 것이기에 2차원으로 보이지만, 이는 라이다를 통해 만든 것이므로 3차원으로 보인다. 
+포인트맵은 라이다를 이용해서 만든 지도이다. 벡터맵은 카메라로 한 것이기에 2차원으로 보이지만, 이는 라이다를 통해 만든 것이므로 3차원으로 보인다. 포인트맵은 미리 주행을 하면서 얻은 라이다 정보를 지도 제작 알고리즘을 통해 미리 제작한 것이다.
 
 <img src="/assets/img/dev/week3/day5/pointmap1.png">
 <img src="/assets/img/dev/week3/day5/pointmap2.png">
@@ -280,7 +280,9 @@ detection에서도 lane detection, traffic light detection, traffic sign detecti
 
 ## Autoware
 
-오토웨어는 자율주행 통합 플랫폼이다. 주소는 [https://www.autoware.org/](https://www.autoware.org/)이고, 레벨2 정도에 해당하는 기술력을 가지고 있으며, 실차에 적용이 가능한 솔루션이다. 현재 100개 이상의 회사들에 의해 사용되고 있다.
+오토웨어는 자율주행 통합 플랫폼이다. 주소는 [https://www.autoware.org/](https://www.autoware.org/)이고, 레벨2 정도에 해당하는 기술력을 가지고 있으며, 실차에 적용이 가능한 솔루션이다. 현재 100개 이상의 회사들에 의해 사용되고 있다. autoware 버전이 AI, IO, AUTO가 있는데, autoware.AI는 ROS1을 기반으로 사용되고 있고, AUTO는 ROS2를 기반으로 구성되어 있다.
+
+<br>
 
 아래는 전체 프로세스에 대한 그림이다.
 
@@ -299,6 +301,10 @@ detection에서도 lane detection, traffic light detection, traffic sign detecti
 <img src="/assets/img/dev/week3/day5/autowarestack.png">
 
 하드웨어로는 여러 장치가 있고, OS는 Linux를 사용하고 있다. 런타임 라이브러리로는 ros, cuda, caff, opencv 등이 있다.
+
+<br>
+
+SVL라는 자율주행차 개발자를 위한 unity 기반 multi-robot 시뮬레이터가 있다. Autoware.Auto에 대한 센서 입력을 만들 수 있도록 제공한다. 차량 운전자나 사람의 위치 등 설정이 가능하다. 
 
 <br>
 
