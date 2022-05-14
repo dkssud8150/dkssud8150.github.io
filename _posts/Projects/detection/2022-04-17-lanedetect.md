@@ -5,13 +5,13 @@ author:
   link: https://github.com/dkssud8150
 date: 2022-04-17 18:02:00 +0800
 categories: [Projects, detection]
-tags: [projects, Detection]
+tags: [projects, lane detection]
 toc: True
 comments: True
 math: true
 mermaid: true
 image:
-  src: /assets/img/slidingwindow/slidingwindow.png
+  src: /assets/img/lanedetect/slidingwindow/slidingwindow.png
   width: 600
   height: 500
 ---
@@ -509,7 +509,7 @@ int main()
 
 다양한 기능을 구현해보기 위해 github를 사용했고, 기능마다의 branch를 생성했다.
 
-<img src="/assets/img/slidingwindow/branch.png">
+<img src="/assets/img/lanedetect/slidingwindow/branch.png">
 
 <br>
 
