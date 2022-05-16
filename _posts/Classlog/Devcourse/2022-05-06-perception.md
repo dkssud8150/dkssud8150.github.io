@@ -1076,5 +1076,3 @@ $$ v_{err} = Z\sqrt{\frac{2as_{err}}{fa}} + \frac{nZv}{fH} $$
 <br>
 
 <br>
-
-## Geometrical Distance Estimation code
