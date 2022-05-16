@@ -1,5 +1,5 @@
 ---
-title:    "[데브코스] 7주차 - DeepLearning Multi Layer Perceptron"
+title:    "[데브코스] 9주차 - DeepLearning Multi Layer Perceptron"
 author:
   name: JaeHo YooN
   link: https://github.com/dkssud8150

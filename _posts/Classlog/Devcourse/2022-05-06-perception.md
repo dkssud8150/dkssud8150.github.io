@@ -1,5 +1,5 @@
 ---
-title:    "[데브코스] 7주차 - DeepLearning Perception Applications"
+title:    "[데브코스] 12주차 - DeepLearning Perception Applications"
 author:
   name: JaeHo YooN
   link: https://github.com/dkssud8150

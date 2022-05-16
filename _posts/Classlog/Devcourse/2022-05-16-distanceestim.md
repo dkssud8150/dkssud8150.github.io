@@ -1,5 +1,5 @@
 ---
-title:    "[데브코스] 7주차 - DeepLearning Geometrical Distance Estimation"
+title:    "[데브코스] 14주차 - DeepLearning Geometrical Distance Estimation"
 author:
   name: JaeHo YooN
   link: https://github.com/dkssud8150
