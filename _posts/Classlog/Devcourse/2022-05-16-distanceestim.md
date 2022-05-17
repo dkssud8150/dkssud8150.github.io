@@ -293,8 +293,21 @@ for image_path in image_path_list:
 
 object_points = list()
 object_points = np.asarray(object_points, dtype=np.float32) # change numpy array
+```
 
+- calibration pattern's corner detection
+  - 캘리브래이션 패턴에 존재하는 특징(코너)를 검출한다.
+  - imgpoints와 objpoints의 pair 데이터를 만드는 것이 중요하다.
 
+<br>
+
+<br>
+
+- **camera calibration**
+
+1개의 이미지를 통해 intrinsic, extrinsic 정보를 얻어오는 코드이다.
+
+```python
 ''' =========== camera calibration =========='''
 tmp_image = cv2.imread("images/left01.jpg", cv2.IMREAD_ANYCOLOR)
 image_shape = np.shape(tmp_image)
@@ -304,7 +317,26 @@ image_width = image_shape[1]
 image_size = (image_width, image_height)
 
 ret, camera_matrix, dist_coeffs, rvecs, tvecs = cv2.calibrateCamera(object_points, image_points, image_size, None, None)
+```
 
+- intrinsic
+  - ret : RMS(ROOT Mean Square) 오차 =\> extrinsic 정보와 objpoints를 가지고 이미지에 재투영하여 원래의 점과 비교해서 오차를 계산한다.
+    - 계산했을 때 많이 튀는 노이즈 값을 필터링하는 것도 중요
+  - mtx : intrinsic matrix
+  - dist : distortion cofficients
+- extrinsic
+  - 각 이미지에서 설정한 objpoints의 원점에 대한 실제 카메라의 extrinsic calibration 정보이다.
+  - rvecs : 각 이미지에 대한 camera coordinate에서의 rotation
+  - tvecs : 각 이미지에 대한 camera coordinate에서의 translation
+  
+
+<br>
+
+<br>
+
+- **homography matrix**
+
+```python
 ''' =========== homography matrix =========='''
 # Part 2. Find homography matrix
 # Step A. Select images
@@ -321,7 +353,6 @@ corners2 = corners2.reshape(-1, 2)
 # src -> dst point transformation -> find matrix
 # Step B. Find homography
 homography, status = cv.findHomography(corners1, corners2, cv.RANSAC)
-
 
 # Step C. Display Result
 img_draw_matches = cv.hconcat([img1, img2])
@@ -341,11 +372,40 @@ cv.namedWindow("Draw Matches", cv.WINDOW_NORMAL)
 cv.imshow("Draw Matches", img_draw_matches)
 cv.imwrite("draw.png", img_draw_matches)
 cv.waitKey(0)
+```
+
+- step A
+  - img1은 원본 이미지, img2는 대상이 되는 이미지
+  - findChessboardCorners를 사용하여 transform의 pair 데이터를 결정
+  - 추후 변환에 사용되는 데이터는 이미지가 아니라 pair 데이터이다.
+  - pair 포인트들을 자기 마음대로 찍어도 상관은 없으나 편리함을 위해 함수를 사용한 것이다.
+- step B
+  - 이미지가 아닌 N개의 corners1, corners2 를 사용
+  - cv.RANSAC은 여러 개의 pair 데이터를 사용하면서 오류가 있는 데이터는 제외하는 알고리즘
+- step C
+  - 결과 확인
+  - cv.line를 사용하여 pair 데이터가 어떻게 변환이 되었는지 확인
+  - cv.warpPerspective 를 사용하여 homography matrix로 이미지 자체를 변환
 
 
+<br>
 
-''' =========== img plane to ground plane =========='''
+<br>
 
+#### convert img plane to ground plane
+
+- convert img plane to ground plane
+  - homography matrix로 카메라의 extrinsic 정보를 추출할 수 있다.
+  - 카메라의 POSE를 그리는 것이 중요 : drawFrameAxes()
+  - 이때까지는 ground plane를 image plane으로 변환했다. 이제는 반대로 image plane을 ground plane으로 변환하는 과정
+
+<br>
+
+- **homography distance estimation**
+
+image point와 homography를 통해 거리를 추정하는 코드
+
+```python
 # Step A. homography distance estimation
 import cv2
 import json
@@ -459,9 +519,30 @@ if __name__ == "__main__":
 
         print(x/z, y/z, z/z) # homogeneous 좌표게에서는 마지막이 항상 1이어야 하므로 나눔
         # homo object point와 비교하여 얼마나 차이나는지 확인
+```
 
+- 순서
+1. 실제 측량을 통해 obj point와 image point를 생성
+2. random의 intrinsic 정보를 설정
+3. opj point는 world 좌표계이므로 이를 카메라 좌표계로 변환
+4. solvePnp를 통해 카메라 위치 추정 rotation, translation vector를 얻고 그를 통해 drawFrameAxes
+5. 이미지 좌표와 실제 오브젝트의 관계를 수정
+6. projectPoints를 통해 iamge point와 object point가 거의 동일한지 확인
+7. findHomography를 통해 iamge point와 object point에 대한 변환행렬 생성
+8. iamge point의 좌표계를 homogeneous 좌표계로 변환
+9. 각 image point에 대해 homography를 곱하여 거리를 추정
 
+여기서 중요한 점 : 호모그래피는 평면과 평면 사이의 변환을 의미한다. 따라서 바닥면이 평면이 아니라면 사용하기 어렵다.
 
+<br>
+
+<br>
+
+- **geometrical distance estimation**
+
+intrinsic을 통해 이미지 왜곡 보정 및 bbox에 대한 거리 추정한 값을 실제와 비교하는 코드
+
+```python
 # Step B. geometrical distance estimation
 
 import json
@@ -481,8 +562,6 @@ with open(json_file_path, "r") as json_file:
     labeling_info = json.load(json_file)
 
 image = cv2.imread(image_file_path, cv2.IMREAD_ANYCOLOR)
-
-
 
 camera_matrix = np.asarray(labeling_info["calib"]["cam01"]["cam_intrinsic"], dtype=np.float32)
 dist_coeff = np.asarray(labeling_info["calib"]["cam01"]["distortion"], dtype=np.float32)
@@ -524,68 +603,19 @@ for class_name, bbox in zip(class_names, boxes_2d):
 display_image = cv2.cvtColor(undist_image, cv2.COLOR_BGR2RGB)
 plt.imshow(display_image)
 plt.show()
-
 ```
 
-- calibration pattern's corner detection
-  - 캘리브래이션 패턴에 존재하는 특징(코너)를 검출한다.
-  - imgpoints와 objpoints의 pair 데이터를 만드는 것이 중요하다.
-- camera calibration
-  - 1개의 이미지를 통해 intrinsic, extrinsic 정보를 얻어오는 과정
-  - intrinsic
-    - ret : RMS(ROOT Mean Square) 오차 =\> extrinsic 정보와 objpoints를 가지고 이미지에 재투영하여 원래의 점과 비교해서 오차를 계산한다.
-      - 계산했을 때 많이 튀는 노이즈 값을 필터링하는 것도 중요
-    - mtx : intrinsic matrix
-    - dist : distortion cofficients
-  - extrinsic
-    - rvecs : 각 이미지에 대한 camera coordinate에서의 rotation
-    - tvecs : 각 이미지에 대한 camera coordinate에서의 translation
-    - 각 이미지에서 설정한 objpoints의 원점에 대한 실제 카메라의 extrinsic calibration 정보이다.
-- homography matrix
-  - step A
-    - img1은 원본 이미지, img2는 대상이 되는 이미지
-    - findChessboardCorners를 사용하여 transform의 pair 데이터를 결정
-    - 추후 변환에 사용되는 데이터는 이미지가 아니라 pair 데이터이다.
-    - pair 포인트들을 자기 마음대로 찍어도 상관은 없으나 편리함을 위해 함수를 사용한 것이다.
-  - step B
-    - 이미지가 아닌 N개의 corners1, corners2 를 사용
-    - cv.RANSAC은 여러 개의 pair 데이터를 사용하면서 오류가 있는 데이터는 제외하는 알고리즘
-  - step C
-    - 결과 확인
-    - cv.line를 사용하여 pair 데이터가 어떻게 변환이 되었는지 확인
-    - cv.warpPerspective 를 사용하여 homography matrix로 이미지 자체를 변환
-- img plane to ground plane
-  - homography matrix로 카메라의 extrinsic 정보를 추출할 수 있다.
-  - 카메라의 POSE를 그리는 것이 중요 : drawFrameAxes()
-  - 이때까지는 ground plane를 image plane으로 변환했다. 이제는 반대로 image plane을 ground plane으로 변환하는 과정
-  - Step A
-    - 순서
-      --> image point와 homography를 통해 거리를 추정하는 과정
-      1. 실제 측량을 통해 obj point와 image point를 생성
-      2. random의 intrinsic 정보를 설정
-      3. opj point는 world 좌표계이므로 이를 카메라 좌표계로 변환
-      4. solvePnp를 통해 카메라 위치 추정 rotation, translation vector를 얻고 그를 통해 drawFrameAxes
-      5. 이미지 좌표와 실제 오브젝트의 관계를 수정
-      6. projectPoints를 통해 iamge point와 object point가 거의 동일한지 확인
-      7. findHomography를 통해 iamge point와 object point에 대한 변환행렬 생성
-      8. iamge point의 좌표계를 homogeneous 좌표계로 변환
-      9. 각 image point에 대해 homography를 곱하여 거리를 추정
-
-    - 여기서 중요한 점 : 호모그래피는 평면과 평면 사이의 변환을 의미한다. 따라서 바닥면이 평면이 아니라면 사용하기 어렵다.
-
-  - Step B
-    - 순서
-      --> intrinsic을 통해 이미지 왜곡 보정 및 bbox에 대한 거리 추정한 값을 실제와 비교
-      1. 실제 객체와 카메라 사이의 거리를 측정
-      2. 카메라 intrinsic, distortion 획득
-      3. undistorting image
-      4. bbox 정보 저장
-      5. bbox 정보에 대한 fy, cy를 가져와서 normalized image plane 구함
-      6. distance 저장
-      7. 실제 거리와 distance가 맞는지 확인하고, 실제 camera 높이도 측정하여 camera height를 조정
-      8. 만약 높이가 맞다면 intrinsic이 틀렸거나 bbox가 틀리게 나온 것
-      9. bbox가 맞게 들어오고 있는지 확인을 위해 visualize
-      10. 맞다면 intrinsic 조정
+- 순서
+1. 실제 객체와 카메라 사이의 거리를 측정
+2. 카메라 intrinsic, distortion 획득
+3. undistorting image
+4. bbox 정보 저장
+5. bbox 정보에 대한 fy, cy를 가져와서 normalized image plane 구함
+6. distance 저장
+7. 실제 거리와 distance가 맞는지 확인하고, 실제 camera 높이도 측정하여 camera height를 조정
+8. 만약 높이가 맞다면 intrinsic이 틀렸거나 bbox가 틀리게 나온 것
+9. bbox가 맞게 들어오고 있는지 확인을 위해 visualize
+10. 맞다면 intrinsic 조정
 
 
 <br>
