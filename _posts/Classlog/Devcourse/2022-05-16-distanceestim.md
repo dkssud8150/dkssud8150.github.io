@@ -63,7 +63,7 @@ FOV(Field of View)를 사용하면 ZY plane에 대한 거리 정보와 지면에
 
 <img src="/assets/img/dev/week14/fov.png">
 
-카메라가 좌표계 원점에 존재하고, 사각형이 이미지일 때, 가로를 width, 세로를 height라 할 수 있다. 이 때, width와 height에 대해 $ FOV_v $ 와 $ FOV_H $ 가 존재한다. v는 vertical, h는 horizontal이고, FOV는 $ \degree $ 단위로 표기한다. 이미지와 원점간의 거리를 `f`라 할 수 있다. 
+카메라가 좌표계 원점에 존재하고, 사각형이 이미지일 때, 가로를 width, 세로를 height라 할 수 있다. 이 때, width와 height에 대해 $ FOV_v $ 와 $ FOV_H $ 가 존재한다. v는 vertical, h는 horizontal이고, FOV는 $ ^{\circ} $ 단위로 표기한다. 이미지와 원점간의 거리를 `f`라 할 수 있다. 
 
 FOV가 커질수록 실제 공간을 더 넓게 투영하여 이미지로 표현할 수 있을 것이고, FOV가 작을수록 실제 공간을 더 좁게 투영하여 이미지를 표현할 수 있다.
 
@@ -92,7 +92,7 @@ $$ D_o = \cfrac{F * \cfrac{h}{2 tan\cfrac{\alpha}{2}}}{\cfrac{h}{2 tan\cfrac{\al
 - image size : 1280px, 720 px
 - fx = 1000, fy = 1000
 - cx = 640, cy = 360
-- $ FOV_H = 80 \degree $, $ FOV_V = 40 \degree $
+- $ FOV_H = 80 ^{\circ} $, $ FOV_V = 40 ^{\circ} $
 
 이미지 내 표지판의 위치에 대한 값
 - bbox size : 40px, 40px
@@ -101,17 +101,17 @@ $$ D_o = \cfrac{F * \cfrac{h}{2 tan\cfrac{\alpha}{2}}}{\cfrac{h}{2 tan\cfrac{\al
 
 바운딩 박스의 좌하단과 height 방향으로의 직선 사이의 각도를 $ \theta $ 라 한다. 그리고 실제 표지판의 크기는 반지름이 0.5m이다. 어차피 대부분의 경우 사각형을 기준으로 측정하므로 w = 1m, h = 1m 로 할 수 있다.
 
-$ FOV_{H(640)} = 0 \degree $ 인 이유는 이미지를 기준으로 중앙이 0, 왼쪽 방향이 (-), 오른쪽 방향이 (+)이다. 따라서 $ FOV_{H} $ 의 범위는 -40 ~ 40 이다.
+$ FOV_{H(640)} = 0 ^{\circ} $ 인 이유는 이미지를 기준으로 중앙이 0, 왼쪽 방향이 (-), 오른쪽 방향이 (+)이다. 따라서 $ FOV_{H} $ 의 범위는 -40 ~ 40 이다.
 
 <br>
 
 이미지의 중점을 기준으로 객체의 중점과의 이루는 방위각이 $ \theta $ 이고, 비례식 $ 640 : 300 = 40 : \theta $ 을 세워서 계산한다. 
 
-$ \theta = \cfrac{\triangle x}{640} * 40.0 \degree = \cfrac{300}{640} * 40.0 = 18.75 \degree $ 
+$ \theta = \cfrac{\triangle x}{640} * 40.0 ^{\circ} = \cfrac{300}{640} * 40.0 = 18.75 ^{\circ} $ 
 
 $ \theta $ 를 구했다면, 표지판과의 거리를 구할 수 있다.
 
-$ D_o = \cfrac{F * \cfrac{h}{2 tan\cfrac{\alpha}{2}}}{\cfrac{h}{2 tan\cfrac{\alpha}{2}} - F} = \cfrac{1000 * \cfrac{40}{2 tan(18.75 \degree)}}{\cfrac{40}{2 tan(18.75 \degree )} - 1000} $
+$ D_o = \cfrac{F * \cfrac{h}{2 tan\cfrac{\alpha}{2}}}{\cfrac{h}{2 tan\cfrac{\alpha}{2}} - F} = \cfrac{1000 * \cfrac{40}{2 tan(18.75 ^{\circ})}}{\cfrac{40}{2 tan(18.75 ^{\circ} )} - 1000} $
 
 그리고 종방향과 횡방향의 분리를 위해 dx, dy로 분리한다.
 
