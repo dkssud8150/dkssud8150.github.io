@@ -240,6 +240,8 @@ Geometrical Method에서는 카메라와 지면이 서로 평행하다는 것을
 
 이전에 배웠던 camera calibration 코드를 먼저 보자.
 
+이 코드에서는 캘리브래이션 패턴에 존재하는 특징(코너)를 검출한다. 가장 중요한 것은 imgpoints와 objpoints의 pair 데이터를 만드는 것이 중요하다. 그 이유는 추후에 distance estimation을 할 때는 image가 아닌 pair 데이터를 사용하기 때문이다.
+
 ```python
 import cv2
 import glob
@@ -295,10 +297,6 @@ object_points = list()
 object_points = np.asarray(object_points, dtype=np.float32) # change numpy array
 ```
 
-- calibration pattern's corner detection
-  - 캘리브래이션 패턴에 존재하는 특징(코너)를 검출한다.
-  - imgpoints와 objpoints의 pair 데이터를 만드는 것이 중요하다.
-
 <br>
 
 <br>
@@ -334,7 +332,7 @@ ret, camera_matrix, dist_coeffs, rvecs, tvecs = cv2.calibrateCamera(object_point
 
 <br>
 
-- **homography matrix**
+- **get homography matrix**
 
 ```python
 ''' =========== homography matrix =========='''
@@ -394,10 +392,10 @@ cv.waitKey(0)
 
 #### convert img plane to ground plane
 
-- convert img plane to ground plane
-  - homography matrix로 카메라의 extrinsic 정보를 추출할 수 있다.
-  - 카메라의 POSE를 그리는 것이 중요 : drawFrameAxes()
-  - 이때까지는 ground plane를 image plane으로 변환했다. 이제는 반대로 image plane을 ground plane으로 변환하는 과정
+이때까지는 ground plane를 image plane으로 변환했다. 이제는 반대로 image plane을 ground plane으로 변환하는 과정을 수행한다.
+- homography matrix로 카메라의 extrinsic 정보를 추출할 수 있다.
+- 카메라의 POSE를 그리는 것이 중요 : drawFrameAxes()
+  - 이 좌표가 obj point의 0index와 동일한 좌표를 가져야 한다.
 
 <br>
 
@@ -668,15 +666,17 @@ def parse_intrinsic_calibration(intrinsic):
 ```
 
 
-# summary
+# Summary
 
 3차원 정보를 복원하는 방법
 1. 카메라의 extrinsic을 이용하는 방법
   - 지면과 카메라 광학축을 활용한 삼각비
 2. 카메라의 intrinsic과 대상 객체의 사전 정보를 이용하는 방법
   - FOV를 활용하여 이미지 bbox에 대한 dx, dy를 구하는 방법
+  - geometrical distance estimation
 3. 카메라의 image plane과 대상 plane의 변환 matrix를 사용하는 방법
   - warpPerspectiveTransform, findHomography
+  - homography distance estimation
 
 카메라는 본질적으로 3차원 공간에 대한 정보가 이미지를 취득하는 동시에 소실되기 때문에 3차원 공간에 대한 이해가 굉장히 어렵다.
 
