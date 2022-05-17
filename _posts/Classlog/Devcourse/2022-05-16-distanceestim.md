@@ -37,7 +37,7 @@ math: true
 
 삼각 비례식을 활용하여 객체의 실제 거리를 추정할 수 있다.
 
-$ object distance = \cfrac{focal length * read world's height of object}{image's height of object} $
+$ object_distance = \cfrac{focal_length * read_world's_height_of_object}{image's_height_of_object} $
 
 <br>
 
