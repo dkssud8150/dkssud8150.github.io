@@ -225,8 +225,8 @@ tutorial : https://docs.opencv.org/4.x/d9/dab/tutorial_homography.html
 - getPerspectiveTransform()
 - findHomography()
 
-<img src="/assets/img/dev/week14/getperspectivetransform.png">
-<img src="/assets/img/dev/week14/findhomography.png">
+<img src="/assets/img/dev/week14/getperspectivetransform.png" width="55%">
+<img src="/assets/img/dev/week14/findhomography.png" width="40%">
 
 이 두 함수는 동일하지만, 입력 인자가 조금 다르다. 전자의 경우 4개의 점들을 입력으로 받지만, 후자의 경우 4개 이상의 점들을 입력으로 받는다. 4개의 점을 가지고 있다면 전자를 사용하고, 4개 이상의 점들을 가지고 있어서 좀 더 정확한 변환을 하고자 하거나, 점들 사이에 존재하는 오차를 알아서 제거해주길 원하는 경우에는 후자를 사용하는 것이 좋다. 그리고 findhomography의 경우 입력 포인트들을 통해 변환 행렬을 계산할 때 오차를 발생시키는 값을 제거하는 방법(RANSAC)이 포함되어 있다.
 
