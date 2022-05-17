@@ -55,7 +55,7 @@ $ y : f = h : Z , Z = \cfrac{f * h}{y} $
 
 <br>
 
-## Field Oof View
+## Field of View
 
 카메라의 대상 객체의 특성을 활용한 방법으로 카메라의 고유한 특성(intrinsic , sensor, lens의 속성)과 대상 객체의 실제 크기 정보를 활용하는 방법이다. 이는 extrinsic calibration 정보에 대해 상대적으로 의존도가 낮다.
 
