@@ -372,7 +372,8 @@ for fname in images:
         objpoints.append(objp)
 
         # refines corner locations using gradient direction
-        corners2 = cv.cornerSubPix(gray,corners, (11,11), (-1,-1), criteria) # image,corners, window size for search,zero zone(no size of -1,-1),end point after max count or value under epsilon to move
+        # image,corners, window size for search,zero zone(no size of -1,-1),end point after max count or value under epsilon to move
+        corners2 = cv.cornerSubPix(gray,corners, (11,11), (-1,-1), criteria) 
 
         imgpoints.append(corners)
         # Draw and display the corners

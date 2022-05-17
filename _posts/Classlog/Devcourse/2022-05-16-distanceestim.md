@@ -37,7 +37,7 @@ math: true
 
 삼각 비례식을 활용하여 객체의 실제 거리를 추정할 수 있다.
 
-$ object distance = \frac{focal length * read world`s height of object}{image`s height of object} $
+$ object distance = \cfrac{focal length * read world's height of object}{image's height of object} $
 
 <br>
 
@@ -47,7 +47,7 @@ $ object distance = \frac{focal length * read world`s height of object}{image`s 
 
 전방을 z, 오른쪽을 y, 아래를 x인 카메라 좌표계로 되어 있고, 3차원 공간에 존재하는 객체 P에 대해 이미지에 투영한다. 식은 위의 식과 거의 동일하다.
 
-$ y : f = h : Z , Z = \frac{f * h}{y} $
+$ y : f = h : Z , Z = \cfrac{f * h}{y} $
 
 <br>
 
@@ -75,9 +75,9 @@ FOV가 커질수록 실제 공간을 더 넓게 투영하여 이미지로 표현
 
 실제 객체는 `H`의 높이를 가지고, 객체와 렌즈 사이의 거리를 $ D_o $, 이미지 안에서의 객체 높이를 `h`, 이미지와 렌즈 사이의 거리를 $ D_f $ 라 한다. F는 focal length이다. 그리고 $ \alpha $는 이미지 안에서 객체의 bbox에 대한 FOV_H값이다. 즉 bbox 위와 아래가 이루는 각도이다.
 
-이 때, 수식 $ \frac{1}{D_o} + \frac{1}{D_f} = \frac{1}{F} $ 에 의해 $ D_o = \frac{D_f * F}{D_f - F} $ 로 표현된다. 그리고, $ tan(\frac{\alpha}{2}) = \frac{h}{2 D_f} $ 이므로, D_o 는 다음과 같다.
+이 때, 수식 $ \cfrac{1}{D_o} + \cfrac{1}{D_f} = \cfrac{1}{F} $ 에 의해 $ D_o = \cfrac{D_f * F}{D_f - F} $ 로 표현된다. 그리고, $ tan(\cfrac{\alpha}{2}) = \cfrac{h}{2 D_f} $ 이므로, D_o 는 다음과 같다.
 
-$$ D_o = \frac{F * \frac{h}{2 tan\frac{\alpha}{2}}}{\frac{h}{2 tan\frac{\alpha}{2}} - F} $$
+$$ D_o = \cfrac{F * \cfrac{h}{2 tan\cfrac{\alpha}{2}}}{\cfrac{h}{2 tan\cfrac{\alpha}{2}} - F} $$
 
 <br>
 
@@ -107,11 +107,11 @@ $ FOV_{H(640)} = 0 \degree $ 인 이유는 이미지를 기준으로 중앙이 0
 
 이미지의 중점을 기준으로 객체의 중점과의 이루는 방위각이 $ \theta $ 이고, 비례식 $ 640 : 300 = 40 : \theta $ 을 세워서 계산한다. 
 
-$ \theta = \frac{\triangle x}{640} * 40.0 \degree = \frac{300}{640} * 40.0 = 18.75 \degree $ 
+$ \theta = \cfrac{\triangle x}{640} * 40.0 \degree = \cfrac{300}{640} * 40.0 = 18.75 \degree $ 
 
 $ \theta $ 를 구했다면, 표지판과의 거리를 구할 수 있다.
 
-$ D_o = \frac{F * \frac{h}{2 tan\frac{\alpha}{2}}}{\frac{h}{2 tan\frac{\alpha}{2}} - F} = \frac{1000 * \frac{40}{2 tan(18.75 \degree)}}{\frac{40}{2 tan(18.75 \degree )} - 1000} $
+$ D_o = \cfrac{F * \cfrac{h}{2 tan\cfrac{\alpha}{2}}}{\cfrac{h}{2 tan\cfrac{\alpha}{2}} - F} = \cfrac{1000 * \cfrac{40}{2 tan(18.75 \degree)}}{\cfrac{40}{2 tan(18.75 \degree )} - 1000} $
 
 그리고 종방향과 횡방향의 분리를 위해 dx, dy로 분리한다.
 
@@ -142,7 +142,7 @@ FOV_H에 대한 좌표와 값들은 빨간색에 해당되고, FOV_V는 파란�
 
 >$$ r_b : f = d : R_b $$
 
->이를 정리하여 `d`에 대해 정리하면 $ d = \frac{(r_b - r_a) * (R_b - R_a) }{f} = \frac{40px * 1m}{1000px} $ 로 정리될 수 있다.
+>이를 정리하여 `d`에 대해 정리하면 $ d = \cfrac{(r_b - r_a) * (R_b - R_a) }{f} = \cfrac{40px * 1m}{1000px} $ 로 정리될 수 있다.
 
 >그러나 이 방법은 extrinsic에 의존적이라 잘 설정해줘야 한다.
 
