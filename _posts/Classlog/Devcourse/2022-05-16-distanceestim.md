@@ -37,7 +37,7 @@ math: true
 
 삼각 비례식을 활용하여 객체의 실제 거리를 추정할 수 있다.
 
-$ object_distance = \cfrac{focal_length * read_world's_height_of_object}{image's_height_of_object} $
+$ object distance = \cfrac{focal length * read world's height of object}{image's height of object} $
 
 <br>
 
@@ -200,7 +200,7 @@ projective geometry의 성질을 이용한 이미지 평면을 다른 평면으�
 
 <br>
 
-<img src="/assets\img\dev\week12\day4\figure1.png">
+<img src="/assets/img/dev/week14/figure1.png">
 
 여기서 ground plane은 실제 지면을 의미하고 이는 `m`단위를 사용하고 있다. 카메라로 보는 이미지 a를 c로 바꾸는 작업을 수행하는 것을 perspective transformation이라 하고, 원래의 이미지 a에서는 pixel단위이고, BEV인 c에서는 `m`단위를 사용한다. BEV도 이미지이므로 pixel 단위라고 생각할 수 있지만 이는 틀렸다.
 
