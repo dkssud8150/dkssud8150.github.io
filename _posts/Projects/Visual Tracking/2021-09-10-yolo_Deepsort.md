@@ -4,8 +4,8 @@ author:
   name: JaeHo-YooN
   link: https://github.com/dkssud8150
 date: 2021-09-10 12:00:00 +0800
-categories: [Projects]
-tags: [Visual Tracking,Yolov4,Deep SORT]
+categories: [Projects, Tracking]
+tags: [Tracking,Yolov4,Deep SORT]
 toc: True
 comments: True
 math: true
@@ -20,9 +20,6 @@ image:
 2. Yolo v4 와 Deep Sort 를 통해 visual tracking 하는 블로그 찾아보기
 3. toy project 로 르브론 제임스 농구 영상 tracking 해보기
 
-
-1. this ordered seed list will be replaced by the toc
-{:toc}
 
 ## git clone 을 통해 tracking 해보기
 
