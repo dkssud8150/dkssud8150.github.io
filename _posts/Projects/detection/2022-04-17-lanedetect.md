@@ -5,7 +5,7 @@ author:
   link: https://github.com/dkssud8150
 date: 2022-04-17 18:02:00 +0800
 categories: [Projects, detection]
-tags: [detection, lane detection]
+tags: [detection, lane-detection]
 toc: True
 comments: True
 math: true

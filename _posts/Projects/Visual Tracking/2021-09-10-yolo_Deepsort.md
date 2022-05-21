@@ -5,7 +5,7 @@ author:
   link: https://github.com/dkssud8150
 date: 2021-09-10 12:00:00 +0800
 categories: [Projects, Tracking]
-tags: [Tracking,Yolov4,Deep SORT]
+tags: [Tracking, Yolov4, Deep-SORT]
 toc: True
 comments: True
 math: true
