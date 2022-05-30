@@ -143,11 +143,170 @@ essential matrix나 fundamental matrix를 구하는 방법은 OpenCV에 잘 구�
 
 <br>
 
+구현 과정
+- 2장의 다른 이미지에 대해 feature matching을 한다.
+- 이를 기반으로 fundamental matrix를 구해서 카메라들 간의 모션 값을 추정한다.
+- 한 장의 이미지에 F-matrix를 곱하면 다른 한장의 이미지에서의 epipolar line이 나온다.
+- 원래 이미지에서의 픽셀값과 line을 벡터 연산하여 0이 되는 지점을 예측한다. 
+
+그러나 이 때, 문제는 f-matrix를 구하고 나서 점을 예측하고 나서야 feature matching이 잘 되었는지 아닌지를 판단할 수 있다.
+
 <br>
 
-# RANSAC
+<br>
 
+# Outlier rejection(removal)
 
+SLAM에서 inlier와 outlier가 있다. inlier는 관측 시 예상했던 데이터 분포에 포함되어 있는 데이터이고, outlier는 데이터 분포에서 벗어나 있는 데이터를 말한다. 데이터 분포에서부터 얼마나 떨어져있는지에 대한 에러로 판단하는데, 모든 데이터는 노이즈를 가지고 있기 때문에 에러값으로만 판단하기는 어렵다. 그래서 inlier를 기대하면서 맞는 값, outlier를 기대하지 않았으면서 틀린 값이라 정의하고자 한다.
+
+outlier가 나타나는 이유는 밝기 정보가 급격하거나, 회전, 블러, 가림 등의 깔끔한 이미지를 얻지 못하거나 기존의 기하학적 정보가 깨지기 때문일 것이다. outlier를 filtering해야 더 정확하고 좋은 알고리즘이 된다.
+
+<br>
+
+컴퓨터 비전에서는 2가지의 outlier filtering 알고리즘이 있다.
+
+1. closed-form algorithm
+  - 여기에는 수많은 minimum solver 알고리즘이 있다. fundamental matrix를 구하는 8-point는 정확하게 매칭이 된 correspondence를 전제로 한다. 이중에 하나라도 정확하지 않으면 잘못된 결과가 나온다. 
+2. iterative optimization
+  - 훨씬 더 많은 데이터로 동작하지만, 이 데이터들이 좋은 데이터라고 판단이 될 때까지 지속적으로 찾아가는 알고리즘이다.
+  - 데이터 분포 속 inlier 사이에서 패턴을 찾아서 필터링을 한다. 그 데이터를 따르지 않는 데이터가 들어올 경우 잘못된 예측이 발생할 수 있다.
+
+<br>
+
+outlier를 제거하여 깔끔한 inlier데이터들만 남겨놓고 계산을 하게 만드는 것이 중요하다. 그에 대한 예시를 몇가지 살펴보자.
+
+## Linear regression
+
+<img src="/assets/img/dev/week16/day1/linear_regression.png">
+
+2D plot에서 여러 개의 데이터 포인트들을 가로지르는 가장 정확한 직선을 추정하는 알고리즘이다. 이 때, 직선에 대해 각각의 데이터 포인트들마다의 거리값(error)를 가지므로 이에 대해 절대값을 취하는 SAE, 또는 제곱을 취하는 SSE가 있다. 이 error를 줄이는 것을 목표로 한다.
+
+<br>
+
+이는 너무 한계가 뚜렷해서 최근에는 다양한 알고리즘들이 개발되었다.
+- RANSAC
+- M-Estimator
+- MAXCON
+
+이 중 가장 유명한 RANSAC에 대해 알아보고자 한다.
+
+<br>
+
+## RANSAC
+
+RANSAC(RAndom SAmple Consensus)은 1981년에 개발된 기법이다. 무작위로 데이터 샘플을 뽑아 모델을 만들고, 모델에 대해 데이터의 적합성을 판단한다. RANSAC은 template으로 안에서 돌아가는 알고리즘은 따로 지정해야 한다. 
+
+RANSAC 기법 과정
+1. 무작위로 최소한의 데이터를 뽑는다.
+2. 데이터를 기반으로 모델을 추정한다.
+3. 추론한 모델을 기반으로 score를 측정한다. - 현재까지의 가장 최고의 score보다 현재의 score가 들어오면 score를 업데이트한다.
+4. 다시 1번으로 돌아간다.
+
+쉽게 보기 위해 homography에 RANSAC알고리즘을 추가한 과정을 설명하면 다음과 같다.
+1. homography를 구하기 위해 필요한 최소한의 데이터는 4개이므로 무작위로 4개의 데이터를 뽑는다.
+2. 그 데이터를 기반으로 homography matrix를 추정한다.
+3. reprojection(재투영) error를 계산한다.
+  - 한 이미지 픽셀값들에 homography matrix를 곱하면, 다른 하나의 이미지에 대한 픽셀값들이 나오게 된다.
+  - 이 때, GT와 계산값과의 error를 전부 더한다. 이 때, 특정 error threshold를 설정해서 그 error보다 낮은 값만 추가되도록 할 수 있다.
+  - 최고 score(lowest error)보다 현재의 score(error)가 낮으면 score를 업데이트한다.
+4. 1번으로 되돌아간다.
+
+최적의 모델을 얻기 위해 반복해야 할 횟수(T)를 논문에서 함께 제시했다.
+
+$ T = \cfrac{log(1-p}{log(1-(1-e)^s)} $
+
+- T : 최적의 모델을 얻기 위해 반복해야 할 횟수
+- P : 뽑은 모델이 전부 inlier로 이루어지길 바라는 확률 (want P% accuracy)
+- e : 전체 데이터셋 중 inlier와 outlier의 비율 (the dataset in made of e% inliers and (1-e)% outliers)
+- s : 매 loop마다 뽑아야 하는 샘플의 수 (minimal sample of data to be a minimal set)
+
+이 때, 구한 T를 통해 전체 프로세스의 시간을 대략적으로 짐작할 수 있다. T에 homography solver 프로세스 한 번 돌리는데 걸리는 시간을 곱해서 전체 프로세스 시간을 구할 수 있다.
+
+<br>
+
+RANSAC의 장점
+- outlier를 제거할 수 있다.
+- **T**를 통해 총 걸리는 시간을 구할 수 있다.
+- 운좋게 더 빠르게 찾는다면 더 빨리 끝낼 수 있다.
+- 굉장히 쉬워서 이해하기 쉽다.
+
+<br>
+
+RANSAC의 단점
+- 알고리즘 자체가 랜덤성을 가지고 있으므로 돌릴 때마다 결과값이 다르게 나온다. 이로 인해 모델의 성능이 좋아지고 있는지 랜덤성으로 좋아진건지 판단하기 어렵다.
+- 전체 데이터셋에 inlier보다 outlier의 수가 더 많아질 경우 실행 시간이 급격하게 늘어난다.
+- 만약 RANSAC 알고리즘이 실패하면 모든 가능성을 순회하도록 속도로 수렴하게 된다.
+- **하나의 데이터셋에서 여러 모델을 돌릴 수 없다.** 예를 들어 RANSAC을 통해 동시에 3개의 Fundamental matrix를 구할 수가 없다.
+
+<br>
+
+<br>
+
+## Modern RANSACs
+
+기존의 RANSAC을 보안한 Modern RANSAC도 있다. 기존의 RANSAC에는 여러가지 단점이 존재했다. 동시에 다중 모델을 추론하는 것이 불가능했다. 또한, 무작위로 뽑기 때문에, prior 정보를 활용하지 못했고, 센서에는 노이즈가 많은 편인데 기존의 RANSAC은 노이즈가 거의 없는 알고리즘으로 구현되어 있었다.
+
+<br>
+
+개량 RANSAC에는 종류가 엄청 많다. 그래서 어떤 것을 써야할지 고민이 되기도 하는데, 가장 좋은 방법은 모든 방식을 공부해서 자신의 태스크에 맞게 사용하는 것이다. 또는 여러 방식을 조합할수도 있다. 여러 가지의 방식들을 간략하게 소개하려고 한다.
+
+<br>
+
+### Early-stop method
+
+좋은 모델을 빨리 찾는 경우 RANSAC 사이클을 끝내는 방식이다. 원래의 사이클보다 빨리 끝나면 해당 시간이 비게 되므로 뒤에 프로세스를 땡겨서 처리할수도 있다.
+
+이 방식을 구현하기 위해서는 3가지 변수를 미리 정의해야 한다.
+- minimum iteration : 최소한의 퀄리티를 보장하기 위한 최소한의 반복 수
+- maximum iteration : 좋은 모델이 안찾아지면 계속 반복하는 것이 아닌 반드시 최대 특정 반복 수만큼 돌고 끝내도록 함
+- success score : 특정 score보다 높게되면 반복을 멈추도록 하기 위함
+
+<br>
+
+### PROSAC
+
+PROSAC은 이미지 매칭에 특화된 RANSAC기법으로 데이터의 prior를 잘 활용하는 기법이다. PROSAC은 descriptor matching을 할 때, L2 norm이나 Hamming distance로 측정하게 되는데, descriptor들 간의 distance가 작을수록 모델 추론을 할 때 더욱 정확하게 추론할 가능성이 높다. 그래서 PROSAC은 낮은 distance를 가진 descriptor match를 샘플링하도록 만들었다.
+
+PROSAC의 장점은 운이 나빠서 완전 실패하더라도, 기존의 RANSAC으로 수렴하기에 반드시 기존의 RANSAC보다 성능이 좋다는 것이다.
+
+<br>
+
+PROSAC 동작 방식
+1. 2개의 이미지에 대해 descriptor matching을 수행한다. 이 과정에서 match마다의 descriptor간의 distance를 기록한다.
+2. distance를 오름차순으로 정렬한다.
+3. 몇개씩 탐색할지에 대한 size(n)을 지정해준다.
+4. distance 리스트에서 n개의 top data를 샘플링한다.
+5. 샘플링한 데이터들로 모델을 추론한다.
+6. 좋은 결과가 나오면 score값을 업데이트하고, 원래의 score보다 낮으면 n을 증가시킨다.
+7. 다시 4번으로 돌아간다.
+
+<br>
+
+PROSAC은 5~10개의 loop만으로 최적의 모델을 찾는 경우가 많다.
+
+<br>
+
+### Lo-RANSAC
+
+Lo-RANSAC은 데이터셋의 데이터 패턴을 활용한 방법이다. 보통 inlier는 뭉쳐있고, outlier는 산개한 특징이 있어서 그것을 활용했다. 즉, inlier데이터를 활용해서 분포를 찾고나면 정답은 그 근처에 있으므로 랜덤한 위치로 이동할 필요가 없다. 
+
+Lo-RANSAC에서는 RANSAC 사이클 안에 추가로 RANSAC을 넣어 더 정확한 값을 찾는다. 
+
+Lo-RANSAC 동작 방식
+1. 최소한의 데이터를 샘플링
+2. 모델을 추론한다.
+    - 기존의 score보다 현재의 score가 안좋다면 다시 1번으로 돌아간다.
+    1. best score보다 좋은 score가 들어왔다면, inner RANSAC을 실행하여 방금 전 모델 score를 평가할 때 inlier라고 판단했던 데이터들을 새로운 데이터로 사용하여 데이터를 샘플링한다.
+    2. 샘플링된 데이터로 모델을 추론한다.
+        - 만약 best score보다 현재 score가 높다면 score를 업데이트한다.
+        - 만약 best score보다 낮다면 2-1로 돌아간다.
+        - maximum loop를 초과하면 inner RANSAC loop를 빠져나간다.
+3. Gauss-Newton method나 Levenberg-Marquardt method 와 같은 최적화 기법을 수행한다. 이 때도, best score를 갱신한다.
+4. 1번으로 다시 돌아간다.
+
+<br>
+
+descriptor match score(distance)를 가지고 있다면 PROSAC을 사용하는 것이 좋지만, 없다면 Lo-RANSAC을 사용하는 것이 적합하다. PROSAC을 사용하더라도inner-RANSAC을 함께 조합해서 사용하면 더욱 좋은 성능을 낼 수 있다.
 
 <br>
 
