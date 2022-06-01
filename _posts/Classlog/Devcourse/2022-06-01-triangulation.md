@@ -3,7 +3,7 @@ title:    "[데브코스] 15주차 - Visual-SLAM triangulation and perspective "
 author:
   name: JaeHo YooN
   link: https://github.com/dkssud8150
-date: 2022-05-30 16:20:00 +0800
+date: 2022-06-01 14:20:00 +0800
 categories: [Classlog, devcourse]
 tags: [devcourse, Visual-SLAM]
 toc: true
@@ -15,7 +15,7 @@ math: true
 
 # Triangulation
 
-지난 블로그에서 F-matrix와 E-matrix를 구하는 방법을 배웠고, 이 matrix를 분해하면 두 이미지 간의 translation과 rotation matrix를 구할 수 있었다. 이 후의 작업으로 3D 구조를 복원해주는 mapping 단계가 수행되어야 한다. mapping의 첫단계가 **triangulation** 이다.
+[지난 글](https://dkssud8150.github.io/posts/motion_estimation/)에서 F-matrix와 E-matrix를 구하는 방법을 배웠고, 이 matrix를 분해하면 두 이미지 간의 translation과 rotation matrix를 구할 수 있었다. 이 후의 작업으로 3D 구조를 복원해주는 mapping 단계가 수행되어야 한다. mapping의 첫단계가 **triangulation** 이다.
 
 *Triangulation*이란 두 개의 이미지 사이에서 translation 값과 두 이미지들간의 correspendence를 알고 있을 때, feature들이 의미하는 실제 x,y,z값을 복원하는 과정이다. 이 과정이 결국 2D에서 3D point로의 변환이다.
 
@@ -73,7 +73,7 @@ $ (X_{O'} + \lambda r - X_{O''} - \mu s)^T s = 0 $
 
 이고, 이를 정리하면 간단한 식이 만들어진다.
 
-$ \begin{bmatrix}r^Ts - s^Tr \\ r^Ts - s^Ts \end{bmatrix} \begin{bmatrix} \lambda \\ \mu \end{bmatrix} = \begin{bmatrix} (X_{O''} - X_{O'})^T \\ (X_{O''} - X_{O'})^T \end{bmatrix} \begin{bmatrix} r \\ s \end{bmatrix} =\> Ax = b =\> x = A^{-1}b $
+$ \begin{bmatrix} (r^Ts - s^Tr) \\ (r^Ts - s^Ts) \end{bmatrix} \begin{bmatrix} \lambda \\ \mu \end{bmatrix} = \begin{bmatrix} (X_{O''} - X_{O'})^T \\ (X_{O''} - X_{O'})^T \end{bmatrix} \begin{bmatrix} r \\ s \end{bmatrix} =\> Ax = b =\> x = A^{-1}b $
 
 <br>
 
@@ -99,13 +99,13 @@ $ \begin{bmatrix}r^Ts - s^Tr \\ r^Ts - s^Ts \end{bmatrix} \begin{bmatrix} \lambd
 
 삼각비를 활용하여 Z값을 구해줄 수 있다.
 
-$ Z : c = B : (x' - x'') \;\; =\> \cfrac{Z}{c} = \cfrac{B}{x' - x''} \;\; =\> Z = c \cfrac{B}{-(x'' - x')}$ 
+$ Z : c = B : (x' - x'') \; =\> \; \cfrac{Z}{c} = \cfrac{B}{x' - x''} \; =\> \; Z = c \cfrac{B}{-(x'' - x')}$ 
 
 이 때, c와 B는 상수이므로 x''와 x만 알아도 Z값을 구할 수 있다. 동일하게 X방향도 추정이 가능하다.
 
 <img src="/assets/img/dev/week16/day2/similar_triangle_x.png">
 
-$ Z : c = X : x' \;\; =\> X = x' \cfrac{B}{-(x''-x')} $ 
+$ Z : c = X : x' \; =\> \; X = x' \cfrac{B}{-(x''-x')} $ 
 
 이전에 Z를 구했으면 값을 그대로 집어넣으면 되고, 구하지 않았더라도 이전의 식을 그대로 사용하여 X를 구할 수 있다.
 
