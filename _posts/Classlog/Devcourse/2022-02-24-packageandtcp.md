@@ -1,5 +1,5 @@
 ---
-title:    "[데브코스] 2주차 - linux 기초(File System)"
+title:    "[데브코스] 2주차 - linux 기초 package and network "
 author:
   name: JaeHo YooN
   link: https://github.com/dkssud8150
