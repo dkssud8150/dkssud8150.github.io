@@ -1,5 +1,5 @@
 ---
-title:    "[데브코스] 15주차 - Visual-SLAM Non-linear Optimizer and Loop Closure "
+title:    "[데브코스] 15주차 - Visual-SLAM MAP and Non-linear Optimizer, Loop Closure "
 author:
   name: JaeHo YooN
   link: https://github.com/dkssud8150
@@ -155,11 +155,210 @@ Factor graph는 특정 노드에 연결되는 Factor들의 error를 통해 최�
 
 <img src="/assets/img/dev/week16/day3/graph_based_slam.png">
 
-Factor graph의 사용보다 least squares 를 쉽게 적용할 수 있는 방식으로 **Graph-based SLAM** 방식이 생겨났다. graph로 표현함으로써 얻게 되는 장점은 robot pose와 observation 정보를 쉽게 파악할 수 있다는 점이고, 그로 인해 graph안에 loop가 생겨난다. 이 loop를 최적화함으로써 loop속에 누적되는 uncertainty를 제거하고, loop안에 있는 모든 node에 대한 최적의 값을 찾을 수 있게 되었다. 
+Factor graph의 사용보다 least squares 를 쉽게 적용할 수 있는 방식으로 **Graph-based SLAM** 방식이 생겨났다. graph로 표현함으로써 얻게 되는 장점은 robot pose와 observation 정보를 쉽게 파악할 수 있다는 점이고, 그로 인해 graph안에 loop가 생겨난다. 이 loop를 최적화함으로써 loop속에 누적되는 uncertainty를 제거하고, loop안에 있는 모든 node에 대한 최적의 값을 찾을 수 있게 되었다. loop가 발생하게 되면 error를 해소시켜줌으로써 루프를 완성시켜줄 수 있다. 이를 **Loop closure**이라 한다.
+
+<img src="/assets/img/dev/week16/day3/loop_closure.jpg">
 
 <br>
 
 <img src="/assets/img/dev/week16/day3/graph_based_slam_node.png">
 
 그리고, SLAM에서의 파이프라인이 생겨났다. Front-end에서는 node와 edges를 생성했고, back-end에서는 graph를 최적화했다.
+
+<br>
+
+<br>
+
+# Bundle Adjustment
+
+<img src="/assets/img/dev/week16/day3/ba.png">[이미지 출처 - 장형기님 블로그](http://www.cv-learn.com/20210313-ba/)
+
+마찬가지로 지난 글에서의 Triangulation을 배웠는데, 이는 2view geometry에 대한 내용이었다. Bundle Adjustment는 한 단계 더 나아가 N-view geometry에 대한 내용이다. N개의 프레임 또는 N개의 카메라가 존재하고, 그에 따른 각각의 Rotation, translation이 존재한다. 이 때, 서로의 2D-2D correspondence를 공유하며, 3d point인 landmark에 대한 거리도 공유하고 있다고 가정한다. 그리고 1개의 landmark마다 2개 이상의 2D-3D correspondence를 가지고 있다.
+
+<br>
+
+모든 값들이 다 계산이 되어 있지만, 매 프레임마다 motion model 정보와 observation model 정보에 노이즈가 계속 누적되므로 이를 처리하기 위해 Batch SLAM기법을 적용한다. 2D-2D correspondence, 2D-3D correspondence 등의 값들을 활용해서 camera pose, 3D landmark position를 보정해주는 작업을 Bundle Adjustment라 한다. 보정을 한다는 것은 graph 최적화를 통해 uncertainty를 해소해준다는 것을 의미한다. graph 최적화를 위해서는 위에서 배웠듯이 motion model에서의 error, observation model에서의 error이 필요하다. VSLAM에서는 이 두가지의 error를 **ReProjection Error** 하나로 간편하게 표현이 가능하다. landmark를 image plane에 재투영했을 때 생기는 error는 pixel 단위로 표현된다.
+
+3D landmark position과 camera pose가 완벽한 값이라고 가정하면 3D landmark를 image plane에 투영했을 때는 정확한 keypoint위치로 맞아떨어지겠지만, 모든 센서는 노이즈를 가지고 있기 때문에 조금의 오차가 발생한다. 이 때 reprojection error에 대한 function이 $ \pi $이고, landmark를 image plane으로 투영한 위치와 원래 keypoint와의 오차를 $ \triangle z_{ij} $에 해당할 때 오차가 제일 작아지는 keypoint는 다음과 같이 표현할 수 있다. landmark에서의 좌표를 P로, image plane에서의 좌표를 C로 표현되어 있다.
+
+$ argmin_x \sum_i \sum_j \| x_{ij} - \pi(P_j,C_i) \|_{w_{ij}}^2 $
+
+<img src="/assets/img/dev/week16/day3/reprojection_error.png">
+
+<br>
+
+landmark재투영에 대한 error도 있지만, camera pose나 motion model, observation model에 대한 error도 구해줄 수 있다.
+
+<br>
+
+최적화한다는 것은 결국 total reprojection error를 최소화되는 최적의 camera pose와 landmark를 찾는 것이다. 그러나 image projection 과정이 linear하지 않기 때문에 단순 미분을 통한 최적화가 불가능하다. 그래서 비선형 공간에서 선형 공간으로 근사화시켜서 최적화를 수행하려고 한다. 그 방법으로 `Gauss-Newton method`, `Levenberg-Marquardt method`가 있다. 
+
+<br>
+
+<br>
+
+# Nonlinear optimization
+
+Non-linear 최적화에 사용되는 대표적인 방법들 중 **Gauss-Newton method**를 사용해보고자 한다.
+
+## Gauss-Newton method
+
+우선 BA를 푸는데 필요한 파라미터의 개수는 총 3D landmark position (X,Y,Z = 3) + Extrinsic parameter (Rx,Ry,Rz, tx,ty,tz = 6) + intrinsic parameter (fx,fy, cx,cy,s = 5) + scale factor (1)로 1개의 3D landmark당 15개의 파라미터를 가진다.
+
+이것들을 State 벡터로 표현하면 다음과 같다.
+
+landmark state $ x_l = \begin{bmatrix} X \\ Y \\ Z \end{bmatrix} $
+
+camera state $ x_{cam} = \begin{bmatrix} t_x ,\ t_y, \ y_z, \ R_x, \ R_y, \ R_z, \ \lambda, \ f_x, \ f_y, \ c_{x}, \ c_y ,\ s \end{bmatrix}^T $
+
+x_l은 3D landmark에 대한 값, x_cam은 extrinsic matrix와 scale값, intrinsic matrix로 이루어져 있다.
+
+$ State \; Vector \;\; x = \begin{bmatrix} x_{cam}, \ x_{l_1}, \ x_{l_2}, \cdots \ ,x_{l_n} \end{bmatrix}^T $
+
+<br>
+
+그렇다면 reprojection error를 최소화하는 State vector는 어떤 값을 가지는가에 대한 것이 BA 최적화이고, 이 문제를 풀기 위해 **노이즈가 가우시안 분포**를 가지는 *least squares optimization*을 수행할 것이다. 가우시안으로 가정하는 이유는 가우시안 노이즈 데이터를 사용할 경우 간편한 *Maximum Likelihood Estimation*로 바뀌게 되고, MLE는 최적의 값을 가지는 것이 가능하기 때문이다.
+
+<br>
+
+아까 사용하던 least square 식에 가우시안 노이즈 분포를 추가해준다.
+
+$ argmin_x \sum_i \sum_i \| e_i(x) \| \; =\> \; argmin_x \sum_i \sum_j \| e_i(x)^T \Omega_i e_i(x) \| $
+
+이 때, 오메가는 covariance matrix 또는 information matrix라고 부른다. 
+
+<br>
+
+최적의 값을 x\*라고 했을 때, $ x^{*} = argmin_x E(x) $라 표현하고, 위치 x 에서 x\*로의 변화량을 $ \triangle x $라 했을 때, 
+
+$ \triangle x = x^{*} - x $ 이고, $ argmin_x $ 대신 $ argmin_{\triangle x}$ 에 대한 값으로 정리하면 다음과 같다.
+
+$ x^{*} = argmin_{\triangle x} E(x + \triangle x) $
+
+그런데, $ E(x) = \sum_i \| e_i{x}^T \Omega_i e_i(x) \| $이므로 최종적인 x*는 다음과 같다.
+
+$ x^{*} = argmin_{\triangle x} \sum_i \| e_i(x_i + \triangle x)^T \Omega_i e_i(x_i+\triangle x) \| $
+
+<br>
+
+$ e_i(x_i + \triangle x) $ 가 non-linear하기 때문에 linear하게 근사시키기 위해 미분을 해준다. 미분을 할 때는 테일러 급수를 사용한다.
+
+$ \cfrac{\partial (e_i(x_i + \triangle x))}{\partial x} \approx e_i(x) + J_i \triangle x =\> e_i + J_i \triangle x $
+
+J는 Jacobian을 뜻하고, 간편하게 표현하였다. 그래서 다시 x*에 대한 식으로 넘어와 대입해주면 다음과 같다. 
+
+$ x^{*} = argmin_{\triangle x} \sum_i [e_i + J_i \triangle x]^T \Omega_i [e_i + J_i \triangle x]$
+
+$ x^{*} = argmin_{\triangle x} (\sum_i e_i^T\Omega_i e_i) + 2(\sum_i e_i\Omega_i J_i)\triangle x + \triangle x^T(\sum_i J_i^T \Omega_i J_i)\triangle x $
+
+<br>
+
+이 때, $ (\sum_i e_i^T\Omega_i e_i) = C \;,\; \sum_i e_i\Omega_i J_i = b^T \;,\; \sum_i J_i^T \Omega_i J_i = H $라고 가정한다면,
+
+$ x^{*} = argmin_{\triangle x} C + 2b^T\triangle x + \triangle x^T H \triangle x $
+
+이므로, 이는 $\triangle x$에 대한 2차 방정식으로 간주할 수 있다.
+
+<br>
+
+2차 방정식으로 생각하면 최적화가 간단해진다. 2차방정식은 미분을 해서 0이 되는 값은 최대 또는 최소이다. 그러나 위의 식에서는 항상 최소가 나오게 되어있다.
+
+$ \triangle x$ 에 대해 미분을 하면
+
+$ \cfrac{\partial}{\partial \triangle x} [C + 2b^T \triangle x + \triangle x^T H \triangle x] = 2b + 2H\triangle x = 0 $
+
+따라서 $ \triangle x = - H^{-1}b $가 되고, $ \triangle x $의 의미는 현재 위치 x_0에서 최적의 x로 가기 위한 변화량을 의미한다.
+
+이 때의 최적의 x는 global한 최적값이 아니라 local minia에 해당한다. 위의 식이 의미하는 바는 현재의 값보다 낮은 값으로 찾아갈 것이고, 이를 통해 시간이 지속될수록 점차 minumum에 다가가는 것을 확인할 수 있다.
+
+<br>
+
+그러나 현실적으로는 H matrix가 굉장히 크기 때문에 계산하는 것은 매우 복잡하다. 
+
+<img src="/assets/img/dev/week16/day3/params.png">
+
+이미지 출처 : cyrill stachniss 교수님 lectures
+
+2만장의 이미지가 있을 때, 각각의 이미지마다 18개의 feature를 뽑고, 각각의 landmark는 3번 정도 관찰된다고 가정해보자. 이런 경우 Jacobian matrix 1개가 3.5 x 10^11 개의 값이 존재한다. 이를 inverse하는 것은 불가능하다.
+
+<br>
+
+<img src="/assets/img/dev/week16/day3/sparsity.png">
+
+이미지 출처 : cv-learn.com 블로그 글
+
+그래서 matrix의 특성을 이용해보고자 한다. Jacobian matrix를 살펴보면 대부분의 element가 비어있다. 그 이유는 factor들마다의 연관성을 미분한 matrix인데, node들은 인접한 것과는 연결이 되겠지만, 멀리 떨어져 있는 것과는 거의 연결이 되어 있지 않다.  거의 비어있는 matrix를 sparsity matrix라고 부른다.
+
+<br>
+
+<img src="/assets/img/dev/week16/day3/bH.png">
+
+b matrix의 경우도 Jacobian이 거의 비어있으면 b도 거의 비어있게 출력된다. H matrix도 동일하게 Jacobian matrix가 거의 비어있어서 비어있는 matrix가 형성된다.
+
+그러나 식을 보면 전체의 합으로 구성되어 있으므로 b는 sparsity matrix가 모여 dense한 matrix가 만들어지지만, H는 대칭적인 형태가 구성되어 여전히 sparsity한 특성을 띈다.
+
+<br>
+
+<img src="/assets/img/dev/week16/day3/optimize.png">
+
+H의 sparsity한 특성을 활용하여 inverse matrix를 빠르게 구할 수 있을 것이다. 그러나 좋은 방법은 아니다.
+
+<br>
+
+<br>
+
+## Schur Complement
+
+H matrix에 대해 sparsity한 특성을 활용하는 것이 아닌 H matrix의 형태를 분석해서 연산하는 방법이 있다.
+
+<img src="/assets/img/dev/week16/day3/schur_complement.png">
+
+H matrix의 형태는 4가지 구조로 나뉘어져 있다. 그래서 H를 4가지로 나누어서 표현할 수 있다. A는 Camera에 대한 정보로 H_S, C는 3D structure에 대한 정보로 H_C로 표현된다. B는 H_SC를 의미한다.
+
+$ \begin{bmatrix} H_S \ H_{SC} \\ H_{SC}^T \ H_C \end{bmatrix} \begin{bmatrix} \delta_S \\ \delta_C \end{bmatrix} = \begin{bmatrix} \varepsilon_S \\ \varepsilon_C \end{bmatrix}$
+
+1행의 값들이 3D structure에 대한 정보, 2행의 값들이 Camera Parameter에 대한 정보이다. 그 후 양변에 특정 행렬을 곱해 H_SC^T를 제거한다.
+
+$ \begin{bmatrix} H_S \ H_{SC} \\ H_{SC}^T \ H_C \end{bmatrix} \begin{bmatrix} \delta_S \\ \delta_C \end{bmatrix} \begin{bmatrix} I \ 0 \\ -H_{SC}^TH_S^{-1} \ I \end{bmatrix} = \begin{bmatrix} \varepsilon_S \\ \varepsilon_C \end{bmatrix}\begin{bmatrix} I \ 0 \\ -H_{SC}^TH_S^{-1} \ I \end{bmatrix} $
+
+$ \begin{bmatrix} H_S \ H_{SC} \\ 0 \ H_C - H_{SC}^TH_S^{-1}H_{SC} \end{bmatrix} \begin{bmatrix} \delta_S \\ \delta_C \end{bmatrix} = \begin{bmatrix} \varepsilon_S \\ \varepsilon_C - \varepsilon_S H_{SC}^TH_S{-1} \end{bmatrix}$
+
+이로써 2행의 값들로만 방정식을 풀 수 있게 되었다. 
+
+$ (H_C - H_{SC}^T H_S^{-1}H_{SC})\delta_C = \varepsilon_S H_{SC}^T H_S{-1}$
+
+이 때, 좌항의 괄호 안에 있는 식을 **Schur Complement** 식이라 한다.
+
+H_C와 H_SC는 우리가 가지고 있는 값이다. $ H_S^{-1} $는 안의 블록들이 3x3 diagonal matrix로 이루어져 있어 구하기 쉽다. 그러면 또 다시 `Ax = b` 의 구조를 가지게 된다. 
+
+그러나 좌항의 것들을 그대로 우항을 넘기기는 쉽지 않다. 그래서 Schur complement를 1개의 큰 matrix로 만든 후 inverse 하기 편한 matrix로 분해한다. 분해하는 방법으로는 `LU decomposition` 또는 `Cholesky decomposition`을 많이 사용한다. 
+
+<br>
+
+그 후 이렇게 구한 $ \delta_C $를 통해 $ \delta_S $를 구하면 된다.
+
+$ \delta_S = H_S^{-1}(\varepsilon_C - H_{SC}^T \delta_C)$
+
+여기서 $ \delta_C $의 의미는 우리가 가지고 있는 H matrix의 카메라 파라미터들이 어떻게 바뀌어야 $ \delta_S $와 같은지에 대한 값이고, $ \delta_S $는 3D landmark position이 얼마나 바뀌어야 $ \delta_C $와 같아지는지에 대한 값이다.
+
+<br>
+
+<br>
+
+## Outlier rejection
+
+least squares를 할 때 조심해야 할 부분이 있다. least squares 알고리즘이 outlier에 매우 취약한 알고리즘이다. 따라서 least squares를 사용할 때는 M-estimator 커널과 같은 기법을 사용하여 데이터 분포속에서 outlier를 optimization 식에서 제외시켜야 한다. 
+
+<br>
+
+<br>
+
+### Nonliear optimization Libraries
+
+SLAM에서 optimization을 수행하기 위해 이때까지 배운 복잡한 과정들을 library에 잘 정리되어 있다.
+
+- [Google Ceres-solver](https://code.google.com/p/ceres-solver/)
+- [G2o](https://openslam.org/g2o.html)
+- [GTSAM](https://collab.cc.gatech.edu/borg/gtsam/)
+
 
