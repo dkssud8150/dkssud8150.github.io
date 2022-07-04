@@ -1,5 +1,5 @@
 ---
-title:    "[데브코스] 15주차 - DepthFormer 실행 "
+title:    "[데브코스] 18주차 - DepthFormer 실행 "
 author:
   name: JaeHo YooN
   link: https://github.com/dkssud8150

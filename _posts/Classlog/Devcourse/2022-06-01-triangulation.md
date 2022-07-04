@@ -1,5 +1,5 @@
 ---
-title:    "[데브코스] 15주차 - Visual-SLAM triangulation and perspective "
+title:    "[데브코스] 16주차 - Visual-SLAM triangulation and perspective "
 author:
   name: JaeHo YooN
   link: https://github.com/dkssud8150

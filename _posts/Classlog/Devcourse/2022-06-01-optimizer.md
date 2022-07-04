@@ -1,5 +1,5 @@
 ---
-title:    "[데브코스] 15주차 - Visual-SLAM MAP and Non-linear Optimizer, Loop Closure "
+title:    "[데브코스] 16주차 - Visual-SLAM MAP and Non-linear Optimizer, Loop Closure "
 author:
   name: JaeHo YooN
   link: https://github.com/dkssud8150

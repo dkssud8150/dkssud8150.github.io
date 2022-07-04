@@ -1,5 +1,5 @@
 ---
-title:    "[데브코스] 15주차 - Visual-SLAM motion estimation "
+title:    "[데브코스] 16주차 - Visual-SLAM motion estimation "
 author:
   name: JaeHo YooN
   link: https://github.com/dkssud8150

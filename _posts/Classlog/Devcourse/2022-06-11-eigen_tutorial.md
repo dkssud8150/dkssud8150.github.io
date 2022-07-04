@@ -1,5 +1,5 @@
 ---
-title:    "[데브코스] 15주차 - Visual-SLAM Eigen tutorial "
+title:    "[데브코스] 17주차 - Visual-SLAM Eigen tutorial "
 author:
   name: JaeHo YooN
   link: https://github.com/dkssud8150
