@@ -428,7 +428,7 @@ CUDA_VISIBLE_DEVICES=-1 python tools/test.py configs/depthformer/depthformer_swi
 
 # Bug report
 
-1. TypeError: multi_scale_deformable_attn_pytorch() takes 4 positional arguments but 6 were given
+- 1. TypeError: multi_scale_deformable_attn_pytorch() takes 4 positional arguments but 6 were given
 
 `output = multi_scale_deformable_attn_pytorch(value, spatial_shapes, level_start_index, sampling_locations, attention_weights, self.im2col_step)`
 
@@ -442,7 +442,7 @@ change to
 
 &nbsp;
 
-2. please usr “init_cfg” instead
+- 2. please usr “init_cfg” instead
 
 [https://github.com/open-mmlab/mmdetection/issues/5177](https://github.com/open-mmlab/mmdetection/issues/5177)
 
@@ -450,7 +450,7 @@ change to
 
 &nbsp;
 
-3. CUDA out of memory
+- 3. CUDA out of memory
 
 ```bash
 CUDA_VISIBLE_DEVICES=-1 python tools/test.py configs/depthformer/depthformer_swinl_22k_w7_nyu.py path/to/your/model --eval x
@@ -464,7 +464,7 @@ CUDA_VISIBLE_DEVICES=-1 python tools/test.py configs/depthformer/depthformer_swi
 
 &nbsp;
 
-4. cuDNN error: CUDNN_STATUS_NOT_INITIALIZED
+- 4. cuDNN error: CUDNN_STATUS_NOT_INITIALIZED
 
 [https://github.com/werner-duvaud/muzero-general/issues/139](https://github.com/werner-duvaud/muzero-general/issues/139)
 
@@ -474,9 +474,9 @@ torch==1.8.0+cu112 하지 않고, torch==1.8.0 만 설치하고, 실행했더니
 
 &nbsp;
 
-- cuda버전에 맞는 pytorch 설치
-    - torch==1.8.0+cu<cuda version>
-    - 11.2에 맞는 torch버전이 없어서 11.3을 설치한다.
+> cuda버전에 맞는 pytorch 설치
+> - torch==1.8.0+cu<cuda version>
+> - 11.2에 맞는 torch버전이 없어서 11.3을 설치한다.
 
 &nbsp;
 
@@ -517,7 +517,7 @@ ImportError: /usr/local/lib/python3.7/dist-packages/mmcv/_ext.cpython-37m-x86_64
 !pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu113/torch1.11.0/index.html
 ```
 
-> mmcv-full 1.5.3 버전을 설치하니 버전이 너무 안맞다고 함… 결국 깃허브에 나와있는 버전대로 11.1버전에 맞게 설치하고자 한다.
+> 결론 : mmcv-full 1.5.3 버전을 설치하니 버전이 너무 안맞다고 함… 결국 깃허브에 나와있는 버전대로 11.1버전에 맞게 설치하고자 한다.
 
 &nbsp;
 
@@ -535,7 +535,7 @@ pip install mmcv-full==1.3.13 -f https://download.openmmlab.com/mmcv/dist/cu111/
 
 &nbsp;
 
-5. import 상대경로 설정
+- 5. import 상대경로 설정
 
 ```python
 import sys
@@ -546,7 +546,7 @@ sys.path.append(path)
 
 &nbsp;
 
-6. qt.qpa.xcb: could not connect to display
+- 6. qt.qpa.xcb: could not connect to display
 
 QT라는 GUI 라이브러리가 있는데, 이를 실행할 수 없다는 것. colab에서는 실행이 불가능하다고 한다.
 
@@ -625,7 +625,7 @@ mmcv.imfrombytes(backend=’cv2’) → mmcv.imfrombytes(backend=’pillow’)
 
 &nbsp;
 
-7. TypeError: multi_scale_deformable_attn_pytorch() takes 4 positional arguments but 6 were given
+- 7. TypeError: multi_scale_deformable_attn_pytorch() takes 4 positional arguments but 6 were given
 
 4개 args만 들어가야 하는데 6개 들어간다는 의미이다. 코드를 보니 실제로 6개가 들어가고 있었다.
 
@@ -642,7 +642,7 @@ output = multi_scale_deformable_attn_pytorch(
 
 &nbsp;
 
-8. tcmalloc: large alloc
+- 8. tcmalloc: large alloc
 
 python이 파일이 너무 큰 파일을 다룰 때, 나오는 경고 메시지라고 한다. 일반적으로는 warning으로만 출력되지만, 실제로 할당 메모리보다 자원이 부족한 경우에는 에러가 난다. 해결하는 방법은 환경 변수 `export TCMALLOC_LARGE_ALLOC_REPORT_THRESHOLD`를 더 크게 변경하면 된다.  약 10GB로 지정해준다.
 
@@ -655,7 +655,7 @@ python이 파일이 너무 큰 파일을 다룰 때, 나오는 경고 메시지�
 
 &nbsp;
 
-9. AttributeError: 'ConfigDict' object has no attribute 'eval_pipeline’
+- 9. AttributeError: 'ConfigDict' object has no attribute 'eval_pipeline’
 
 `./configs/_base_/datasets/kitti.py`에`./configs/_base_/datasets/nyu.py`에 있는 eval_pipeline을 복사하여 추가한다.
 
@@ -663,6 +663,6 @@ python이 파일이 너무 큰 파일을 다룰 때, 나오는 경고 메시지�
 
 &nbsp;
 
-10. KeyError: 'cam_intrinsic’
+- 10. KeyError: 'cam_intrinsic’
 
 `./depthdatasets/kitti.py`에 있는 cam_instrinsic_dict를 cam_intrinsic으로 수정한다.
