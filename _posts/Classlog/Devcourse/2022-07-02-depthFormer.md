@@ -194,11 +194,17 @@ monocular-depth-estimation-toolbox
 │   ├── kitti
 │   │   ├── input
 │   │   │   ├── 2011_09_26
+│   │   │   │   ├── 2011_09_26_drive_0001_sync
+│   │   │   │   │   ├── image_02
+│   │   │   │   ├── 2011_09_26_drive_0002_sync
+│   │   │   │   ├── ...
+│   │   │   │   ├── 2011_10_03_drive_0047_sync
 │   │   │   ├── 2011_09_28
 │   │   │   ├── ...
 │   │   │   ├── 2011_10_03
 │   │   ├── gt_depth
 │   │   │   ├── 2011_09_26_drive_0001_sync
+│   │   │   │   ├── image_03
 │   │   │   ├── 2011_09_26_drive_0002_sync
 │   │   │   ├── ...
 │   │   │   ├── 2011_10_03_drive_0047_sync
@@ -237,6 +243,13 @@ monocular-depth-estimation-toolbox
 │   │   ├── split_file.txt
 ```
 
+```markdown
+# data directory format
+input_image: 2011_09_26/2011_09_26_drive_0002_sync/image_02/data/0000000069.png 
+gt_depth:    2011_09_26_drive_0002_sync/proj_depth/groundtruth/image_02/0000000069.png 
+```
+
+
 &nbsp;
 
 &nbsp;
@@ -245,7 +258,23 @@ monocular-depth-estimation-toolbox
 
 KITTI : [http://www.cvlibs.net/datasets/kitti/eval_depth_all.php](http://www.cvlibs.net/datasets/kitti/eval_depth_all.php)
 
-`Dataset annotated depth maps data set` 을 다운로드하여 데이터를 gt_depth에 넣어준다.
+&nbsp;
+
+- input 데이터셋 다운로드
+
+```bash
+mkdir input
+```
+
+[http://www.cvlibs.net/datasets/kitti/raw_data.php](http://www.cvlibs.net/datasets/kitti/raw_data.php)
+
+위의 사이트에 raw data들을 synced data 형태로 다운로드 해서 2011_09_26과 같이 날짜에 대한 폴더를 생성하고, 그 안에 데이터들을 넣어준다.
+
+&nbsp;
+
+&nbsp;
+
+추가적인 데이터를 다운받으려면 `Dataset annotated depth maps data set` 을 다운로드하여 데이터를 gt_depth에 넣어준다.
 
 - curl로 gt_depth 데이터셋 다운로드
 
@@ -263,15 +292,7 @@ mv ./train/* ./gt_depth/
 
 &nbsp;
 
-- input 데이터셋 다운로드
-
-```bash
-mkdir input
-```
-
-[http://www.cvlibs.net/datasets/kitti/raw_data.php](http://www.cvlibs.net/datasets/kitti/raw_data.php)
-
-위의 사이트에 raw data들을 synced data 형태로 다운로드 해서 input 폴더에 넣는다. 
+추후 코드에서 input 데이터와 gt_depth 데이터를 비교할 때 사용하는데, input데이터를 image_02, gt_depth 데이터는 image_03 데이터를 사용하므로 gt_depth를 다운하고 그 데이터를 분할해줘도 된다. 위의 gt_depth를 다운받아보고, 자신의 kitti_eigen_test.txt 파일에 맞게 분할해주면 된다. 나의 경우 txt파일에 0002_sync, 0013,0020에 대한 gt 파일이 지정되어 있었는데, gt_depth에는 해당 번호들이 없어서 input데이터에서 복사해왔다.
 
 &nbsp;
 
@@ -293,6 +314,8 @@ data
 - split_file download
 
 [https://www.kaggle.com/datasets/qikangdeng/kitti-split-and-eigen-split?resource=download&select=eigen_train_files.txt](https://www.kaggle.com/datasets/qikangdeng/kitti-split-and-eigen-split?resource=download&select=eigen_train_files.txt)
+
+해당 파일을 다운받고, data/kitti/폴더에 넣는다. 그리고 자기가 가지고 있는 데이터에 맞게 파일을 수정해준다. 나는 02,09,13,20 에 대해서만 사용할 예정이므로 나머지는 다 지웠다.
 
 &nbsp;
 
@@ -363,18 +386,6 @@ mkdir cityscapes
 
 # 실행
 
-## pth 파일 다운로드
-
-[https://drive.google.com/u/0/uc?id=1BpcY9tULBRTW-cG8EVHBAZBapAv3ide4&export=download](https://drive.google.com/u/0/uc?id=1BpcY9tULBRTW-cG8EVHBAZBapAv3ide4&export=download)
-
-```bash
-mkdir checkpoints
-```
-
-checkpoints안에 pth파일을 추가해준다.
-
-&nbsp;
-
 ## DepthFormer Train
 
 ```bash
@@ -392,8 +403,16 @@ bash ./tools/dist_train.sh configs/depthformer/depthformer_swinl_22k_w7_kitti.py
 - single gpus
 
 ```bash
-python tools/test.py configs/depthformer/depthformer_swinl_22k_w7_kitti.py checkpoints/depthformer_swinl_22k_kitti.pth --show
+python ./tools/test.py ./configs/depthformer/depthformer_swinl_22k_w7_kitti.py ./checkpoints/depthformer_swinl_22k_kitti.pth --show-dir depthformer_swinl_22k_w7_kitti_result
 ```
+
+show-dir은 test 결과를 해당 디렉토리에 저장하겠다는 의미이다. 
+
+<img src="/assets/img/dev/result_directory.png">
+
+<img src="/assets/img/dev/result.png">
+
+&nbsp;
 
 - no gpus
 
@@ -407,7 +426,7 @@ CUDA_VISIBLE_DEVICES=-1 python tools/test.py configs/depthformer/depthformer_swi
 
 # Bug report
 
-- TypeError: multi_scale_deformable_attn_pytorch() takes 4 positional arguments but 6 were given
+1. TypeError: multi_scale_deformable_attn_pytorch() takes 4 positional arguments but 6 were given
 
 `output = multi_scale_deformable_attn_pytorch(value, spatial_shapes, level_start_index, sampling_locations, attention_weights, self.im2col_step)`
 
@@ -421,11 +440,7 @@ change to
 
 &nbsp;
 
-- subprocess.CalledProcessError: Command '['/usr/local/bin/python', '-u', 'tools/train.py', '--local_rank=0', 'configs/depthformer/depthformer_swint_w7_nyu.py', '--launcher', 'pytorch']' returned non-zero exit status 1.
-
-`./configs/depthformer/depthformer_swinl_22k_w7_kitti.py`에서 model - pretrained 부분을 수정
-
-[https://github.com/zhyever/Monocular-Depth-Estimation-Toolbox/issues/21](https://github.com/zhyever/Monocular-Depth-Estimation-Toolbox/issues/21)
+2. please usr “init_cfg” instead
 
 [https://github.com/open-mmlab/mmdetection/issues/5177](https://github.com/open-mmlab/mmdetection/issues/5177)
 
@@ -433,22 +448,219 @@ change to
 
 &nbsp;
 
-- please usr “init_cfg” instead
-
-&nbsp;
-
-&nbsp;
-
-- CUDA out of memory
+3. CUDA out of memory
 
 ```bash
-$ CUDA_VISIBLE_DEVICES=-1 python tools/test.py configs/depthformer/depthformer_swinl_22k_w7_nyu.py path/to/your/model --eval x
+CUDA_VISIBLE_DEVICES=-1 python tools/test.py configs/depthformer/depthformer_swinl_22k_w7_nyu.py path/to/your/model --eval x
 ```
 
-로 실행한다.
+로 실행
+
+[https://discuss.pytorch.kr/t/cuda-out-of-memory/216/6](https://discuss.pytorch.kr/t/cuda-out-of-memory/216/6)
 
 &nbsp;
 
-또는 다음 사이트에 들어가서 하나하나 실행해본다.
+&nbsp;
 
-[https://discuss.pytorch.kr/t/cuda-out-of-memory/216/6](https://discuss.pytorch.kr/t/cuda-out-of-memory/216/6)
+4. cuDNN error: CUDNN_STATUS_NOT_INITIALIZED
+
+[https://github.com/werner-duvaud/muzero-general/issues/139](https://github.com/werner-duvaud/muzero-general/issues/139)
+
+torch==1.8.0+cu112 하지 않고, torch==1.8.0 만 설치하고, 실행했더니 해당 에러가 뜬다.
+
+[https://github.com/pytorch/pytorch/issues/53336](https://github.com/pytorch/pytorch/issues/53336)
+
+&nbsp;
+
+- cuda버전에 맞는 pytorch 설치
+    - torch==1.8.0+cu<cuda version>
+    - 11.2에 맞는 torch버전이 없어서 11.3을 설치한다.
+
+&nbsp;
+
+```bash
+pip install torch==1.11.0+cu113 torchvision==0.12.0+cu113 torchaudio==0.11.0 --extra-index-url https://download.pytorch.org/whl/cu113
+```
+
+그러나 이 에러가 1.8이상 버전에서 발생하는 에러일 수도 있음. 그래서 11.3으로 설치해도 에러가 난다면 11.0으로 설치한다.
+
+```python
+pip install torch==1.7.1+cu110 torchvision==0.8.2+cu110 torchaudio==0.7.2 -f https://download.pytorch.org/whl/torch_stable.html
+```
+
+> 둘 다 동일하게 에러 발생
+
+
+```bash
+ImportError: /usr/local/lib/python3.7/dist-packages/mmcv/_ext.cpython-37m-x86_64-linux-gnu.so: undefined symbol: _ZN2at5sliceERKNS_6TensorElN3c108optionalIlEES5_l
+```
+
+이는 pytorch버전이랑 mmcv 버전이 안맞아서 발생하는 것!
+
+&nbsp;
+
+- 11.0버전
+
+```bash
+!pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu111/torch1.10.0/index.html
+```
+
+> 동일하게 1.5.3 버전이 설치된다.
+
+&nbsp;
+
+- 11.3버전
+
+```bash
+!pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu113/torch1.11.0/index.html
+```
+
+> mmcv-full 1.5.3 버전을 설치하니 버전이 너무 안맞다고 함… 결국 깃허브에 나와있는 버전대로 11.1버전에 맞게 설치하고자 한다.
+
+&nbsp;
+
+&nbsp;
+
+원래 설명서에 나와있는 버전은 cuda 11.1, torch 1.8.0 mmcv 1.3.13
+
+```bash
+pip uninstall torch torchvision torchaudio mmcv-full -y
+pip install torch==1.8.0+cu111 torchvision==0.9.0+cu111 torchaudio==0.8.0 -f https://download.pytorch.org/whl/torch_stable.html
+pip install mmcv-full==1.3.13 -f https://download.openmmlab.com/mmcv/dist/cu111/torch1.8.0/index.html
+```
+
+&nbsp;
+
+&nbsp;
+
+5. import 상대경로 설정
+
+```python
+import sys
+sys.path.append(path)
+```
+
+&nbsp;
+
+&nbsp;
+
+6. qt.qpa.xcb: could not connect to display
+
+QT라는 GUI 라이브러리가 있는데, 이를 실행할 수 없다는 것. colab에서는 실행이 불가능하다고 한다.
+
+[qt.qpa.xcb: could not connect to display :1.0 qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.](https://forum.qt.io/topic/132855/qt-qpa-xcb-could-not-connect-to-display-1-0-qt-qpa-plugin-could-not-load-the-qt-platform-plugin-xcb-in-even-though-it-was-found/13)
+
+&nbsp;
+
+- colab에서 cv2 함수 사용하는 방법
+
+import cv2 → `from google.colab.patches import cv2_imshow`
+
+[COLAB에서 OpenCV 함수 사용하기](https://overface.tistory.com/573)
+
+> cv2가 아닌 mmcv를 사용하고 있어서 어디를 고쳐야 할지 모름. 실패
+
+&nbsp;
+
+- cv2를 pillow로 변경
+
+mmcv.imfrombytes(backend=’cv2’) → mmcv.imfrombytes(backend=’pillow’)
+
+[fileio - mmcv 1.5.3 documentation](https://mmcv.readthedocs.io/en/latest/api.html)
+
+> 실패
+
+&nbsp;
+
+| 결론 : —show를 `—eval x`로 변경하여 GUI 사용하지 않기
+
+&nbsp;
+
+- 추가 : Xming 설치해서 WSL2에서 GUI 실행하기
+
+[[WSL] Windows Subsystem for Linux - 디스플레이 서버 설정 및 GUI 사용하기 - ECE - TUWLAB](https://www.tuwlab.com/ece/29485)
+
+1. xming 설치 : [https://sourceforge.net/projects/xming/](https://sourceforge.net/projects/xming/)
+2. 실행 → 단축 아이콘 부분에 실행된 것을 확인할 수 있음
+3. wsl 쉘에 /etc/machine-id 생성
+    
+    ```bash
+    sudo systemd-machine-id-setup
+    sudo dbus-uuidgen --ensure
+    ```
+    
+4. 생성 확인
+    
+    ```bash
+    $ cat /etc/machine-id
+    7d7873cb6d4a46f1adcf99fba8b07d5a
+    ```
+    
+5. X-window 구성 요소 설치
+    
+    ```bash
+    sudo apt install x11-apps xfonts-base xfonts-100dpi xfonts-75dpi xfonts-cyrillic
+    ```
+    
+6. ~/.bashrc에 추가
+    
+    ```bash
+    export DISPLAY=:0
+    ```
+    
+7. 적용
+    
+    ```bash
+    source ~/.bashrc
+    ```
+    
+8. 동작확인 → wsl쉘에 타이핑
+    
+    ```bash
+    xeyes
+    ```
+    
+
+&nbsp;
+
+7. TypeError: multi_scale_deformable_attn_pytorch() takes 4 positional arguments but 6 were given
+
+4개 args만 들어가야 하는데 6개 들어간다는 의미이다. 코드를 보니 실제로 6개가 들어가고 있었다.
+
+[https://github.com/open-mmlab/mmcv/pull/1223](https://github.com/open-mmlab/mmcv/pull/1223)
+
+[](https://programtalk.com/python-more-examples/mmcv.ops.multi_scale_deform_attn.multi_scale_deformable_attn_pytorch.detach/)
+
+```python
+# usr/local/lib/python3.7/dist-packages/mmcv/ops/multi_scale_deform_attn.py line.351
+output = multi_scale_deformable_attn_pytorch(
+                value, spatial_shapes, sampling_locations,
+                attention_weights)
+```
+
+&nbsp;
+
+8. tcmalloc: large alloc
+
+python이 파일이 너무 큰 파일을 다룰 때, 나오는 경고 메시지라고 한다. 일반적으로는 warning으로만 출력되지만, 실제로 할당 메모리보다 자원이 부족한 경우에는 에러가 난다. 해결하는 방법은 환경 변수 `export TCMALLOC_LARGE_ALLOC_REPORT_THRESHOLD`를 더 크게 변경하면 된다.  약 10GB로 지정해준다.
+
+```bash
+!sudo sh -c 'echo "export TCMALLOC_LARGE_ALLOC_REPORT_THRESHOLD=107374182400" >> ~/.bashrc'
+!source ~/.bashrc
+```
+
+[[Python / Linux] tcmalloc: large alloc 2219589632 bytes == 0x8fa7a000 @ 0x7fb7e4433680 해결법](https://cryptosalamander.tistory.com/151)
+
+&nbsp;
+
+9. AttributeError: 'ConfigDict' object has no attribute 'eval_pipeline’
+
+`./configs/_base_/datasets/kitti.py`에`./configs/_base_/datasets/nyu.py`에 있는 eval_pipeline을 복사하여 추가한다.
+
+[https://github.com/open-mmlab/mmdetection/issues/5739](https://github.com/open-mmlab/mmdetection/issues/5739)
+
+&nbsp;
+
+10. KeyError: 'cam_intrinsic’
+
+`./depthdatasets/kitti.py`에 있는 cam_instrinsic_dict를 cam_intrinsic으로 수정한다.
