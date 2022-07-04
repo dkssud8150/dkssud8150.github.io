@@ -13,6 +13,8 @@ math: true
 
 &nbsp;
 
+실행 코드 : https://colab.research.google.com/drive/1xR54UirAUw7JcROSKZPl3HHH_hsDVBlh#scrollTo=lZQtCRpI6hN2
+
 # Miniconda 설치 방법
 
 설치 사이트 : [https://docs.conda.io/en/latest/miniconda.html](https://docs.conda.io/en/latest/miniconda.html)
