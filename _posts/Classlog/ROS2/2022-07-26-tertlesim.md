@@ -204,7 +204,7 @@ ros2 run turtlesim turtlesim_node __node:=new_turtle
 
 노드 이름만 변경되었고, 토픽인 `turtle1/cmd_vel`은 동일하다. 만약 teleop_turtle 노드를 이용하여 거북이를 움직이면 두 개의 노드의 거북이가 동일하게 움직인다. 이는 동일한 토픽을 이용하기 때문이다. 이 토픽 또한 토픽명을 변경하거나 name_space를 통해 바꿀 수 있다.
 
-![](2022-07-26-04-38-10.png)
+<img src="/assets/img/ros2/turtlesim_rqt_graph3.png">
 
 ```bash
 $ ros2 node list
