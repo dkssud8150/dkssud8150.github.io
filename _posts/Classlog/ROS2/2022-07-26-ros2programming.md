@@ -380,7 +380,7 @@ $ rqt_graph
 
 - rqt_graph
 
-<img src="/assets/img/ros2/rqt_graph.png">
+<img src="/assets/img/ros2/helloworld_rqt_graph.png">
 
 &nbsp;
 
