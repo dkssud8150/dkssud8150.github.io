@@ -331,25 +331,46 @@ NYU : [https://drive.google.com/u/0/uc?id=1AysroWpfISmm-yRFGBgFTrLy6FjQwvwP&expo
 ```bash
 cd data
 mkdir nyu
+cd nyu
 ```
 
 nyu 폴더에 위의 zip파일을 다운로드한다.
 
 ```bash
-unzip sync.zip
+unzip sync.zip && sudo rm -rf sync.zip
 ```
 
 또는 
 
 ```bash
-jar xvf sync.zip
+jar xvf sync.zip && sudo rm -rf sync.zip
 ```
+
+zip파일을 압축 풀면, sync 폴더가 생성되고, 그 안에 dasement_0001a, dasement_0001b... 등이 들어있다.
+
+```bash
+mv sync/* ./ && sudo rm -rf sync
+```
+
+&nbsp;
 
 그 후 test 데이터셋도 다운받아야 한다.
 
-해당 주소 ([https://cs.nyu.edu/~silberman/datasets/nyu_depth_v2.html](https://cs.nyu.edu/~silberman/datasets/nyu_depth_v2.html))로 들어가 `labeled dataset`을 다운받는다.
+&nbsp;
 
-이는 `.mat` 파일이므로 zip파일로 변환해야 한다. 변환하는 사이트는 다음과 같다. [https://m.ezyzip.com/kr-mat-zip.html](https://m.ezyzip.com/kr-mat-zip.html)
+```
+$ cd ~/workspace/bts/utils
+### Get official NYU Depth V2 split file
+$ wget http://horatio.cs.nyu.edu/mit/silberman/nyu_depth_v2/nyu_depth_v2_labeled.mat
+### Convert mat file to image files
+$ python extract_official_train_test_set_from_mat.py nyu_depth_v2_labeled.mat splits.mat ../../dataset/nyu_depth_v2/official_splits/
+```
+
+&nbsp;
+
+split 파일들은 [해당 주소](https://github.com/zhyever/Monocular-Depth-Estimation-Toolbox/tree/main/splits)를 확인한다. 
+
+nyu_train.txt와 nyu_test.txt 파일을 다운받거나 복사해서 data/nyu 위치에 넣는다.
 
 &nbsp;
 
@@ -420,6 +441,41 @@ show-dir은 test 결과를 해당 디렉토리에 저장하겠다는 의미이�
 
 ```bash
 CUDA_VISIBLE_DEVICES=-1 python tools/test.py configs/depthformer/depthformer_swinl_22k_w7_kitti.py checkpoints/depthformer_swinl_22k_kitti.pth --show
+```
+
+&nbsp;
+
+&nbsp;
+
+## Custom dataset inference 해보기
+
+1. `configs/depthformer/`에 있는 자신이 사용할 pretrained model의 파일을 복사하여 `_base_`에 `_base_/datasets/kitti.py` 와 같은 kitti나 nyu 등을 custom으로 변경한다.
+
+<img src="/assets/img/dev/depthformer.png">
+
+2. `data/custom/rgb` 폴더를 생성하고, 추론할 RGB 데이터를 넣는다.
+
+<img src="/assets/img/dev/files.png">
+
+3. test 파일 실행
+
+```bash
+python ./tools/test.py ./configs/depthformer/depthformer_swinl_22k_w7_custom.py ./checkpoints/depthformer_swinl_22k_kitti.pth --show-dir depthformer_swinl_22k_w7_custom_result
+```
+
+&nbsp;
+
+여기서 ModuleNotFoundError가 뜬다면, 등록된 경로를 확인해봐야 한다.
+
+```python
+print(sys.path)
+['/home/ubuntu/Monocular-Depth-Estimation-Toolbox/tools', '/home/ubuntu/anaconda3/envs/depth/lib/python37.zip', '/home/ubuntu/anaconda3/envs/depth/lib/python3.7', '/home/ubuntu/anaconda3/envs/depth/lib/python3.7/lib-dynload', '/home/ubuntu/anaconda3/envs/depth/lib/python3.7/site-packages']
+```
+
+Monocular-Depth-Estimation-Toolbox 경로가 등록되어 있지 않으면, 등록해준다.
+
+```python
+sys.path.append("/home/ubuntu/Monocular-Depth-Estimation-Toolbox/")
 ```
 
 &nbsp;
@@ -666,3 +722,8 @@ python이 파일이 너무 큰 파일을 다룰 때, 나오는 경고 메시지�
 - 10. KeyError: 'cam_intrinsic’
 
 `./depthdatasets/kitti.py`에 있는 cam_instrinsic_dict를 cam_intrinsic으로 수정한다.
+
+&nbsp;
+
+- 11. subprocess.CalledProcessError: Command '['/usr/bin/miniconda3/envs/venv/bin/python', '-u', './tools/train.py', '--local_rank=0', 'configs/depthformer/depthformer_swinl_22k_w7_kitti.py', '--launcher', 'pytorch', '--work-dir', 'work_dirs/saves/depthformer/depthformer_swinl_22k_w7_kitti']' returned non-zero exit status 1.
+
