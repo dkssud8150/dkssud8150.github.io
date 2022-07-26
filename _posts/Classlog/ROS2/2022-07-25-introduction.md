@@ -51,15 +51,15 @@ ROS1은 Linux만을 주로 지원하고 있었는데, ROS2는 Linux, windows, ma
 
 - ROS1과 ROS2의 차이점
 
-![](2022-07-25-19-46-09.png)
+<img src="/assets/img/ros2/ros1ros2.png">
 
 &nbsp;
 
 &nbsp;
-
-- [001 ROS 2 개발 환경 구축](https://cafe.naver.com/openrt/25288)
 
 # 1. 개발 환경 설정
+
+- [001 ROS 2 개발 환경 구축](https://cafe.naver.com/openrt/25288)
 
 위에서 말했다시피 먼저 WSL2에서 ROS2를 설치하는 과정을 먼저 설명하고자 한다. wsl2가 설치되어 있다는 가정하에 시작한다.
 
@@ -102,7 +102,7 @@ $ vim ~/.bashrc
 
 vim이나 nano, gedit 등 자신이 원하는 편집기를 사용하면 된다. 기존에 존재했던 것들은 그대로 두고, 아래 부분을 추가한다. source, export는 모두 추가해주어야 하며, alias는 자신이 원하는 대로 추가하면 된다.
 
-<details bashs>
+<details open>
     <summary> 내용 </summary>
 
 ```markdown

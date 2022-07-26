@@ -232,34 +232,63 @@ install-scripts=$base/lib/rclpy_tutorial
 
 import rclpy
 from rclpy.node import Node 
-from rclpy.qos import QoSProfile # 퍼블리셔의 QoS 설정을 위해 QoSProfile 클래스를 사용
-from std_msgs.msg import String  # 퍼블리싱하는 메시지 타입은 std_msgs.msg의 String이므로 import
 
-class HelloworldPublisher(Node): # rclpy의 Node 클래스를 상속하여 사용
+# 퍼블리셔의 QoS 설정을 위해 QoSProfile 클래스를 사용
+from rclpy.qos import QoSProfile 
+# 퍼블리싱하는 메시지 타입은 std_msgs.msg의 String이므로 import
+from std_msgs.msg import String  
+
+# rclpy의 Node 클래스를 상속하여 사용
+class HelloworldPublisher(Node): 
     def __init__(self):
-        super().__init__('helloworld_publisher') # Node 클래스의 이름을 helloworld_publisher라 지정
-        qos_profile = QoSProfile(depth=10)       # 퍼블리시할 데이터 버퍼에 10개까지 저장
-        self.helloworld_publisher = self.create_publisher(String, 'helloworld', qos_profile) # 퍼블리셔 노드 생성 (msg type, topic name, QoS)
-        self.timer = self.create_timer(1, self.publish_helloworld_msg) # 콜백 함수 실행 시 사용되는 타이머로 지정한 값마다 콜백함수를 실행 (timer_period_sec, 발행을 실행할 함수)
+        # Node 클래스의 이름을 helloworld_publisher라 지정
+        super().__init__('helloworld_publisher') 
+
+        # 퍼블리시할 데이터 버퍼에 10개까지 저장
+        qos_profile = QoSProfile(depth=10)       
+        
+        # 퍼블리셔 노드 생성 (msg type, topic name, QoS)
+        self.helloworld_publisher = self.create_publisher(String, 'helloworld', qos_profile) 
+
+        # 콜백 함수 실행 시 사용되는 타이머로 지정한 값마다 콜백함수를 실행 (timer_period_sec, 발행을 실행할 함수)
+        self.timer = self.create_timer(1, self.publish_helloworld_msg) 
         self.count = 0
 
-    def publish_helloworld_msg(self):   # callback function, callback함수를 구현할 때는 멤버함수, lambda, 지역 함수 등으로 선언이 가능하다. 이 때는 멤버함수 사용
-        msg = String()                  # 메시지 타입 - String
-        msg.data = 'Hello World: {0}'.format(self.count) # 메시지의 data 입력
-        self.helloworld_publisher.publish(msg) # 메시지 발행
-        self.get_logger().info('Published message: {0}'.format(msg.data)) # print와 비슷한 함수로 기록용
+    # callback function, callback함수를 구현할 때는 멤버함수, lambda, 지역 함수 등으로 선언이 가능하다. 이 때는 멤버함수 사용
+    def publish_helloworld_msg(self):
+        # 메시지 타입 - String
+        msg = String()        
+
+        # 메시지의 data 입력          
+        msg.data = 'Hello World: {0}'.format(self.count) 
+
+        # 메시지 발행
+        self.helloworld_publisher.publish(msg) 
+
+        # print와 비슷한 함수로 기록용
+        self.get_logger().info('Published message: {0}'.format(msg.data)) 
         self.count += 1
 
-def main(args=None):                    
-    rclpy.init(args=args)               # 초기화 
-    node = HelloworldPublisher()        # node라는 이름으로 클래스 생성
+def main(args=None):              
+
+    # 초기화       
+    rclpy.init(args=args)               
+
+    # node라는 이름으로 클래스 생성
+    node = HelloworldPublisher()        
     try:
-        rclpy.spin(node)                # 노드를 spin, 즉 지정된 콜백함수를 실행
+        # 노드를 spin, 즉 지정된 콜백함수를 실행
+        rclpy.spin(node)                
     except KeyboardInterrupt:
-        node.get_logger().info('Keyboard Interrupt (SIGINT)')   # ctrl+c와 같은 인터럽트 시그널을 받으면 반복을 끝냄
+
+        # ctrl+c와 같은 인터럽트 시그널을 받으면 반복을 끝냄
+        node.get_logger().info('Keyboard Interrupt (SIGINT)')   
     finally:
-        node.destroy_node() # 노드 소멸
-        rclpy.shutdown()    # 노드 종료
+        # 노드 소멸
+        node.destroy_node() 
+
+        # 노드 종료
+        rclpy.shutdown()    
 
 if __name__ == '__main__':
     main()
@@ -285,27 +314,39 @@ class HelloworldSubscriber(Node):
 
     def __init__(self):
         super().__init__('Helloworld_subscriber')
-        qos_profile = QoSProfile(depth=10)          # 서브스크라이버 데이터를 버퍼에 10개까지 저장
+
+        # 서브스크라이버 데이터를 버퍼에 10개까지 저장
+        qos_profile = QoSProfile(depth=10)          
         self.helloworld_subscriber = self.create_subscription(
-            String,                         # 메시지 타입
-            'helloworld',                   # 토픽 이름
-            self.subscribe_topic_message,   # 콜백 함수
-            qos_profile)                    # QoS
+            String,
+            'helloworld',
+            self.subscribe_topic_message,
+            qos_profile)                    # 메시지 타입, 토픽 이름, 콜백 함수, QoS
 
     def subscribe_topic_message(self, msg):
-        self.get_logger().info('Received message: {0}'.format(msg.data)) # 데이터를 받으면 logging
+        # 데이터를 받으면 logging
+        self.get_logger().info('Received message: {0}'.format(msg.data)) 
 
 
 def main(args=None):
-    rclpy.init(args=args)           # 초기화
-    node = HelloworldSubscriber()   # 클래스 생성
+
+    # 초기화
+    rclpy.init(args=args)           
+
+    # 클래스 생성
+    node = HelloworldSubscriber()   
     try:
-        rclpy.spin(node)            # 콜백함수 실행
+        # 콜백함수 실행
+        rclpy.spin(node)            
     except KeyboardInterrupt:
-        node.get_logger().info('Keyboard Interrupt (SIGINT)')   # 시그널 시 정지
+        # 시그널 시 정지
+        node.get_logger().info('Keyboard Interrupt (SIGINT)')   
     finally:
-        node.destroy_node()         # 노드 소멸
-        rclpy.shutdown()            # 노드 종료
+        # 노드 소멸
+        node.destroy_node()         
+
+        # 노드 종료
+        rclpy.shutdown()            
 
 
 if __name__ == '__main__':
@@ -512,43 +553,71 @@ ament_package()
 #include <memory>
 #include <string>
 
-#include "rclcpp/rclcpp.hpp"            // Node 클래스를 사용하기 위한 rclcpp 헤더 파일
-#include "std_msgs/msg/string.hpp"      // 메시지 타입인 String 선언
+// Node 클래스를 사용하기 위한 rclcpp 헤더 파일
+#include "rclcpp/rclcpp.hpp"            
 
-using namespace std::chrono_literals;   // 추후 500ms, 1s 와 같이 시간을 가시성 있게 문자로 표현하기 위한 namespace
+// 메시지 타입인 String 선언
+#include "std_msgs/msg/string.hpp"      
 
-class HelloworldPublisher : public rclcpp::Node // rclcpp의 Node 클래스를 상속하여 사용
+// 추후 500ms, 1s 와 같이 시간을 가시성 있게 문자로 표현하기 위한 namespace
+using namespace std::chrono_literals;   
+
+// rclcpp의 Node 클래스를 상속하여 사용
+class HelloworldPublisher : public rclcpp::Node 
 {
 public:
+  // Node 클래스의 생성자를 호출, 노드 이름을 helloworld_publisher로 지정, count_는 0으로 초기화
   HelloworldPublisher()
-  : Node("helloworld_publisher"), count_(0)     // Node 클래스의 생성자를 호출, 노드 이름을 helloworld_publisher로 지정, count_는 0으로 초기화
+  : Node("helloworld_publisher"), count_(0)     
   {
-    auto qos_profile = rclcpp::QoS(rclcpp::KeepLast(10));   //  QoS 설정을 위해 KeepLast 형태로 depth를 10으로 설정하여 퍼블리시할 데이터를 버퍼에 10개까지 저장
+    //  QoS 설정을 위해 KeepLast 형태로 depth를 10으로 설정하여 퍼블리시할 데이터를 버퍼에 10개까지 저장
+    auto qos_profile = rclcpp::QoS(rclcpp::KeepLast(10));   
+
+    // node클래스의 create_publisher함수를 이용하여 퍼블리셔 설정, 메시지 타입으로 String, 토픽 이름으로 helloworld, QoS
     helloworld_publisher_ = this->create_publisher<std_msgs::msg::String>( 
-      "helloworld", qos_profile); // node클래스의 create_publisher함수를 이용하여 퍼블리셔 설정, 메시지 타입으로 String, 토픽 이름으로 helloworld, QoS
+      "helloworld", qos_profile); 
+
+    // 콜백 함수를 수행, period=1초, 1초마다 지정한 콜백함수를 실행
     timer_ = this->create_wall_timer(
-      1s, std::bind(&HelloworldPublisher::publish_helloworld_msg, this)); // 콜백 함수를 수행, period=1초, 1초마다 지정한 콜백함수를 실행
+      1s, std::bind(&HelloworldPublisher::publish_helloworld_msg, this)); 
   }
 
 private:
-  void publish_helloworld_msg()     // 콜백 함수
+  // 콜백 함수
+  void publish_helloworld_msg()     
   {
-    auto msg = std_msgs::msg::String(); // String 타입으로 msg 선언
-    msg.data = "Hello World: " + std::to_string(count_++);  // 메시지 데이터를 입력
-    RCLCPP_INFO(this->get_logger(), "Published message: '%s'", msg.data.c_str()); // logging, RCLCPP_XXX 계열의 함수는 print와 비슷
-    helloworld_publisher_->publish(msg);    // publishing
+    // String 타입으로 msg 선언
+    auto msg = std_msgs::msg::String(); 
+
+    // 메시지 데이터를 입력
+    msg.data = "Hello World: " + std::to_string(count_++);  
+
+    // logging, RCLCPP_XXX 계열의 함수는 print와 비슷
+    RCLCPP_INFO(this->get_logger(), "Published message: '%s'", msg.data.c_str()); 
+
+    // publishing
+    helloworld_publisher_->publish(msg);    
   }
-  rclcpp::TimerBase::SharedPtr timer_;      // private 변수
+
+  // private 변수
+  rclcpp::TimerBase::SharedPtr timer_;      
   rclcpp::Publisher<std_msgs::msg::String>::SharedPtr helloworld_publisher_;
   size_t count_;
 };
 
 int main(int argc, char * argv[])
 {
-  rclcpp::init(argc, argv);     // rclcpp 초기화
-  auto node = std::make_shared<HelloworldPublisher>(); // 클래스 생성
-  rclcpp::spin(node);       // 콜백 함수 실행
-  rclcpp::shutdown();       // ctrl+c와 같은 인터럽트 시그널 예외 상황에서 노드 종료
+  // rclcpp 초기화
+  rclcpp::init(argc, argv);     
+
+  // 클래스 생성
+  auto node = std::make_shared<HelloworldPublisher>(); 
+
+  // 콜백 함수 실행
+  rclcpp::spin(node);       
+
+  // ctrl+c와 같은 인터럽트 시그널 예외 상황에서 노드 종료
+  rclcpp::shutdown();       
   return 0;
 }
 ```
@@ -581,27 +650,37 @@ int main(int argc, char * argv[])
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/string.hpp"
 
-using std::placeholders::_1; // bind 함수의 대체자 역할을 위해 _1로 선언
+// bind 함수의 대체자 역할을 위해 _1로 선언
+using std::placeholders::_1; 
 
-class HelloworldSubscriber : public rclcpp::Node // rclcpp의 Node클래스를 상속하여 사용
+// rclcpp의 Node클래스를 상속하여 사용
+class HelloworldSubscriber : public rclcpp::Node 
 {
 public:
+  // Node 클래스의 생성자를 호출하고 노드 이름을 helloworld_subscriber로 지정
   HelloworldSubscriber()
-  : Node("Helloworld_subscriber")  // Node 클래스의 생성자를 호출하고 노드 이름을 helloworld_subscriber로 지정
+  : Node("Helloworld_subscriber")  
   {
-    auto qos_profile = rclcpp::QoS(rclcpp::KeepLast(10));   // QoS depth 10으로 하여 버퍼에 10개 저장
+    // QoS depth 10으로 하여 버퍼에 10개 저장
+    auto qos_profile = rclcpp::QoS(rclcpp::KeepLast(10));   
+
+    // 구독할 토픽의 메시지 타입과 토픽의 이름, QoS 설정, 수신받은 메시지를 처리할 콜백함수를 기입
     helloworld_subscriber_ = this->create_subscription<std_msgs::msg::String>(
       "helloworld",
       qos_profile,
-      std::bind(&HelloworldSubscriber::subscribe_topic_message, this, _1)); // 구독할 토픽의 메시지 타입과 토픽의 이름, QoS 설정, 수신받은 메시지를 처리할 콜백함수를 기입
+      std::bind(&HelloworldSubscriber::subscribe_topic_message, this, _1)); 
   }
 
 private:
-  void subscribe_topic_message(const std_msgs::msg::String::SharedPtr msg) const // 콜백함수
+  // 콜백함수
+  void subscribe_topic_message(const std_msgs::msg::String::SharedPtr msg) const 
   {
-    RCLCPP_INFO(this->get_logger(), "Received message: '%s'", msg->data.c_str()); // logging
+    // logging
+    RCLCPP_INFO(this->get_logger(), "Received message: '%s'", msg->data.c_str()); 
   }
-  rclcpp::Subscription<std_msgs::msg::String>::SharedPtr helloworld_subscriber_; // private 변수로 사용되는 helloworld_subscriber_ 선언
+
+  // private 변수로 사용되는 helloworld_subscriber_ 선언
+  rclcpp::Subscription<std_msgs::msg::String>::SharedPtr helloworld_subscriber_; 
 };
 
 
