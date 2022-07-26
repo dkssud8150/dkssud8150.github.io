@@ -180,7 +180,7 @@ rqt_graph
 
 ## turtlesim 노드 정보
 
-먼저 노드를 자세히 살펴보고자 한다. turtlesim의 노드는 총 2개로 구성되어 있다. 
+먼저 노드를 자세히 살펴보고자 한다. turtlesim의 노드는 총 2개로 구성되어 있다.
 
 ```bash
 $ ros2 node list
@@ -273,6 +273,371 @@ $ ros2 node info /teleop_turtle
 
   Action Clients:
     /turtle1/rotate_absolute: turtlesim/action/RotateAbsolute
+```
+
+&nbsp;
+
+&nbsp;
+
+## turtlesim 토픽
+
+토픽은 비동기식 단방향 메시지 송수신 방식으로 메시지 형태로 메시지를 발행하는 퍼블리셔(publisher)와 메시지를 구동하는 서브스크라이버(subscriber) 간의 통신이라 볼 수 있다. 이는 1:1 통신을 기본으로 하지만, 1:N도 가능하고, 구성에 따라 N:1, N:N 통신도 가능하다.
+
+하나의 노드가 퍼블리셔와 서브스크라이버를 동시에 수행할 수도 있다. 원한다면 자신이 발행한 토픽을 셀프 구독할 수 있게 구성할 수도 있다.
+
+<img src="/assets/img/ros2/node_and_topic.png">
+
+&nbsp;
+
+- 토픽 목록 확인
+
+```bash
+ros2 run turtlesim turtlesim_node
+```
+
+```bash
+ros2 run turtlesim turtle_teleop_key
+```
+
+```bash
+$ ros2 node info /turtlesim
+/turtlesim
+  Subscribers:
+    /turtle1/cmd_vel: geometry_msgs/msg/Twist
+  Publishers:
+    /turtle1/color_sensor: turtlesim/msg/Color
+    /turtle1/pose: turtlesim/msg/Pose
+...
+```
+
+토픽만을 보면 위와 같을 것이다. 
+
+- turtlesim 노드
+  - subscriber
+    - geometry_msgs/msg/Twist 형태의 메시지인 turtle1/cmd_vel
+  - publisher
+    - turtlesim/msg/color_sensor 메시지 형태인 turtle1/color_sensor
+    - turtlesim/msg/Pose 메시지 형태인 turtle1/pose
+
+&nbsp;
+
+간단한 리스트로 확인하기 위해서는 다음과 같이 명령어를 실행하면 된다. 동작 중인 모든 노드들의 토픽 정보를 확인할 수 있다. 이 때, `-t`는 메시지의 형태도 함께 표시하기 위한 옵션이다.
+
+```bash
+$ ros2 topic list -t
+/parameter_events [rcl_interfaces/msg/ParameterEvent]
+/rosout [rcl_interfaces/msg/Log]
+/turtle1/cmd_vel [geometry_msgs/msg/Twist]
+/turtle1/color_sensor [turtlesim/msg/Color]
+/turtle1/pose [turtlesim/msg/Pose]
+```
+
+&nbsp;
+
+- 토픽 정보 확인
+
+하나의 토픽을 더 자세히 확인해보자.
+
+```bash
+$ ros2 topic info /turtle1/cmd_vel
+Type: geometry_msgs/msg/Twist
+Publisher count: 1
+Subscription count: 1
+```
+
+메시지 타입은 **Twist**, 퍼블리셔 1개, 서브스크라이버 1개로 구성되어 있다.
+
+&nbsp;
+
+- 토픽 내용 확인
+
+토픽의 내용을 확인해보자. `teleop_key`를 실행한 터미널에서 방향키를 눌러 거북이를 움직이게 되면, linear 와 angular 값이 담긴 토픽이 발행되고 있는 것을 볼 수 있다.
+
+```bash
+$ ros2 topic echo /turtle1/cmd_vel
+linear:
+  x: 2.0
+  y: 0.0
+  z: 0.0
+angular:
+  x: 0.0
+  y: 0.0
+  z: 0.0
+---
+linear:
+  x: 0.0
+  y: 0.0
+  z: 0.0
+angular:
+  x: 0.0
+  y: 0.0
+  z: 2.0
+---
+```
+
+linear에 x,y,z , angular에 x,y,z 총 6개의 값으로 구성되어 있고, linear.x 값은 1.0m/s 단위로 구성되어 있다. 
+
+모든 메시지는 meter, second, degree, kg 등 SI 단위를 기본으로 사용한다.
+
+&nbsp;
+
+- 메시지 크기 확인
+
+메시지의 대역폭, 즉 송수신받는 토픽 메시지의 크기를 확인해보고자 한다. 크기 확인은 `ros2 topic bw`로 토픽의 초당 대역폭을 확인해볼 수 있다.
+
+```bash
+$ ros2 topic bw /turtle1/cmd_vel
+Subscribed to [/turtle1/cmd_vel]
+35 B/s from 2 messages
+        Message size mean: 52 B min: 52 B max: 52 B
+26 B/s from 2 messages
+        Message size mean: 52 B min: 52 B max: 52 B
+21 B/s from 2 messages
+        Message size mean: 52 B min: 52 B max: 52 B
+18 B/s from 2 messages
+        Message size mean: 52 B min: 52 B max: 52 B
+15 B/s from 2 messages
+        Message size mean: 52 B min: 52 B max: 52 B
+13 B/s from 2 messages
+        Message size mean: 52 B min: 52 B max: 52 B
+```
+
+방향키를 통해 실행을 해보면 약 35 B/s 정도의 대역폭을 가지고 있고, 토픽을 보내지 않으면 값이 계속 감소된다.
+
+&nbsp;
+
+- 토픽 주기 확인
+
+토픽의 전송 주기를 확인하기 위해서는 `ros2 topic hz`를 사용해야 한다. 
+
+
+```bash
+$ ros2 topic hz /turtle1/cmd_vel
+average rate: 0.449
+        min: 1.016s max: 3.439s std dev: 1.21158s window: 2
+average rate: 0.293
+        min: 1.016s max: 5.792s std dev: 1.94967s window: 3
+```
+
+/turtle1/cmd_vel 토픽을 발행하면 약 0.3 Hz를 가지고 있다. 이는 약 0.0003초에 한번씩 토픽을 발행한다.
+
+&nbsp;
+
+- 토픽 지연 시간 확인
+
+토픽은 RMW 및 네트워크 장비를 거치기 때문에, latency가 반드시 존재한다. 지연 시간을 체크하는 방식은 메시지 내 header라는 stamp 메시지를 사용하여 체크한다.
+
+```bash
+$ ros2 topic delay /TOPIC_NAME
+```
+
+그러나 turtlesim에서는 stamp가 없기에 테스트는 수행하지 못했다.
+
+&nbsp;
+
+- 토픽 발행
+
+토픽을 발행하는 방법은 `ros2 topic pub <topic-name> <msg type> "<args>"` 로 발행할 수 있다.
+
+이 때, `--once`옵션을 사용하여 단 한번만 발행을 할 수 있다.
+
+```bash
+ros2 topic pub --once /turtle1/cmd_vel geometry_msgs/msg/Twist "{linear: {x: 2.0, y: 0.0, z: 0.0}, angular: {x: 0.0, y: 0.0, z: 1.8}}"
+```
+
+<img src="/assets/img/ros2/pubonce_turtle.png">
+
+이 때, linear은 m/s 단위이고, angular는 rad/s 단위이다.
+
+&nbsp;
+
+지속적인 발행을 원한다면 --once 옵션을 제거하고 --rate옵션을 사용하여 Hz 단위로 발행한다.
+
+```bash
+ros2 topic pub --rate 1 /turtle1/cmd_vel geometry_msgs/msg/Twist "{linear: {x: 2.0, y: 0.0, z: 0.0}, angular: {x: 0.0, y: 0.0, z: 1.8}}"
+```
+
+<img src="/assets/img/ros2/pubrate_turtle.png">
+
+&nbsp;
+
+&nbsp;
+
+## bag 파일 저장
+
+토픽을 파일 형태로 저장할 수 있다. 이 때 저장하는 파일의 형태가 bag 이고, 저장된 토픽은 다시 불러와 동일한 타이밍에 재생할 수 있다. 이를 **rosbag**이라 한다.
+
+명령하는 방법은 `ros2 bag record <topic_name1> <topic_name2> <topic_name3>` 와 같이 사용하여 원하는 토픽만 기록할 수 있다.
+
+```bash
+ros2 bag record <topic_name1> <topic_name2> <topic_name3>
+```
+
+&nbsp;
+
+`-a`를 사용하면 전체 토픽을 저장할 수 있다.
+
+```bash
+ros2 bag record -a
+```
+
+&nbsp;
+
+원하는 이름이 있다면 -o 를 사용하여 이름을 지정한다.
+
+```bash
+ros2 topic pub --rate 1 /turtle1/cmd_vel geometry_msgs/msg/Twist "{linear: {x: 2.0, y: 0.0, z: 0.0}, angular: {x: 0.0, y: 0.0, z: 1.8}}"
+```
+
+```bash
+### ros2 bag record -o <file-name> <topic-name>
+$ ros2 bag record -o test.bag turtle1/cmd_vel
+[INFO]: Opened database 'test.bag/test.bag_0.db3' for READ_WRITE.
+[INFO]: Listening for topics...
+[INFO]: Subscribed to topic '/turtle1/cmd_vel'
+[INFO]: All requested topics are subscribed. Stopping discovery...
+```
+
+&nbsp;
+
+- bag 파일 정보 확인
+
+저장된 bag파일의 정보를 확인할 수 있다.
+
+```bash
+$ ros2 bag info test.bag
+Files:             test.bag_0.db3
+Bag size:          16.8 KiB
+Storage id:        sqlite3
+Duration:          1.984s
+Start:             Jul 26 2022 14:43:24.586 (1658814204.586)
+End:               Jul 26 2022 14:43:26.571 (1658814206.571)
+Messages:          9
+Topic information: Topic: /turtle1/cmd_vel | Type: geometry_msgs/msg/Twist | Count: 9 | Serialization Format: cdr
+```
+
+&nbsp;
+
+- bag 파일 재생
+
+저장된 bag 파일을 재생하여 토픽을 발행할 수 있다.
+
+```bash
+$ ros2 bag play test.bag
+[INFO]: Opened database 'test.bag/test.bag_0.db3' for READ_ONLY.
+```
+
+<img src="/assets/img/ros2/bagplay_turtle.png">
+
+&nbsp;
+
+&nbsp;
+
+## ROS 인터페이스
+
+ROS 노드 간에 데이터를 주고받을 때 토픽, 서비스, 액션이 사용되는데, 이 때 사용되는 데이터의 형태를 ROS 인터페이스(interface)라 한다. ROS 인터페이스에는 ROS2에 새롭게 추가된 IDL(Interface Definition Language)와 ROS1부터 존재하던 msg, srv, action 등이 있다.
+
+즉, 토픽, 서비스, 액션은 각각 msg, srv, action interface를 사용하고 있으며 정수, 소수, bool 등과 같은 단순 자료형을 기본으로 하고, 메시지 안에 메시지를 품는 구조도 있다.
+
+&nbsp;
+
+### 메시지 인터페이스 (message interface, msg)
+
+지금까지 다루던 토픽의 형태가 msg 분류의 데이터 형태이다. 예를 들어 Twist 데이터 형태를 자세히 보면 Vector3 linear와 Vector3 angular 가 있는데, 이것이 메시지 안에 메시지를 품고 있는 형태이다. Vector3안에는 또 다시 float64 형태의 x,y,z 값이 존재한다.
+
+- geometry_msgs/msgs/Twist
+  - Vector3 linear
+    - float64 x
+    - float64 y
+    - float64 z
+  - Vector3 angular
+    - float64 x
+    - float64 y
+    - float64 z
+
+&nbsp;
+
+```bash
+$ ros2 interface show geometry_msgs/msg/Twist
+Vector3  linear
+Vector3  angular
+
+$ ros2 interface show geometry_msgs/msg/Vector3
+float64 x
+float64 y
+float64 z
+```
+
+&nbsp;
+
+interface 명령어에는 show 이외에도 **list**, **package**, **packages**, **proto**가 있다.
+
+- list : 현재 개발 환경의 모든 msg, srv, action 메시지를 보여준다.
+- package + \<package name> : 지정한 패키지에 포함된 인터페이스를 보여준다.
+- packages : msg, srv, action 인터페이스를 담고 있는 패키지의 목록을 보여준다.
+- proto + \<interface> : 특정 인터페이스 형태를 입력하면 인터페이스의 기본 형태를 표시해준다.
+
+&nbsp;
+
+```bash
+$ ros2 interface list
+Messages:
+    action_msgs/msg/GoalInfo
+    action_msgs/msg/GoalStatus
+    action_msgs/msg/GoalStatusArray
+    ...
+Services:
+    action_msgs/srv/CancelGoal
+    composition_interfaces/srv/ListNodes
+    composition_interfaces/srv/LoadNode
+    ...
+Actions:
+    action_tutorials_interfaces/action/Fibonacci
+    example_interfaces/action/Fibonacci
+    tf2_msgs/action/LookupTransform
+    turtlesim/action/RotateAbsolute
+```
+
+토픽에 해당되는 msg 인터페이스 이외에도 서비스, 액션 메시지도 존재하고 이를 srv, action 인터페이스라 한다.
+
+&nbsp;
+
+```bash
+$ ros2 interface packages
+action_msgs
+action_tutorials_interfaces
+...
+```
+
+&nbsp;
+
+```bash
+$ ros2 interface package turtlesim
+turtlesim/srv/Spawn
+turtlesim/msg/Pose
+turtlesim/action/RotateAbsolute
+turtlesim/srv/Kill
+turtlesim/srv/TeleportAbsolute
+turtlesim/srv/SetPen
+turtlesim/srv/TeleportRelative
+turtlesim/msg/Color
+```
+
+이 때, msg는 토픽, srv는 service, action은 action 인터페이스에 해당한다.
+
+&nbsp;
+
+```bash
+$ ros2 interface proto geometry_msgs/msg/Twist
+"linear:
+  x: 0.0
+  y: 0.0
+  z: 0.0
+angular:
+  x: 0.0
+  y: 0.0
+  z: 0.0
+"
 ```
 
 &nbsp;
