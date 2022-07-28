@@ -697,7 +697,7 @@ filter = [state TCP-state] [EXPRESSION]
 
 ## TCP state
 
-<img src="assets/img/dev/week2/day4/tcpstate.png">
+<img src="/assets/img/dev/week2/day4/tcpstate.png">
 
 - 실선: 클라이언트
 - 점선: 서버
