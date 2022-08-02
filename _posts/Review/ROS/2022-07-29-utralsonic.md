@@ -64,6 +64,8 @@ sudo arduino
 
 ```bash
 $ lsusb
+Bus 002 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
+Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
 ```
 
 &nbsp;
@@ -170,7 +172,7 @@ void setup()
 }
 
 void loop() {
-    long duration, dustance;    // 거리 측정을 위한 변수 선언
+    long duration, distance;    // 거리 측정을 위한 변수 선언
     // 트리거 핀으로 10us 동안 펄스 출력
     digitalWrite(trig, LOW);    // Trig 핀 Low
     delayMicroseconds(2);       // 2us 딜레이
@@ -182,7 +184,7 @@ void loop() {
     duration = pulseIn(echo, HIGH);
     distance = duration * 170 / 1000;   // 왕복시간이므로 340/2=170 곱하는걸로 계산, 마이크로초를 mm로 변환하기 위해 1000나눔
     Serial.print("Distance(mm): ");
-    Serial.printIn(distance);           // 거리정보를 시리얼 모니터에 출력
+    Serial.println(distance);           // 거리정보를 시리얼 모니터에 출력
     delay(100);
 }
 ```

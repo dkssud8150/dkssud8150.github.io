@@ -3,7 +3,7 @@ title:    "[ROS2 이론] turtlesim 실행"
 author:
   name: JaeHo YooN
   link: https://github.com/dkssud8150
-date: 2022-07-25 23:23:00 +0800
+date: 2022-07-26 03:23:00 +0800
 categories: [Classlog, ROS2]
 tags: [ROS2]
 toc: True
