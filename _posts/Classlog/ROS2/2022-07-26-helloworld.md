@@ -10,9 +10,9 @@ toc: True
 comments: True
 ---
 
-<https://cafe.naver.com/openrt/24436>
+- [023 ROS 프로그래밍 규칙 (코드 스타일)](https://cafe.naver.com/openrt/24436)
 
-# ROS 프로그래밍 규칙 (코드 스타일)
+# ROS2 프로그래밍 규칙 (코드 스타일)
 
 협업 프로그래밍 작업 시 일관된 규칙을 만들고, 이를 준수하여야 코드가 꼬이거나 문제가 생기지 않는다.
 
@@ -58,7 +58,7 @@ ROS2 Developer Guide 및 ROS2 Code Style에서 다루는 python 코드 스타일
 
 &nbsp;
 
-# ROS 프로그래밍 기초 - python
+# ROS2 프로그래밍 기초 - python
 
 ROS2에는 python에서 작업할 수 있도록 도와주는 rclpy가 있다.
 
@@ -427,7 +427,7 @@ $ rqt_graph
 
 &nbsp;
 
-# ROS 프로그래밍 기초 - C++
+# ROS2 프로그래밍 기초 - C++
 
 ROS2에는 python과 마찬가지로 c++을 위해 제작된 rclcpp가 있다. 코드도 앞서 배운 python과 거의 동일하다.
 
@@ -736,3 +736,14 @@ $ ros2 run rclcpp_tutorial helloworld_publisher
 [INFO]: Published message: 'Hello World: 4'
 ...
 ```
+
+&nbsp;
+
+&nbsp;
+
+# ROS2 토픽, 서비스, 액션 인터페이스 살펴보기
+
+| 추가 예정
+
+- [027 토픽, 서비스, 액션 인터페이스](https://cafe.naver.com/openrt/24629)
+

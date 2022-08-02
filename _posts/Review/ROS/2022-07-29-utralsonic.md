@@ -12,7 +12,7 @@ comments: True
 
 초음파 센서를 가지고, 직접 데이터를 받아보는 방법에 대해 설명하고자 한다. 먼저 초음파 센서 장비는 가지고 있다는 가정 하에 진행한다.
 
-![](2022-07-29-03-34-36.png)
+<img src="/assets/img/dev/week4/day3/wavesensor.jpg">
 
 &nbsp;
 
@@ -72,7 +72,7 @@ $ lsusb
 
 ---
 
-- [자료](https://docs.microsoft.com/ko-kr/windows/wsl/connect-usb)
+- [참고 자료](https://docs.microsoft.com/ko-kr/windows/wsl/connect-usb)
 
 1. usbipd 설치
 
@@ -80,7 +80,7 @@ usb 디바이스 연결에 대한 지원은 wsl에서 기본적으로 사용할 
 
 powershell을 켜서 명령어를 실행한다.
 
-```powershell
+```bash
 > winget install --interactive --exact dorssel.usbipd-win
 'msstore' 원본을 사용하려면 다음 계약을 확인해야 합니다.
 Terms of Transaction: https://aka.ms/microsoft-store-terms-of-transaction
@@ -186,6 +186,98 @@ void loop() {
     delay(100);
 }
 ```
+
+&nbsp;
+
+&nbsp;
+
+# 2. 초음파 센서 데이터 받아오기 (ROS)
+
+아두이노에서 보내주는 물체까지의 거리 정보를 받아와 토픽으로 Publishing하는 코드를 만든다.
+
+- ultrasonic_pub.py
+
+```python
+#!/usr/bin/env python
+
+import serial, time, rospy
+from std_msgs.msg import Int32
+
+ser_front = serial.Serial( 
+    port='/dev/ttyUSB0', # 아두이노가 연결된 포트
+    baudrate=9600,       # 아두이노에서 선언한 통신 속도
+)
+
+def read_sensor():
+    serial_data = ser_front.readline() # 시리얼 포트로 들어온 데이터를 받아옴
+    ser_front.flushInput()  # 중간에 버퍼들이 있어서 그를 삭제해주는 flush
+    ser_front.flushOutput()
+    ultrasonic_data = int(filter(str.isdigit, serial_data)) # string을 숫자로 변환
+    msg.data = ultrasonic_data
+
+if __name__ == '__main__':
+    rospy.init_node('ultrasonic_pub', anonymous=False)
+    pub = rospy.Publisher('ultrasonic', Int32, queue_size= 1)
+
+    msg = Int32()
+    
+    while not rospy.is_shutdown():
+        read_sensor() # 시리얼포트에서 센서가 보내준 문자열 읽엇거 거리 정보 추출
+        pub.publish(msg)    
+        time.sleep(0.2) # 토픽에 담아서 publish
+
+    ser_front.close() # 끝나면 시리얼포트 닫기
+```
+
+&nbsp;
+
+## 초음파 센서 데이터 viewer
+
+초음파 데이터가 정확하게 잘 도착하는지, 데이터가 ROS로 잘 전달되고 있는지 확인하기 위한 검증 코드이다.
+
+- ultrasonic_sub.py
+
+```python
+#!/usr/bin/env python
+
+import rospy
+from std_msgs.msg import Int32
+
+def callback(msg):
+    print(msg.data)
+
+rospy.init_node('ultrasonic_sub')
+sub = rospy.Subscriber('ultrasonic', Int32, callback)
+
+rospy.spin()
+```
+
+&nbsp;
+
+&nbsp;
+
+# 실행
+
+실행을 위한 launch파일을 제작한다.
+
+- ultra.launch
+
+```xml
+
+<launch>
+    <node pkg="ultrasonic" type="ultrasonic_pub.py" name="ultrasonic_pub"/>
+    <node pkg="ultrasonic" type="ultrasonic_sub.py" name="ultrasonic_sub" output="screen"/>
+</launch>
+```
+
+&nbsp;
+
+- 실행
+
+```bash
+roslaunch ultra ultra.launch
+```
+
 
 &nbsp;
 
