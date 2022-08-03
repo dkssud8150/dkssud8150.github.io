@@ -1,0 +1,981 @@
+<!DOCTYPE html><html lang="en" data-mode="light" ><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><meta name="day-prompt" content="days ago"><meta name="hour-prompt" content="hours ago"><meta name="minute-prompt" content="minutes ago"><meta name="justnow-prompt" content="just now"><meta name="generator" content="Jekyll v4.2.2" /><meta property="og:title" content="[데브코스] 2주차 - linux 기초 package and network" /><meta name="author" content="JaeHo YooN" /><meta property="og:locale" content="en" /><meta name="description" content="Do focus on developing ‘your ability’ rather than waste time on making you famous." /><meta property="og:description" content="Do focus on developing ‘your ability’ rather than waste time on making you famous." /><link rel="canonical" href="https://dkssud8150.github.io/posts/packageandtcp/" /><meta property="og:url" content="https://dkssud8150.github.io/posts/packageandtcp/" /><meta property="og:site_name" content="JaeHo Yoon" /><meta property="og:type" content="article" /><meta property="article:published_time" content="2022-02-24T13:00:00+09:00" /><meta name="twitter:card" content="summary" /><meta property="twitter:title" content="[데브코스] 2주차 - linux 기초 package and network" /><meta name="twitter:site" content="@" /><meta name="twitter:creator" content="@JaeHo YooN" /> <script type="application/ld+json"> {"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"JaeHo YooN"},"dateModified":"2022-07-29T05:41:26+09:00","datePublished":"2022-02-24T13:00:00+09:00","description":"Do focus on developing ‘your ability’ rather than waste time on making you famous.","headline":"[데브코스] 2주차 - linux 기초 package and network","mainEntityOfPage":{"@type":"WebPage","@id":"https://dkssud8150.github.io/posts/packageandtcp/"},"url":"https://dkssud8150.github.io/posts/packageandtcp/"}</script><title>[데브코스] 2주차 - linux 기초 package and network | JaeHo Yoon</title><link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicons/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicons/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/img/favicons/favicon-16x16.png"><link rel="manifest" href="/assets/img/favicons/site.webmanifest"><link rel="shortcut icon" href="/assets/img/favicons/favicon.ico"><meta name="apple-mobile-web-app-title" content="JaeHo Yoon"><meta name="application-name" content="JaeHo Yoon"><meta name="msapplication-TileColor" content="#da532c"><meta name="msapplication-config" content="/assets/img/favicons/browserconfig.xml"><meta name="theme-color" content="#ffffff"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"><link rel="dns-prefetch" href="https://fonts.gstatic.com"><link rel="preconnect" href="https://www.google-analytics.com" crossorigin="use-credentials"><link rel="dns-prefetch" href="https://www.google-analytics.com"><link rel="preconnect" href="https://www.googletagmanager.com" crossorigin="anonymous"><link rel="dns-prefetch" href="https://www.googletagmanager.com"><link rel="preconnect" href="https://cdn.jsdelivr.net"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.11.2/css/all.min.css"><link rel="stylesheet" href="/assets/css/style.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@1.0.1/dist/bootstrap-toc.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/magnific-popup@1.1.0/dist/magnific-popup.min.css"> <script src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script><body data-spy="scroll" data-target="#toc" data-topbar-visible="true"><div id="sidebar" class="d-flex flex-column align-items-end" lang="en"><div class="profile-wrapper text-center"><div id="avatar"> <a href="/" alt="avatar" class="mx-auto"> <img src="/assets/img/shin_chan.png" alt="avatar" onerror="this.style.display='none'"> </a></div><div class="site-title mt-3"> <a href="/">JaeHo Yoon</a></div><div class="site-subtitle font-italic">Mamba Mentality</div></div><ul class="w-100"><li class="nav-item"> <a href="/" class="nav-link"> <i class="fa-fw fas fa-home ml-xl-3 mr-xl-3 unloaded"></i> <span>HOME</span> </a><li class="nav-item"> <a href="/categories/" class="nav-link"> <i class="fa-fw fas fa-stream ml-xl-3 mr-xl-3 unloaded"></i> <span>CATEGORIES</span> </a><li class="nav-item"> <a href="/tags/" class="nav-link"> <i class="fa-fw fas fa-tag ml-xl-3 mr-xl-3 unloaded"></i> <span>TAGS</span> </a><li class="nav-item"> <a href="/archives/" class="nav-link"> <i class="fa-fw fas fa-archive ml-xl-3 mr-xl-3 unloaded"></i> <span>ARCHIVES</span> </a><li class="nav-item"> <a href="/about/" class="nav-link"> <i class="fa-fw fab fa-angellist ml-xl-3 mr-xl-3 unloaded"></i> <span>ABOUT</span> </a></ul><div class="sidebar-bottom mt-auto d-flex flex-wrap justify-content-center align-items-center"> <a href="https://github.com/dkssud8150" aria-label="github" target="_blank" rel="noopener"> <i class="fab fa-github"></i> </a> <a href=" javascript:location.href = 'mailto:' + ['hoya58150','gmail.com'].join('@')" aria-label="email" > <i class="fas fa-envelope"></i> </a> <a href="https://www.notion.so/18490713817d403696812c57d0abe730" aria-label="notion" target="_blank" rel="noopener"> <i class="fab fa-battle-net"></i> </a> <a href="https://www.linkedin.com/in/jaeho-yoon-90b62b230" aria-label="linkedin" target="_blank" rel="noopener"> <i class="fab fa-linkedin"></i> </a> <a href="https://www.instagram.com/jai_ho8150/" aria-label="instagram" target="_blank" rel="noopener"> <i class="fab fa-instagram"></i> </a></div></div><div id="topbar-wrapper" class="row justify-content-center"><div id="topbar" class="col-11 d-flex h-100 align-items-center justify-content-between"> <span id="breadcrumb"> <span> <a href="/"> Home </a> </span> <span>[데브코스] 2주차 - linux 기초 package and network </span> </span> <i id="sidebar-trigger" class="fas fa-bars fa-fw"></i><div id="topbar-title"> Post</div><i id="search-trigger" class="fas fa-search fa-fw"></i> <span id="search-wrapper" class="align-items-center"> <i class="fas fa-search fa-fw"></i> <input class="form-control" id="search-input" type="search" aria-label="search" autocomplete="off" placeholder="Search..."> <i class="fa fa-times-circle fa-fw" id="search-cleaner"></i> </span> <span id="search-cancel" >Cancel</span></div></div><div id="main-wrapper"><div id="main"><div class="row"><div id="core-wrapper" class="col-12 col-lg-11 col-xl-8"><div class="post pl-1 pr-1 pl-sm-2 pr-sm-2 pl-md-4 pr-md-4"><h1 data-toc-skip>[데브코스] 2주차 - linux 기초 package and network</h1><div class="post-meta text-muted"><div> By <em> <a href="https://github.com/dkssud8150">JaeHo YooN</a> </em></div><div class="d-flex"><div> <span> Posted <em class="timeago" date="2022-02-24 13:00:00 +0900" data-toggle="tooltip" data-placement="bottom" title="Thu, Feb 24, 2022, 1:00 PM +0900" >Feb 24</em> </span> <span> Updated <em class="timeago" date="2022-07-29 05:41:26 +0900 " data-toggle="tooltip" data-placement="bottom" title="Fri, Jul 29, 2022, 5:41 AM +0900" >Jul 29</em> </span> <span class="readtime" data-toggle="tooltip" data-placement="bottom" title="7247 words"> <em>40 min</em> read</span></div></div></div><div class="post-content"><p><br /></p><p><a href="https://www.notion.so/c4463b5ec83e4351b8eba4df97236b88">오답노트</a></p><p>package 관리</p><ul><li>redhat</ul><div class="language-markdown highlighter-rouge"><div class="code-header"> <span data-label-text="Markdown"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre>rpm database
+<span class="err">*</span>yum
+</pre></table></code></div></div><ul><li>debian</ul><div class="language-markdown highlighter-rouge"><div class="code-header"> <span data-label-text="Markdown"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre><td class="rouge-code"><pre>dpkg(옛날거)
+apt-get
+<span class="err">*</span>apt
+</pre></table></code></div></div><p><br /></p><p><br /></p><h1 id="package">package</h1><p>package : 시스템을 구성하는 파일의 묶음</p><p>관리의 편리함을 제공한다.</p><ul><li>package name - version &amp; release - architecture.확장자<li>amd64는 x86 64bit</ul><p>apt를 주로 사용하고, dpkg는 중요한 기능 몇가지만 알아두면 된다.</p><h2 id="dpkg-중요-기능">dpkg 중요 기능 <a href="#dpkg-중요-기능" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><p><code class="language-plaintext highlighter-rouge">strace, gcc</code> 패키지 리스트를 확인해보자.</p><ul><li>옵션: -l (list)</ul><p>설치되지않아도 찾아볼 수 있다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre><td class="rouge-code"><pre><span class="nv">$ </span>dpkg <span class="nt">-1</span> strace
+
+<span class="nv">$ </span>dpkg <span class="nt">-1</span> gcc
+</pre></table></code></div></div><ul><li>옵션: -s (status)</ul><p>status에 install ok installed 이면 설치된 것, install ok unpacked는 설치된 것이 아니다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre><span class="c"># dpkg -s strace</span>
+status: <span class="nb">install </span>ok installed
+</pre></table></code></div></div><ul><li>옵션: -S (search)</ul><p>패키지 검색, 해당 파일이 어디에 존재하는지 확인 가능</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre><td class="rouge-code"><pre><span class="c"># dpkg -S '*trace'</span>
+linux-headers-3.2.0-4-common: /usr/...
+<span class="nb">.</span>
+<span class="nb">.</span>
+<span class="nb">.</span>
+</pre></table></code></div></div><p>에러가 나면 해결하는 방법으로 audit을 사용하기도 한다.</p><p><br /></p><h2 id="apt">apt <a href="#apt" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><p>apt는 debian에서 사용하는 툴로 가장 많이 사용하는 명령어다.</p><p>dependency 탐색 및 설치 가능</p><ul><li>e.g. A를 설치하기 위해 B를 설치해야 하고, B를 위해 C를 설치해야 한다면 그것들을 탐색해준다.</ul><p>예전에는 apt-get, apt-cache 등등이 있는데 요즘에는 이들을 통합한 apt를 사용한다.</p><p><br /></p><p>apt를 쓰기 위해서는 source list를 만들어야 한다.</p><p>apt를 자동으로 다운하는데 어디에 패키지가 있는지 알아야 하기 때문에 그것을 지정</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="nv">$ </span>vim /etc/apt/sources.list
+</pre></table></code></div></div><p>직접 추가할 경우 etc/apt/sources.list.d/에 *.list 파일명으로 추가해도 되지만, <strong>가장 좋은 방법은 apt edit-sources를 사용하여 수정하는 것이다.</strong></p><p>sources.list안에는 <code class="language-plaintext highlighter-rouge">deb</code>와 <code class="language-plaintext highlighter-rouge">deb-src</code>가 있다. <strong>deb는 패키지를 받아오는 주소, deb-src는 소스코드를 받아오는 주소</strong>이다.</p><div class="language-markdown highlighter-rouge"><div class="code-header"> <span data-label-text="Markdown"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre>deb [option1=value1 option2=value2] uri suite [component1] [component2] ...
+</pre></table></code></div></div><ul><li>uri : deb 패키지를 제공하는 사이트의 URI<li>옵션은 대부분 필요x<li>suite : 코드네임 디렉코리 이름을 뜻하는데, 16.04 = xenial, 18.04 = bionic<li>component : suite의 구성 요소 및 라이선스 종류별 분류, 최소 1개 이상의 컴포넌트를 지정해야 함<ul><li><strong>main: 우분투에서 직접 패키징하는 것들</strong><li><strong>restricted: 제한된 무료 라이선스</strong><li><strong>universe: 대체로 절반 무료 라이선스, 대부분이 이에 해당됨</strong><li>security<li>updates</ul></ul><p><br /></p><p>kakao uri의 apt를 참고하고자 한다. 그 이유는 kakao uri가 대체로 더 빠르다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="nv">$ </span><span class="nb">sudo </span>apt edit-sources kakao.list
+</pre></table></code></div></div><p>실행 한 후 아래 코드를 추가한다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre><td class="rouge-code"><pre>deb http://mirror.kakao.com/ubuntu/ bionic main restricted universe
+deb http://mirror.kakao.com/ubuntu/ bionic-updates main restricted universe
+deb http://mirror.kakao.com/ubuntu/ bionic-security main restricted universe
+</pre></table></code></div></div><ol><li>편집할 파일은 /etc/apt/sources/list.d/kakao.list 이다.</ol><blockquote><p><code class="language-plaintext highlighter-rouge"># sudo select-editor vim</code> 을 실행하여 기본 에디터를 vim으로 변경핤 수 있다.</p></blockquote><ol><li>먼저 <a href="http://mirror.kakao.com/ubuntu/에">http://mirror.kakao.com/ubuntu/</a> 에 접속한다.<li>그러면 <code class="language-plaintext highlighter-rouge">dists/</code>폴더가 있다.<li>여기를 들어가서 리스트를 쭉 보고 설치할 패키지 이름을 본다.<li>bionic, bionic-updates, 등이 있다.<li><code class="language-plaintext highlighter-rouge"># sudo apt edit-sources kakao.list</code> 작성</ol><p><br /></p><h3 id="패키지-목록-출력">패키지 목록 출력 <a href="#패키지-목록-출력" class="anchor"><i class="fas fa-hashtag"></i></a></h3></h3><ul><li>list</ul><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre>apt list <span class="o">[</span>option] <span class="o">[</span>package pattern]
+</pre></table></code></div></div><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+</pre><td class="rouge-code"><pre>모든 리스트 출력
+<span class="nv">$ </span>apt list
+
+설치된 것만
+<span class="nv">$ </span>apt list <span class="nt">--installed</span>
+
+업그레이드 가능한 패키지만
+<span class="nv">$ </span>apt list <span class="nt">--upgradable</span>
+
+모든 버전
+<span class="nv">$ </span>apt list <span class="nt">--all-versions</span>
+
+package pattern을 설정하여 그에 해당하는 것만 출력
+<span class="nv">$ </span>apt list bash<span class="k">*</span>
+</pre></table></code></div></div><p><br /></p><h2 id="search">search <a href="#search" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre>apt search <span class="o">[</span><span class="nt">-n</span><span class="o">]</span> &lt;regex&gt;
+</pre></table></code></div></div><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+</pre><td class="rouge-code"><pre>name이 아닌 설명에 bash가 들어간 경우까지 검색
+<span class="nv">$ </span>apt search bash
+
+name 중간에 bash가 있어도 검색
+<span class="nv">$ </span>apt search <span class="nt">-n</span> bash
+
+시작 부분에 bash가 있는 경우만 검색
+<span class="nv">$ </span>apt search <span class="nt">-n</span> <span class="s1">'^bash'</span>
+</pre></table></code></div></div><p><br /></p><h2 id="show">show <a href="#show" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre>apt show &lt;package name&gt;[<span class="o">=</span>version]
+</pre></table></code></div></div><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+</pre><td class="rouge-code"><pre>정보가 나옴
+<span class="nv">$ </span>apt show bash
+
+모든 버전 보기 위함
+<span class="nv">$ </span>apt list <span class="nt">--all-versions</span> bash
+
+한 개의 버전만
+<span class="nv">$ </span>apt show <span class="nv">bash</span><span class="o">=</span>4.4.18-2ubuntu1
+</pre></table></code></div></div><p><br /></p><h2 id="apt-remove-purge-autoremove">apt remove, purge, autoremove <a href="#apt-remove-purge-autoremove" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre>apt &lt;remove|purge|autoremove&gt; &lt;package&gt;[<span class="o">=</span>version]
+</pre></table></code></div></div><ul><li>remove: 패키지만 삭제 - (config파일은 남겨둠) 설정이 꼬여서 재설치를 할 때<li>purge: 패키지 삭제 - 완전 삭제, 다시는 안쓸 것 같다.<li>autoremove: 의존성이 깨지거나 버전 관리로 인해 쓰이지 않는 패키지 자동 제거</ul><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre><td class="rouge-code"><pre><span class="nv">$ </span>apt <span class="nt">-y</span> <span class="nb">install </span>htop
+
+<span class="nv">$ </span>apt show htop
+
+<span class="nv">$ </span>apt purge htop
+</pre></table></code></div></div><p>패키지 이름만 보고 싶은 경우에는 apt-cache를 사용</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+</pre><td class="rouge-code"><pre>pcp가 들어가는 패키지 다
+<span class="nv">$ </span>apt search <span class="nt">-n</span> <span class="s1">'^pcp*'</span>
+
+pcp가 들어가는 이름만
+<span class="nv">$ </span>apt-cache pkgnames pcp
+
+<span class="nt">-y</span>를 뒤에 적어도됨
+<span class="nv">$ </span>apt <span class="nb">install </span>pcp <span class="nt">-y</span>
+</pre></table></code></div></div><p><br /></p><p><br /></p><h1 id="네트워크에-필요한-기초-용어">네트워크에 필요한 기초 용어</h1><ul><li>hostname: primary hostname, FQDN<li>TCP/IP : IP address(IPv4, IPv6), subnet mask, gateway<li>NIC: Network Interface Care == 랜카드<li>Wired Network (Wired connection) : 유선 네트워크 (유선 연결)<li>Wireless Network (Wireless connection) : 무선 네트워크 (무선 연결)<li>LAN : Local Area Network<li>WAN : Wide Area Network</ul><p><br /></p><h2 id="hostname">hostname <a href="#hostname" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><p><code class="language-plaintext highlighter-rouge">컴퓨터의 이름 : access.redhat.com</code>이라 하면, 호스트이름은 사람의 이름과 비슷하게 만들어져 있다. 컴퓨터의 성은 <code class="language-plaintext highlighter-rouge">redhat.com</code>이 된다. 도메인주소는 사람의 성에 해당하는 것으로 <code class="language-plaintext highlighter-rouge">redhat.com</code>이다.</p><p><br /></p><h2 id="fqdn-hostname">FQDN, hostname <a href="#fqdn-hostname" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><p>hostname에는 두가지 중의적 의미가 있다.</p><ol><li>domain을 제외한 호스트 이름<li>domain을 포함한 FQDN</ol><p>FQDN: fully qualifed domain name</p><ul><li>도메인 내에서 유일하게 구별 가능한 이름, 즉 겹치지 않게 구별해주는 이름<li>e.g. <a href="http://fedora.redhat.com">fedora.redhat.com</a> = hostname = FQDN</ul><p>도메인 주소는 체계적인 구조를 가진다.</p><ul><li>e.g. devel.fclinux.or.kr<ul><li>kr: 한국의 주소<li>or: 단체<li>fclinux: 단체의 이름<li>devel: 단체 내에서 유일한 이름</ul></ul><p>hostname 중에서 special hostname라는 것이 있다.</p><blockquote><dl><dt>localhost<dd>항상 자기 자신을 의미하는 주소와 맵핑된다.<ul><li>IPv4 = 127.0.0.1<li>IPv6 = ::1</ul></dl></blockquote><p><br /></p><h2 id="ip주소">IP주소 <a href="#ip주소" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><p>IPv4</p><ul><li>32bit 주소 체계, 8bit씩 끊어서</ul><p>IPv6</p><ul><li>128bit 주소 체계</ul><p><br /></p><p>IPv6에는 IPv4를 포함한 주소 표기법이 있다. 이를 IPv4-mapped IPv6이라 한다.</p><ul><li>e.g. 58.232.1.100 ⇒ ::ffff:58.232.1.100</ul><p><br /></p><p><br /></p><h3 id="cidrclassless-inter-domain-routing">CIDR(Classless Inter-Domain Routing) <a href="#cidrclassless-inter-domain-routing" class="anchor"><i class="fas fa-hashtag"></i></a></h3></h3><p>CIDR : IP 클래스와 상관없이 <strong>서브넷</strong>을 지정하여 자르는 것을 의미</p><ul><li>xxx.xxx.xxx.xxx<strong>/##</strong><li>##에는 서브넷 매스크의 on 배트의 개수를 표기<li>111.111.111.11/24</ul><p><br /></p><p>public IP/private IP</p><ul><li>public IP: 공인 주소(인터넷에서 유일한 주소)<li>private IP: 사설 주소(인터넷에 직접 연결되지 않는 유일하지 않은 주소)</ul><p><br /></p><p><br /></p><h2 id="selinux">SELinux <a href="#selinux" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><p>Securiy Enhanced Linux : 커널 레벨에서의 중앙 집중식 보안 기능</p><ul><li>대부분의 리눅스는 기본으로 설치되지만, ubuntu는 설치되지 않는다</ul><p><br /></p><p>SELinux의 보안레벨</p><ul><li>enforcing (강제) : SELinux를 사용, 보안설정에 걸리면 강제로 막음<li>permissive (허가) : SELinux를 사용, 보안설정에 걸리면 허용하되 로그 출력<li>disabled (비활성) : SELinux를 사용하지 않음</ul><p>서버 구성시에는 SELinux에 대한 이해가 필요하다. 실습을 할 때는 허가레벨이 적절하다.</p><p><br /></p><p><br /></p><h2 id="debian계열-network-configuration">debian계열 Network Configuration <a href="#debian계열-network-configuration" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><p>네트워크 설정은 2가지 방식이 있다.</p><ol><li>legacy<li>networkmanager</ol><p>여기서 네트워크 매니저만 사용한다. 사용하면 안되는 legacy부분을 간단히 볼 것이다.</p><ul><li>Debian</ul><p><code class="language-plaintext highlighter-rouge">/etc/network/interfaces</code> 에서 설정하고,ifdown,ifup,ifconfig, eth0를 사용하는 것은 다 옛날 버전이다.</p><ul><li>RedHat</ul><p>/etc/sysconfig/netowkr-scripts/ifcfg-* 를 사용하는 것은 다 옛날 버전이다.</p><p><br /></p><p><br /></p><h3 id="networkmanager">networkManager <a href="#networkmanager" class="anchor"><i class="fas fa-hashtag"></i></a></h3></h3><p>장점</p><ul><li>daemon으로 작동하면서 network cofiguration을 수행<li>자동으로 network connection을 관리<li>Dbus 기반으로 동적 상태를 감지할 수 있기 때문에 다른 애플리케이션이나 daemon들에게 네트워크 정보를 제공하거나, 관리를 위한 권한을 줄 수 있다<li>통일된 명령어를 사용하여 <strong>systemd</strong> 기반의 다른 Linux distribution들에게도 동일한 방식의 경험을 제공할 수 있다.<li><strong>Ethernet, wi-fi, moblie broadband</strong> 등 다양한 기능들에게 플랫폼을 제공하므로, 네트워크 연결 관리가 좀 더 쉬워졌다.</ul><p><br /></p><p><br /></p><h1 id="nmcli-network-manager-cli-tool">NMCLI (network manager CLI tool)</h1><ul><li>네트워크에 관련된 대부분의 기능을 가지고 있다.<li>조회 및 설정 가능 (root계정이거나 sudo 를 사용해야 함)</ul><h2 id="nmcli-general">nmcli g[eneral] <a href="#nmcli-general" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><p>현재 상태 조회</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre><td class="rouge-code"><pre><span class="c"># nmcli g</span>
+STATE   CONNECTIVITY  WIFI-HW  WIFI  WWAN-HW  WWAN 
+연결됨  전체          사용     사용  사용     사용
+</pre></table></code></div></div><p>state : connected / asleep</p><p>connectivity : full/none</p><h2 id="nmcli-networking">nmcli n[etworking] <a href="#nmcli-networking" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><p>네트워크 상태 조회</p><p>네트워크를 끊거나 연결할 때는</p><ul><li>nmcli n on<li>nmcli n off</ul><p>간혹 off되어 있어서 설정이 안되는 경우가 있다. 따라서 상태부터 조회해봐야 한다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre><td class="rouge-code"><pre><span class="c"># nmcli n</span>
+enabled
+
+<span class="c"># nmcli n connectivity</span>
+full
+</pre></table></code></div></div><h2 id="nmcli-device">nmcli d[evice] <a href="#nmcli-device" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><p>장치 확인</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre><td class="rouge-code"><pre><span class="c"># nmcli d</span>
+DEVICE  TYPE      STATE          CONNECTION  
+ens33   ethernet  연결됨         유선 연결 1 
+lo      loopback  관리되지 않음  <span class="nt">--</span>
+</pre></table></code></div></div><p><br /></p><blockquote><p>추가 정보 - en : ethernet - wl : wireless lan - ww : wireless wan</p><p>그 뒤에 붙는 것들이 o&lt;index&gt; : on-board device index number s&lt;slot&gt; : hotplug slot index number p&lt;bus&gt; : PCI location</p></blockquote><p><br /></p><h2 id="nmcli-radio">nmcli r[adio] <a href="#nmcli-radio" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><p>무선 관련 설정</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre><td class="rouge-code"><pre><span class="c"># nmcli r</span>
+WIFI-HW  WIFI     WWAN-HW  WWAN    
+enabled  enabled  enabled  enabled
+</pre></table></code></div></div><p><br /></p><h2 id="nmcli-connection-showdefault">nmcli c[onnection] s[how](default) <a href="#nmcli-connection-showdefault" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><p>디바이스와 이름의 연결 상태와 넘버,타입 등</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+</pre><td class="rouge-code"><pre><span class="c"># nmcli c</span>
+NAME         UUID                                  TYPE      DEVICE 
+유선 연결 1  226b498c-6a18-3983-869d-665b9c680b39  ethernet  ens33
+
+<span class="c"># nmcli c s</span>
+
+특정 연결 이름에 대한 설정된 속성
+<span class="c"># nmcli c s ens33</span>
+</pre></table></code></div></div><p>이 때, cmcli c s ens33 을 했을 때 소문자로 된 것과 대문자로 된 것들이 있다.</p><p>소문자는 설정된 값(offline일때도 보임), 대문자는 할당된 값(online일때만 보임)</p><p><br /></p><p><strong>주요 속성</strong></p><ul><li>ipv4.method<ul><li><div class="table-wrapper"><table><tbody><tr><td>auto<td>manual</table></div><li>auto = dhcp<li>manual = static ip<ul><li>ip주소에 대해서는 다음과같이 적어야 한다.<ul><li>ipv4.addr = CIDR 표기법 : 192.168.110.50/24 라면 24이므로 앞에 192.168.110까지만</ul></ul></ul><li>옵션<ul><li>+ : 기존의 것에 추가<li>- : 기존의 것에서 삭제<li>none : 교체</ul></ul><p><br /></p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+</pre><td class="rouge-code"><pre><span class="c"># nmcli d</span>
+DEVICE  TYPE      STATE      CONNECTION  
+ens33   ethernet  connected  유선 연결 1 
+lo      loopback  unmanaged  <span class="nt">--</span>
+
+<span class="c"># nmcli con down "유선 연결 1"</span>
+Connection <span class="s1">'유선 연결 1'</span> successfully deactivated <span class="o">(</span>D-Bus active path: /org/freedesktop/NetworkManager/ActiveConnection/1<span class="o">)</span>
+
+<span class="c"># nmcli c s "유선 연결 1"</span>
+connection.id:                          유선 연결 1
+connection.uuid:                        226b498c-6a18-3983-869d-665b9c680b39
+connection.stable-id:                   <span class="nt">--</span>
+connection.type:                        802-3-ethernet
+connection.interface-name:              <span class="nt">--</span>
+connection.autoconnect:                 <span class="nb">yes
+</span>connection.autoconnect-priority:        <span class="nt">-999</span>
+connection.autoconnect-retries:         <span class="nt">-1</span> <span class="o">(</span>default<span class="o">)</span>
+connection.auth-retries:                <span class="nt">-1</span>
+...
+
+<span class="c"># nmcli con up "유선 연결 1"</span>
+Connection <span class="s1">'유선 연결 1'</span> successfully activated <span class="o">(</span>D-Bus active path: /org/freedesktop/NetworkManager/ActiveConnection/1<span class="o">)</span>
+
+IP4.<span class="k">*</span> 부분 관찰
+<span class="c"># nmcli c s "유선 연결 1"</span>
+</pre></table></code></div></div><p><br /></p><h2 id="nmcli-속성-변경---이름-변경">nmcli 속성 변경 - 이름 변경 <a href="#nmcli-속성-변경---이름-변경" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><p>한글인 이름을 변경시켜본다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="c"># nmcli con modify “변경전이름” 속성 변경후이름</span>
+</pre></table></code></div></div><p><br /></p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+</pre><td class="rouge-code"><pre><span class="c"># nmcli d</span>
+DEVICE  TYPE      STATE      CONNECTION
+ens33   ethernet  connected  유선 연결 1
+lo      loopback  unmanaged  <span class="nt">--</span>
+
+<span class="c"># nmcli con modify "유선 연결 1" connection.id ens33</span>
+<span class="c"># nmcli d</span>
+DEVICE  TYPE      STATE      CONNECTION 
+ens33   ethernet  connected  ens33      
+lo      loopback  unmanaged  <span class="nt">--</span>
+</pre></table></code></div></div><p><br /></p><h3 id="nmcli-속성-변경---ip주소-변경">nmcli 속성 변경 - ip주소 변경 <a href="#nmcli-속성-변경---ip주소-변경" class="anchor"><i class="fas fa-hashtag"></i></a></h3></h3><p>ip 변경 전에 현재 시스템의 ip부터 메모해놓아야 한다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+</pre><td class="rouge-code"><pre><span class="c"># nmcli c s</span>
+NAME   UUID                                  TYPE      DEVICE 
+ens33  226b498c-6a18-3983-869d-665b9c680b39  ethernet  ens33
+
+
+<span class="c"># nmcli c s ens33</span>
+ipv4.method:                            auto
+ipv4.dns:                               <span class="nt">--</span>
+...
+IP4.ADDRESS[1]:                         192.168.40.128/24
+IP4.GATEWAY:                            192.168.40.2
+IP4.ROUTE[1]:                           dst <span class="o">=</span> 0.0.0.0/0, nh <span class="o">=</span> 192.168.40.2, mt <span class="o">=</span> 100
+...
+</pre></table></code></div></div><ul><li>auto = DHCP</ul><p><br /></p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+</pre><td class="rouge-code"><pre><span class="c"># nmcli c mod ens33 ipv4.method manual ipv4.addresses 192.168.40.128/24 \</span>
+<span class="o">&gt;</span>ipv4.gateway 192.168.40.2 +ipv4.dns 8.8.8.8
+
+
+
+대문자는 그대로지만, 소문자 속성만 바뀌어 있다.
+<span class="c"># nmcli c s ens33</span>
+ipv4.method:                            manual
+ipv4.dns:                               8.8.8.8
+IP4.ADDRESS[1]:                         192.168.40.128/24
+IP4.GATEWAY:                            192.168.40.2
+
+
+
+다시 원상복구
+이 때 <span class="o">&amp;&amp;</span>은 앞에꺼가 True 이면 뒤에꺼도 실행
+<span class="c"># nmcli c down ens33 &amp;&amp; nmcli c up ens33</span>
+Connection <span class="s1">'ens33'</span> successfully deactivated <span class="o">(</span>D-Bus active path: /org/freedesktop/NetworkManager/ActiveConnection/2<span class="o">)</span>
+Connection successfully activated <span class="o">(</span>D-Bus active path: /org/freedesktop/NetworkManager/ActiveConnection/3<span class="o">)</span>
+</pre></table></code></div></div><p><br /></p><p><br /></p><h3 id="virtual-ip-추가삭제">virtual IP 추가/삭제 <a href="#virtual-ip-추가삭제" class="anchor"><i class="fas fa-hashtag"></i></a></h3></h3><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre><td class="rouge-code"><pre><span class="c"># nmcli c mod ens33 +ipv4.addr 192.168.40.181/24</span>
+<span class="c"># nmcli c up ens33</span>
+
+<span class="c"># nmcli c mod ens33 -ipv4.addr 192.168.40.181/24</span>
+</pre></table></code></div></div><p><br /></p><h3 id="기존의-설정을-삭제했다가-새로-생성">기존의 설정을 삭제했다가 새로 생성 <a href="#기존의-설정을-삭제했다가-새로-생성" class="anchor"><i class="fas fa-hashtag"></i></a></h3></h3><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+</pre><td class="rouge-code"><pre><span class="c"># nmcli n del ens33</span>
+
+<span class="c"># nmcli c s</span>
+
+device 정보는 나오지만 connection은 없음
+<span class="c"># nmcli d s</span>
+
+ifname이 디바이스 이름
+<span class="c"># nmcli c add con-name ens33 ifname ens33 type ethernet \</span>
+<span class="o">&gt;</span> ip4 192.168.50.128/24
+</pre></table></code></div></div><p><br /></p><ul><li>만약 디바이스 자체가 올라오지 않는 경우</ul><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+</pre><td class="rouge-code"><pre>status 확인
+<span class="c"># nmcli dev s</span>
+
+
+disconnected라고 되어 있으면 connect로 바꿔야 함
+<span class="c"># nmcli dev connect ens33</span>
+
+
+connect가 실패한다면 status 확인
+<span class="c"># nmcli g</span>
+
+
+asleep이라면 이 명령은 되지 않을 수 있다. 되지 않는다면
+<span class="c"># nmcli device connect ens33</span>
+
+
+<span class="c"># nmcli networking</span>
+
+
+disabled라면
+<span class="c"># nmcli networking on</span>
+
+
+확인
+<span class="c"># nmcli g</span>
+</pre></table></code></div></div><p><br /></p><p><br /></p><h1 id="ss-socket-statistics">ss (socket statistics)</h1><blockquote><p>netstat은 구식 명령어</p></blockquote><p><br /></p><h2 id="상태-확인">상태 확인 <a href="#상태-확인" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="c"># ss -ntl</span>
+</pre></table></code></div></div><p>옵션</p><ul><li>-n : —numeric<li>-a : —all<li>-l : —listening<li>-e : —extended<li>-o : —options<li>-m : —memory<li>-p : —processes</ul><p><br /></p><p>filter로 state, address를 지정하여 추출할 수 있다.</p><p>filter = [state TCP-state] [EXPRESSION]</p><ul><li>TCP-STATE<ul><li>established<li>fin-wait-2<li>close-wait</ul></ul><p><br /></p><p><br /></p><h2 id="tcp-state">TCP state <a href="#tcp-state" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><p><img data-src="/assets/img/dev/week2/day4/tcpstate.png" data-proofer-ignore></p><ul><li>실선: 클라이언트<li>점선: 서버</ul><ol><li>서버 측에서 요청을 들을 수 있도록 listen을 하면 listen 상태가 된다.<li>클라이언트에서도 connect를 해야하고, 하게 되면 SYN_SENT (싱크 보내기)를 한다.<li>받은 싱크는 무조건 다시 echo, ack를 해줘야 한다. 싱크를 보낸측을active opne이라 하고, 받은 측을 passive open 이라 부른다.<li>싱크를 보내는 것을 SYN_SENT → 싱크를 잘 받았다고 다시 보내는 것을 SYN_RCVD → 또 그것을 받았다는 것을 ack해준다. 이를 three way handshaking<li>3번 핸드쉐이킹이 끝나면 established 상태가 된다.<li>데이터를 주고 받음<li>종료할 때는 대체로 클라이언트가 종료하게 되므로 클라이언트가 active close, 서버가 passive close ,, 그러나 서버측이 먼저 끊을 수도 있다. 그러면 저 FIN부터 다 반대로 작동한다고 보면 된다.<li>close를 하게 되면 바로 ack와 echo를 돌려보내줘야 하는데, 먼저 ack를 주고받는다. 이를 기다리는 것이 FIN_WAIT1, FIN_WAIT2가 echo<li>echo를 잘 받았다는 ack를 기다리는 것이 LAST_ACK<li>중복되어 받는 것들을 처리해주는 것을 TIME_WAIT</ol><p><br /></p><h3 id="three-way-handshaking">three-way handshaking <a href="#three-way-handshaking" class="anchor"><i class="fas fa-hashtag"></i></a></h3></h3><p>TCP 접속을 만드는 과정</p><ul><li>3번 왔다갔다 하기 때문<li>문제가 발생하기 드뭄</ul><h3 id="four-way-handshaking">Four-way handshaking <a href="#four-way-handshaking" class="anchor"><i class="fas fa-hashtag"></i></a></h3></h3><p>TCP 접속을 해제하는 과정</p><ul><li>4번 왕복하지만 아주 드물게 동시에 접속이 해제되면 3번만에 끝난다.<li><strong>문제가 종종 생긴다. 특히 passive close에서</strong></ul><p><br /></p><p>🎈 close-wait 와 fin-wait-2 는 심각한 문제다. 그 중 close-wait는 시한 폭탄과도 같다.</p><p><br /></p><p>위 2가지 TCP상태가 발생하는지 확인하기 위해서는 다음과 같이 명령</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre><td class="rouge-code"><pre><span class="c"># ss -nt state close-wait state fin-wait-2</span>
+
+1초마다<span class="o">(</span><span class="nt">-n</span> 1<span class="o">)</span> 확인<span class="o">(</span>watch<span class="o">)</span>하기 위는 방법
+<span class="c"># watch -d -n 1 ss -nt state close-wait state fin-wait-2</span>
+</pre></table></code></div></div><h2 id="ss--nt">ss -nt <a href="#ss--nt" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><p>option : numeric, tcp</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre><td class="rouge-code"><pre><span class="c"># ss -nt</span>
+State   Recv-Q    Send-Q        Local Address:Port        Peer Address:Port
+ESTAB   123123    0             192.168.0.71:40632        42.123.16.377.364:12370
+ESTAB   123123    0   <span class="o">[</span>::ffff::192.168.0.71]:40632        42.123.16.377.364:12370
+</pre></table></code></div></div><ul><li>ESTAB: established<li>Q: 소켓 버퍼를 의미, 저 숫자만큼 쌓여 있다는 것<li>ffff가 없는 것은 IPv4, 있는 것은 IPv6-mapped ipv4</ul><p><br /></p><h2 id="ss-state-tcp-state">ss state &lt;tcp state&gt; <a href="#ss-state-tcp-state" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><p>ESTAB 상태를 보려면</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre><td class="rouge-code"><pre><span class="c"># ss state established</span>
+
+numeric과 ipv6만 보여달라는 옵션
+<span class="c"># ss -n6 state established</span>
+</pre></table></code></div></div><p><br /></p><h2 id="address-filter">address filter <a href="#address-filter" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><p>주소나 포트 번호를 통해 필터를 걸 수도 있다. 지정을 위해 2가지 방법이 있는데, symbolic보다는 literal을 더 많이 쓴다.</p><div class="table-wrapper"><table><thead><tr><th>symbolic<th>literal<th>description<tbody><tr><td>&gt;<td>gt<td>greater than<tr><td>&lt;<td>ls<td>less than<tr><td>&gt;=<td>ge<td>greater than or equal<tr><td>&lt;=<td>le<td>less than or equal<tr><td>==<td>eq<td>equal<tr><td>!=<td>ne<td>not equal<tr><td> <td>and<td>and<tr><td> <td>or<td>or</table></div><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre>dport가 22인거만 추출, 작은따옴표로 묶어주는 것이 좋다.
+<span class="c"># ss -n 'dport = :22'</span>
+</pre></table></code></div></div><p><br /></p><h2 id="ss--s">ss -s <a href="#ss--s" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><p>option: statistics</p><p>통계정보, 열고 있는 통계정보, 몇개를 열고 있는지 볼 수 있는 중요한 기능</p><p><br /></p><h2 id="ss--utlp">ss -utlp <a href="#ss--utlp" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><p>프로세스의 정보를 보여준다. 할 때는 root계정으로 해야 다 볼 수 있다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+</pre><td class="rouge-code"><pre>user에서 첫번째값은 실행파일의 이름, pid ,fd 값들임 
+<span class="c"># ss -utlp</span>
+State    Recv-Q    Send-Q        Local Address:Port       Peer Address:Port                                                                                   
+LISTEN   0         128           127.0.0.53%lo:53              0.0.0.0:<span class="k">*</span>        <span class="nb">users</span>:<span class="o">((</span><span class="s2">"systemd-resolve"</span>,pid<span class="o">=</span>561,fd<span class="o">=</span>13<span class="o">))</span>                                     
+LISTEN   0         5                 127.0.0.1:631             0.0.0.0:<span class="k">*</span>        <span class="nb">users</span>:<span class="o">((</span><span class="s2">"cupsd"</span>,pid<span class="o">=</span>712,fd<span class="o">=</span>7<span class="o">))</span>                                                
+LISTEN   0         5                     <span class="o">[</span>::1]:631                <span class="o">[</span>::]:<span class="k">*</span>        <span class="nb">users</span>:<span class="o">((</span><span class="s2">"cupsd"</span>,pid<span class="o">=</span>712,fd<span class="o">=</span>6<span class="o">))</span>
+
+
+
+<span class="c"># ss -n 'src 192.168.110.0/24'</span>
+
+
+
+
+dport가 ssh인거거나 sport가 ssh인것들을 보여달라
+<span class="c"># ss -n 'dport = :ssh or sport = :ssh'</span>
+
+
+
+
+dport가 ssh이면서 sport가 ssh인 것<span class="o">(</span>여기서 괄호 사이에 공백은 일부러 넣은것으로 안하면 오루가 날 수도 있다<span class="o">)</span>
+그리고 src번호가 이것인거만 추출
+<span class="c"># ss -n '( dport = :ssh or sport = :ssh ) and src 192.168.110.134'</span>
+</pre></table></code></div></div><p>192.168.110.0/24 라는 필터를 걸면 24bit 즉, 앞에 8bit씩 끊어서 앞에 192.168.110인것들을 모두 보여준다는 의미다.</p><p><br /></p><h2 id="ss와-같이-쓰이는-명령어">ss와 같이 쓰이는 명령어 <a href="#ss와-같이-쓰이는-명령어" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><h3 id="lsof-fuser">lsof, fuser <a href="#lsof-fuser" class="anchor"><i class="fas fa-hashtag"></i></a></h3></h3><p>열린 파일을 검색하거나 액션을 행할 수 있는 기능을 가진다. 특정 소켓 주소를 점유하고 있는 프로세스를 찾아내거나 할 때 사용한다.</p><p><br /></p><p><br /></p><h1 id="ping-또는-server-관련-명령어">ping 또는 server 관련 명령어</h1><h2 id="ping">ping <a href="#ping" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><p>상대 호스트의 응답을 확인함</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre>ping <span class="o">[</span><span class="nt">-c</span> count] <span class="o">[</span><span class="nt">-i</span> interval] <span class="o">[</span><span class="nt">-s</span> size] <span class="o">[</span><span class="nt">-t</span> ttl] target
+</pre></table></code></div></div><p>count를 지정하지 않으면 계속 보내질수도 있으며, interval을 지정하지 않으면 초단위로 보내진다. 다 하고 나면 통계정보(min,avg,max,mdev등)를 알려준다. 이 때 표준편차를 주의깊게 봐야 한다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+</pre><td class="rouge-code"><pre><span class="c"># ping -c 3 192.168.0.1</span>
+PING 192.168.0.1 <span class="o">(</span>192.168.0.1<span class="o">)</span> 56<span class="o">(</span>84<span class="o">)</span> bytes of data.
+
+<span class="nt">---</span> 192.168.0.1 ping statistics <span class="nt">---</span>
+3 packets transmitted, 0 received, 100% packet loss, <span class="nb">time </span>2043ms
+
+0.2sec 간격으로 2000번 테스트
+<span class="c"># ping -c 2000 -i 0.2 -s 1000 102.168.1.1</span>
+<span class="c"># ping -c 2000 -i 0.2 -s 1000 192.168.1.1</span>
+PING 192.168.1.1 <span class="o">(</span>192.168.1.1<span class="o">)</span> 1000<span class="o">(</span>1028<span class="o">)</span> bytes of data.
+
+<span class="nt">---</span> 192.168.1.1 ping statistics <span class="nt">---</span>
+1064 packets transmitted, 0 received, 100% packet loss, <span class="nb">time </span>216897ms
+</pre></table></code></div></div><p><br /></p><h2 id="arp">arp <a href="#arp" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><p>arp 테이블: IP와 MAC 주소를 매핑해주는 것</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre><td class="rouge-code"><pre><span class="c"># arp</span>
+Address                  HWtype  HWaddress           Flags Mask            Iface
+_gateway                 ether   00:50:56:f4:31:a8   C                     ens33
+</pre></table></code></div></div><p>수동으로 매핑해줄 수도 있다.</p><blockquote><p>NIC 교체 후 통신이 실패한다면 → 고정 IP주소를 사용하는 기관이나 회사의 경우 보안이나 IP주소 관리를 위해 고정 ARP테이블을 사용한다. 따라서 ARP 테이블을 확인하여 IP와 MAC주소가 제대로 매칭되는지 확인(nmcli , arp), 교체하면 네트워크 관리자에게 NIC의 MAC과 IP를 알려주어야 함</p></blockquote><p><br /></p><h2 id="resolver--name-service">resolver : name service <a href="#resolver--name-service" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><p>IP address나 hostname을 해석해주는 것으로, 이를 이용해서 특정 이름을 지정해서 볼 때 <code class="language-plaintext highlighter-rouge">dig</code> 명령어를 사용한다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+</pre><td class="rouge-code"><pre><span class="c"># dig dkssud8150.github.io</span>
+<span class="nb">.</span>
+<span class="nb">.</span>
+<span class="nb">.</span>
+<span class="p">;;</span> ANSWER SECTION:
+dkssud8150.github.io.	3600	IN	A	185.199.108.153
+dkssud8150.github.io.	3600	IN	A	185.199.109.153
+dkssud8150.github.io.	3600	IN	A	185.199.110.153
+dkssud8150.github.io.	3600	IN	A	185.199.111.153
+
+<span class="p">;;</span> Query <span class="nb">time</span>: 49 msec
+<span class="p">;;</span> SERVER: 127.0.0.53#53<span class="o">(</span>127.0.0.53<span class="o">)</span>
+
+
+
+
+
+nameserver를 직접 지정가능 dig <span class="o">[</span>@server] target
+<span class="c"># dig @8.8.8.8 dkssud8150.github.io</span>
+<span class="nb">.</span>
+<span class="nb">.</span>
+<span class="nb">.</span>
+<span class="p">;;</span> ANSWER SECTION:
+dkssud8150.github.io.	3600	IN	A	185.199.111.153
+dkssud8150.github.io.	3600	IN	A	185.199.108.153
+dkssud8150.github.io.	3600	IN	A	185.199.109.153
+dkssud8150.github.io.	3600	IN	A	185.199.110.153
+
+<span class="p">;;</span> Query <span class="nb">time</span>: 41 msec
+<span class="p">;;</span> SERVER: 8.8.8.8#53<span class="o">(</span>8.8.8.8<span class="o">)</span>
+
+
+
+
+
+<span class="c"># dig @1.1.1.1 dkssud8150.github.io</span>
+<span class="p">;;</span> ANSWER SECTION:
+dkssud8150.github.io.	3600	IN	A	185.199.108.153
+dkssud8150.github.io.	3600	IN	A	185.199.109.153
+dkssud8150.github.io.	3600	IN	A	185.199.110.153
+dkssud8150.github.io.	3600	IN	A	185.199.111.153
+
+<span class="p">;;</span> Query <span class="nb">time</span>: 44 msec
+<span class="p">;;</span> SERVER: 1.1.1.1#53<span class="o">(</span>1.1.1.1<span class="o">)</span>
+</pre></table></code></div></div><p>nameserver == DNS 유명한 것은 알아두자.</p><ul><li>Cloudflare DNS : 1.1.1.1 , ipv6= 2606:4700:4700::1111<li>CISCO openDNS : 208.67.222.222 , 208.67.200.200<li>google DNS : 8.8.8.8</ul><p>네임서버를 지정해주는 이유는 지정하는 것마다 속도가 다르다. 그렇기에 어떤 것이 제일빠른지 비교해보고 사용하면 된다. @server를 지정해주지 않을 경우 /etc/resolv.conf에 기록되어 있는 nameserver를 사용한다.</p><p><br /></p><p><br /></p><h2 id="ethtool">ethtool <a href="#ethtool" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><p>간혹 시스템이 느려지는 경우 duplex 문제일 가능성이 있다. 저전력, powersave모드 사용시 발생할 수 있다.</p><p>여기서 speed와 duplex를 봐야 하는데, 시스템에서 지원하는 속도와 duplex와 다를 경우 문제가 있다. 그래서 속도와 duplex를 지정해주면 원상복귀된다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+</pre><td class="rouge-code"><pre><span class="c"># ethtool enp0s3lf6</span>
+supported <span class="nb">link </span>modes : 1000baseT/full
+<span class="nb">.</span>
+<span class="nb">.</span>
+<span class="nb">.</span>
+speed : 100Mb /s
+Duplex : Half
+
+
+<span class="c"># ethtool -s enp0s3lf6 speed 1000 duplex full</span>
+
+<span class="c"># ethtool enp0s3lf6</span>
+...
+speed : 1000Mb/s
+duplex : full
+</pre></table></code></div></div><p><br /></p><p><br /></p><h1 id="ssh-server">ssh server</h1><h2 id="sshsecure-shell-개념">ssh(secure shell) 개념 <a href="#sshsecure-shell-개념" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><p>ssh는 통신 구간을 암호화하는 서비스로 기본적으로 리눅스 서버들은 ssh서비스가 탑재되어 있다. 없으면 설치를 추천한다. 리눅스의 ssh는 <strong>openssh</strong>를 사용한다.</p><ul><li>sshd : ssh daemon, 즉 ssh server를 의미한다.</ul><p><br /></p><p>ssh : ssh client이며, ssh 명령어가 바로 ssh client CLI이다.</p><ul><li>ms윈도우에서 접속하려면 putty나 mobaxterm 툴을 사용한다.</ul><h2 id="sshd-서버-준비">sshd 서버 준비 <a href="#sshd-서버-준비" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><ol><li><strong>sshd 서버의 설치 여부 확인</strong><li><strong>sshd 서비스가 실행 중인지 확인</strong><ul><li>Listen 상태인지도 확인 : ss -nlt or ss -nltp (프로세스 이름까지 보려면)</ul><li>ssh port(22/tcp)가 방화벽에 허용되어 있는지 확인<ul><li>ssh port는 22를 사용한다.</ul></ol><p><br /></p><h3 id="sshd-서버-설치-여부-확인">sshd 서버 설치 여부 확인 <a href="#sshd-서버-설치-여부-확인" class="anchor"><i class="fas fa-hashtag"></i></a></h3></h3><ul><li>debian</ul><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+</pre><td class="rouge-code"><pre><span class="c"># open list openssh*</span>
+<span class="nb">.</span>
+<span class="nb">.</span>
+<span class="nb">.</span>
+openssh-server/bionic-updates 1:7.6p1-4ubuntu0.6 amd64
+
+<span class="c"># apt openssh-server</span>
+</pre></table></code></div></div><p>[installed]되어 있어야 함</p><p><br /></p><ul><li>RH계열</ul><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="c"># rpm -qa openssh-server</span>
+</pre></table></code></div></div><p><br /></p><h3 id="sshd-서비스가-실행중인지-확인">sshd 서비스가 실행중인지 확인 <a href="#sshd-서비스가-실행중인지-확인" class="anchor"><i class="fas fa-hashtag"></i></a></h3></h3><ul><li>systemd 기반이라면 systemctl로 확인</ul><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre><td class="rouge-code"><pre><span class="c"># systemctl status sshd</span>
+● ssh.service - OpenBSD Secure Shell server
+   Loaded: loaded <span class="o">(</span>/lib/systemd/system/ssh.service<span class="p">;</span> enabled<span class="p">;</span> vendor preset: ena
+   Active: inactive <span class="o">(</span>dead<span class="o">)</span>
+</pre></table></code></div></div><p><br /></p><p>sshd 서비스가 정지된 경우</p><ul><li>systemd 기반이라면 <code class="language-plaintext highlighter-rouge">systemctl start sshd</code></ul><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+</pre><td class="rouge-code"><pre><span class="c"># systemctl start sshd</span>
+
+<span class="c"># systemctl status sshd</span>
+● ssh.service - OpenBSD Secure Shell server
+   Loaded: loaded <span class="o">(</span>/lib/systemd/system/ssh.service<span class="p">;</span> enabled<span class="p">;</span> vendor preset: ena
+   Active: active <span class="o">(</span>running<span class="o">)</span> since Fri 2022-02-25 01:51:51 KST<span class="p">;</span> 5s ago
+  Process: 4494 <span class="nv">ExecStartPre</span><span class="o">=</span>/usr/sbin/sshd <span class="nt">-t</span> <span class="o">(</span><span class="nv">code</span><span class="o">=</span>exited, <span class="nv">status</span><span class="o">=</span>0/SUCCESS<span class="o">)</span>
+ Main PID: 4495 <span class="o">(</span>sshd<span class="o">)</span>
+    Tasks: 1 <span class="o">(</span>limit: 2292<span class="o">)</span>
+   CGroup: /system.slice/ssh.service
+           └─4495 /usr/sbin/sshd <span class="nt">-D</span>
+
+ 2월 25 01:51:51 jaeho-vm systemd[1]: Starting OpenBSD Secure Shell server...
+ 2월 25 01:51:51 jaeho-vm sshd[4495]: Server listening on 0.0.0.0 port 22.
+ 2월 25 01:51:51 jaeho-vm sshd[4495]: Server listening on :: port 22.
+ 2월 25 01:51:51 jaeho-vm systemd[1]: Started OpenBSD Secure Shell server.
+</pre></table></code></div></div><p><br /></p><ul><li>부팅할 때 sshd 서비스가 실행되도록 하고 싶다면 <code class="language-plaintext highlighter-rouge">systemctl enable sshd</code><ul><li>여기서 enable에 —now 옵션을 사용하면 start기능까지 수행됨</ul></ul><p><br /></p><h3 id="listen-상태-확인">listen 상태 확인 <a href="#listen-상태-확인" class="anchor"><i class="fas fa-hashtag"></i></a></h3></h3><p>sshd는 22번 포트이므로 22번 포트 확인</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+</pre><td class="rouge-code"><pre><span class="c"># ss -nlt</span>
+State    Recv-Q    Send-Q        Local Address:Port       Peer Address:Port    
+LISTEN   0         128           127.0.0.53%lo:53              0.0.0.0:<span class="k">*</span>       
+<span class="k">**</span>LISTEN   0         128                 0.0.0.0:22              0.0.0.0:<span class="k">***</span>       
+LISTEN   0         5                 127.0.0.1:631             0.0.0.0:<span class="k">*</span>       
+<span class="k">**</span>LISTEN   0         128                    <span class="o">[</span>::]:22                 <span class="o">[</span>::]:<span class="k">***</span>       
+LISTEN   0         5                     <span class="o">[</span>::1]:631                <span class="o">[</span>::]:<span class="k">*</span>
+</pre></table></code></div></div><p><br /></p><h3 id="방화벽에-허용되어-있는지-확인">방화벽에 허용되어 있는지 확인 <a href="#방화벽에-허용되어-있는지-확인" class="anchor"><i class="fas fa-hashtag"></i></a></h3></h3><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+</pre><td class="rouge-code"><pre><span class="c"># iptables -nL</span>
+Chain INPUT <span class="o">(</span>policy ACCEPT<span class="o">)</span>
+target     prot opt <span class="nb">source               </span>destination         
+
+Chain FORWARD <span class="o">(</span>policy ACCEPT<span class="o">)</span>
+target     prot opt <span class="nb">source               </span>destination         
+
+Chain OUTPUT <span class="o">(</span>policy ACCEPT<span class="o">)</span>
+target     prot opt <span class="nb">source               </span>destination
+
+ubuntu의 경우
+<span class="c"># ufw status</span>
+상태: 비활성
+<span class="c"># ufw enable</span>
+방화벽이 활성 상태이며 시스템이 시작할 때 사용됩니다
+<span class="c"># ufw status</span>
+상태: 활성
+
+<span class="c"># ufw allow 22/tcp</span>
+규칙이 추가되었습니다
+규칙이 추가되었습니다 <span class="o">(</span>v6<span class="o">)</span>
+<span class="c"># ufw allow 80/tcp</span>
+규칙이 추가되었습니다
+규칙이 추가되었습니다 <span class="o">(</span>v6<span class="o">)</span>
+</pre></table></code></div></div><p><br /></p><p><img data-src="/assets/img/dev/week2/day4/sshd.png" data-proofer-ignore></p><p>accept가 허용 즉, 잘 되어 있다는 것이다. 허용되어 있지 않다면 허용시켜라. 안그럼 다 해킹당할 수 있음</p><p><br /></p><h2 id="ssh-client">ssh client <a href="#ssh-client" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre>ssh <span class="o">[</span><span class="nt">-p</span> port] <span class="o">[</span>username@] &lt;host address&gt;
+</pre></table></code></div></div><p>username을 적지않을 경우 지금 사용중인 유저네임으로 자동으로 선택됨, 다른 유저명을 사용하고 싶은 경우 적어주면된다.</p><p><br /></p><h2 id="ssh-keygen">ssh-keygen <a href="#ssh-keygen" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><p>ssh를 사용하다보면 보안 문제로 인해 키 기반 통신을 하는 경우가 많다. 그래서 키를 생성하는 방법은 다음과 같다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre>ssh-keygen <span class="nt">-N</span> “”
+</pre></table></code></div></div><ul><li>-N: passphrase - 키를 풀때마다 키를 넣어야 하는 것을 “”(공백)으로, 즉 이를 사용하지 않겠다는 것을 의미한다.</ul><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+</pre><td class="rouge-code"><pre>키 생성
+<span class="c"># ssh-keygen -N ""</span>
+
+접속할 서버를 카피
+<span class="c"># ssh-copy-id sunyzero@192.168.52.110</span>
+
+카피 한 후에는 암호를 기입하지 않고도 바로 접속 가능
+<span class="c"># ssh sunyzero@192.168.52.110</span>
+</pre></table></code></div></div><p><br /></p><p>ssh는 접속 뿐만 아니라 어떤 명령어를 접속한 서버에서 실행한 결과를 볼 수도 있다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre>w는 앞의 서버에서 실행된 결과값을 알려주는 것이다.
+<span class="c"># ssh -t sunyzero@192.168.52.110 w</span>
+</pre></table></code></div></div><p><br /></p><p><br /></p><h1 id="curl-options-">curl [options] <URL></URL></h1><p>URL기반의 통신하는 기능</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+</pre><td class="rouge-code"><pre><span class="c"># curl https://dkssud8150.github.io</span>
+&lt;<span class="o">!</span>DOCTYPE html&gt;&lt;html <span class="nv">lang</span><span class="o">=</span><span class="s2">"en"</span> data-mode<span class="o">=</span><span class="s2">"light"</span> <span class="o">&gt;</span>&lt;<span class="nb">head</span><span class="o">&gt;</span>&lt;meta http-equiv<span class="o">=</span><span class="s2">"Content-Type"</span> 
+<span class="nv">content</span><span class="o">=</span><span class="s2">"text/html; charset=UTF-8"</span><span class="o">&gt;</span>&lt;meta <span class="nv">name</span><span class="o">=</span><span class="s2">"viewport"</span> <span class="nv">content</span><span class="o">=</span><span class="s2">"width=device-width, 
+initial-scale=1, shrink-to-fit=no"</span><span class="o">&gt;</span>&lt;meta <span class="nv">name</span><span class="o">=</span><span class="s2">"day-prompt"</span> <span class="nv">content</span><span class="o">=</span><span class="s2">"days ago"</span><span class="o">&gt;</span>
+...
+
+
+
+결과를 파일로 저장하고 싶은 경우, manual.html파일로 저장
+<span class="c"># curl -O https://www.mycompany.com/docs/manual.html</span>
+
+
+
+뒤에 붙이지 않고 파일명으로 직접 지정
+<span class="c">#curl -o myblog.html https://dkssud8150.github.io</span>
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100 22068  100 22068    0     0   468k      0 <span class="nt">--</span>:--:-- <span class="nt">--</span>:--:-- <span class="nt">--</span>:--:--  468k
+</pre></table></code></div></div><p><br /></p><h2 id="curl--c----o-">curl -C - -O <URL></URL> <a href="#curl--c----o-" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><p>파일 다운로드에도 사용할 수 있다.</p><p>-C는 다운로드 중간에 끊기더라도 계속해서 다운로드 가능</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="c"># curl -C - -O http://blah.org/blah.iso</span>
+</pre></table></code></div></div><p><br /></p><p>API 서버로 접속해서 값들을 받아오는 것도 가능하다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre><td class="rouge-code"><pre>날씨 api
+<span class="c"># curl v2.wttr.in/Seoul</span>
+
+환율 api
+<span class="c"># curl https://api.exchangeratesapi.io/lastest?base=USD</span>
+</pre></table></code></div></div><p><img data-src="/assets\img\dev\week2\day4\weather.png" data-proofer-ignore></p><p><br /></p><p><br /></p><h1 id="wget-">wget <url></url></h1><p>wget과 curl은 대부분 기능이 비슷하나 curl이 더 많은 기능을 가진다. 그러나 <strong>wget은 파일 다운로드에 특화된 기능이 존재</strong></p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="c"># wget https://.../a.png</span>
+</pre></table></code></div></div><p><br /></p><p><br /></p><h2 id="nc-netcat">nc (netcat) <a href="#nc-netcat" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><p>nc: network 기능이 가능한 cat을 뜻한다.</p><p>server, client의 양쪽 기능이 가능</p><ul><li>간단한 간이 서버, 클라이언트로 사용 가능<li>바이너리 통신 가능</ul><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+</pre><td class="rouge-code"><pre>TCP 5000
+<span class="c"># nc -k -l 5000 </span>
+
+뒤의 주소와 tcp에 접속해서 hello를 보내게 됨
+<span class="c"># echo Hello | nc 127.0.0.1 5000</span>
+
+그냥 바로 접속
+<span class="c"># nc 127.0.0.1 5000</span>
+... interactive mode
+</pre></table></code></div></div><p><br /></p><p><br /></p><h1 id="wireless-network">wireless network</h1><h2 id="nmcli-radio-1">nmcli r[adio] <a href="#nmcli-radio-1" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre>radio wifi <span class="o">[</span>on|off]
+</pre></table></code></div></div><p>무선 네트워크 기능이 활성화되어 있는지 확인하는 코드로, on,off를 통해 키거나 끄기도 가능하다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+</pre><td class="rouge-code"><pre><span class="c"># nmcli radio</span>
+WIFI-HW  WIFI     WWAN-HW  WWAN    
+enabled  enabled  enabled  enabled
+
+
+<span class="c"># nmcli r wifi</span>
+enabled
+
+
+<span class="c"># nmcli r wifi on</span>
+</pre></table></code></div></div><p>만약에라도 wifi가 disabled 되어 있다면 우선적으로 blocked되어 있는지 봐야한다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre><td class="rouge-code"><pre><span class="c"># rfkill list</span>
+...
+2: phy0: wireless LAN
+	Soft blocked: no
+	Hard blocked: no
+</pre></table></code></div></div><p>soft blocked는 <code class="language-plaintext highlighter-rouge">rfkill unblock</code>으로 해제 가능하지만, <code class="language-plaintext highlighter-rouge">hard(ware) blocked</code>인 경우는 bios나 장치 fireware 기능이 막힌 것이기에 이것들에 접근해서 찾아야 한다.</p><p><br /></p><blockquote><p>wicd는 옛날 것이므로 사용할 수 없다. 삭제해야 한다.</p></blockquote><p><br /></p><h2 id="nmcli-dev-list">nmcli dev [list] <a href="#nmcli-dev-list" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><p>여기서 와이파이가 보여야 한다., list는 보통은 생략하지만, 구버전은 꼭 명시해야 하는 경우도 있다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+</pre><td class="rouge-code"><pre>현재 vmware에 와이파이 커넥터가 없어서 안뜸
+<span class="c"># nmcli dev</span>
+DEVICE  TYPE      STATE      CONNECTION 
+ens33   ethernet  connected  ens33      
+lo      loopback  unmanaged  <span class="nt">--</span>
+
+
+
+접속 가능한 모든 wifi에 대해 보기, channel, 속도, signal 등을 알 수 있음 ,signal이 높을수록 좋음, wpa1은 보안이 취약
+<span class="c"># nmcli dev wifi</span>
+
+
+
+해당 와이파이에 접속
+<span class="c"># nmcli dev wifi connect Dev_wifi4 password qwer01234</span>
+
+
+
+접속되었는지 확인
+<span class="c"># nmcli d</span>
+
+
+
+접속 끊기
+<span class="c"># nmcli d disconnect wlan0</span>
+</pre></table></code></div></div><p><br /></p><p><br /></p><h2 id="wifi-hotspot--ap-mode-">wifi hotspot ( ap mode ) <a href="#wifi-hotspot--ap-mode-" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><p>공유기 역할을 하는 것으로 핫스팟처럼 하는 것으로, 이를 만드는 방법은 다음과 같다.</p><h3 id="nmcli-c">nmcli c <a href="#nmcli-c" class="anchor"><i class="fas fa-hashtag"></i></a></h3></h3><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre>ifname은 아무거나 ssid<span class="o">(</span>와이파이 스캔할 때 보여질 부분<span class="o">)</span>
+<span class="c"># nmcli c add type wifi ifname '*' con-name syhotspot autoconnect no ssid syhotspot_rpi</span>
+</pre></table></code></div></div><p><br /></p><p>알맞게 설정하기</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+</pre><td class="rouge-code"><pre><span class="c"># nmcli c mod syhotspot 802-11-wireless.mode ap 802-11-wireless.band bg ipv4.method shared \</span>
+<span class="o">&gt;</span> ipv4.addresses 192.168.100.1/24
+
+
+
+키 생성
+<span class="c"># nmcli c mod syhotspot 802-11-wireless-security.key-mgmt wpa-psk 802-11-wireless-security.psk suny1234</span>
+
+
+
+활성화 <span class="o">(</span>psk가 너무 짧으면 에러가 발생<span class="o">)</span>
+<span class="c"># nmcli c up syhotspot</span>
+
+
+
+확인
+<span class="c"># nmcli c s</span>
+NAME
+...
+syhotspot
+
+
+
+hotspot 정보 출력
+<span class="c"># nmcli -p c s syhotspot</span>
+
+
+
+정지
+<span class="c"># nmcli c down syhotspot</span>
+</pre></table></code></div></div><p>mode값을 ap로 고정했다. 속도에 따라서 band가 달라지는데 bg는 2.4gb에서 사용하는 band 값이다.</p><p><br /></p><p><br /></p><h2 id="hostapd">hostapd <a href="#hostapd" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><p>네트워크매니저보다 더 많은 기능을 사용할 수 있고, AP로 구동을 위한 기능을 제공, daemon으로 작동한다.</p><p>5GHz를 사용할 때는 그 나라마다 전파 채널, 속도 등이 다르다(regulatory domain rule). 그래서 나라를 설정해줘야 한다. 그렇지 않으면 커널을 수정해야 하기 때문에 주의해야 한다.</p></div><div class="post-tail-wrapper text-muted"><div style="text-align: left;"> <a href="http://hits.dwyl.com/dkssud8150.github.io/posts/packageandtcp/" target="_blank"> <img data-src="http://hits.dwyl.com/dkssud8150.github.io/posts/packageandtcp.svg" data-proofer-ignore> </a></div><div class="post-meta mb-3"> <i class="far fa-folder-open fa-fw mr-1"></i> <a href='/categories/classlog/'>Classlog</a>, <a href='/categories/devcourse/'>devcourse</a></div><div class="post-tags"> <i class="fa fa-tags fa-fw mr-1"></i> <a href="/tags/linux/" class="post-tag no-text-decoration" >linux</a> <a href="/tags/tcp/" class="post-tag no-text-decoration" >tcp</a> <a href="/tags/devcourse/" class="post-tag no-text-decoration" >devcourse</a></div><div class="post-tail-bottom d-flex justify-content-between align-items-center mt-3 pt-5 pb-2"><div class="license-wrapper"> This post is licensed under <a href="https://creativecommons.org/licenses/by/4.0/"> CC BY 4.0 </a> by the author.</div><div class="share-wrapper"> <span class="share-label text-muted mr-1">Share</span> <span class="share-icons"> <a href="https://twitter.com/intent/tweet?text=[데브코스] 2주차 - linux 기초 package and network - JaeHo Yoon&amp;url=https://dkssud8150.github.io/posts/packageandtcp/" data-toggle="tooltip" data-placement="top" title="Twitter" target="_blank" rel="noopener" aria-label="Twitter"> <i class="fa-fw fab fa-twitter"></i> </a> <a href="https://www.facebook.com/sharer/sharer.php?title=[데브코스] 2주차 - linux 기초 package and network - JaeHo Yoon&amp;u=https://dkssud8150.github.io/posts/packageandtcp/" data-toggle="tooltip" data-placement="top" title="Facebook" target="_blank" rel="noopener" aria-label="Facebook"> <i class="fa-fw fab fa-facebook-square"></i> </a> <a href="https://t.me/share/url?url=https://dkssud8150.github.io/posts/packageandtcp/&amp;text=[데브코스] 2주차 - linux 기초 package and network - JaeHo Yoon" data-toggle="tooltip" data-placement="top" title="Telegram" target="_blank" rel="noopener" aria-label="Telegram"> <i class="fa-fw fab fa-telegram"></i> </a> <a href="https://www.linkedin.com/sharing/share-offsite/?url=https://dkssud8150.github.io/posts/packageandtcp/" data-toggle="tooltip" data-placement="top" title="Linkedin" target="_blank" rel="noopener" aria-label="Linkedin"> <i class="fa-fw fab fa-linkedin"></i> </a> <i id="copy-link" class="fa-fw fas fa-link small" data-toggle="tooltip" data-placement="top" title="Copy link" data-title-succeed="Link copied successfully!"> </i> </span></div></div></div></div></div><div id="panel-wrapper" class="col-xl-3 pl-2 text-muted"><div class="access"><div id="access-lastmod" class="post"><div class="panel-heading">Recently Updated</div><ul class="post-content pl-0 pb-1 ml-1 mt-2"><li><a href="/posts/opencvinstall/">[데브코스] 5주차 - OpenCV abstract and install </a><li><a href="/posts/cmake/">[데브코스] 17주차 - CMake OpenCV, Eigen, Pangolin install </a><li><a href="/posts/utralsonic/">[ROS] ROS Ultrasonic Data processing </a><li><a href="/posts/turtlesim/">[ROS2 이론] turtlesim 실행</a><li><a href="/posts/helloworld/">[ROS2 프로그래밍] ROS 프로그래밍 코드 스타일 및 프로그래밍 기초</a></ul></div><div id="access-tags"><div class="panel-heading">Trending Tags</div><div class="d-flex flex-wrap mt-3 mb-1 mr-3"> <a class="post-tag" href="/tags/devcourse/">devcourse</a> <a class="post-tag" href="/tags/deeplearning/">deeplearning</a> <a class="post-tag" href="/tags/cs231n/">CS231N</a> <a class="post-tag" href="/tags/ros/">ros</a> <a class="post-tag" href="/tags/coding-test/">coding test</a> <a class="post-tag" href="/tags/linux/">linux</a> <a class="post-tag" href="/tags/opencv/">OpenCV</a> <a class="post-tag" href="/tags/pytorch-tutorial/">pytorch tutorial</a> <a class="post-tag" href="/tags/autonomous-driving/">Autonomous Driving</a> <a class="post-tag" href="/tags/visual-slam/">Visual-SLAM</a></div></div></div><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@1.0.1/dist/bootstrap-toc.min.js"></script><div id="toc-wrapper" class="pl-0 pr-4 mb-5"><div class="panel-heading pl-3 pt-2 mb-2">Contents</div><nav id="toc" data-toggle="toc"></nav></div></div></div><div class="row"><div class="col-12 col-lg-11 col-xl-8"><div id="tail-wrapper" class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-md-4 pr-md-4"><div id="related-posts" class="mt-5 mb-2 mb-sm-4"><h3 class="pt-2 mt-1 mb-4 ml-1" data-toc-skip>Further Reading</h3><div class="card-deck mb-4"><div class="card"> <a href="/posts/linux1/"><div class="card-body"> <em class="timeago small" date="2022-02-21 13:00:00 +0900" >Feb 21</em><h3 class="pt-0 mt-1 mb-3" data-toc-skip>[데브코스] 2주차 - linux 기초(역사)</h3><div class="text-muted small"><p> 리눅스의 기초(1) linux역사, 배포판 index linux의 조상, unix의 역사, 배경 c언어는 unix를 만드는 언어 c언어 국제 표준: ISO/IEC 9899 UNIX의 양대산맥: SysV, BSD와 호환성 문제 POSIX 표준 등장: 최소한의 호환성 Linux의 등장과 성공 요인 GNU와 Free So...</p></div></div></a></div><div class="card"> <a href="/posts/linux2/"><div class="card-body"> <em class="timeago small" date="2022-02-22 13:00:00 +0900" >Feb 22</em><h3 class="pt-0 mt-1 mb-3" data-toc-skip>[데브코스] 2주차 - linux 기초(VMware 설치, 자주 쓰이는 명령어)</h3><div class="text-muted small"><p> linux설치: VMware 가상 머신 기반 ubuntu 18.04 설치 가상 머신(virtual machine) 현재 사용되는 OS위에 다른 OS를 애플리케이션처럼 운용 현재 운영체제: 호스트 운영체제(Host OS) 가상 운영체제: 게스트 운영체제(Guest OS) 가상머신의 장점 간편한 설치 및 구성, 백업 가상머신의...</p></div></div></a></div><div class="card"> <a href="/posts/linux3/"><div class="card-body"> <em class="timeago small" date="2022-02-23 13:00:00 +0900" >Feb 23</em><h3 class="pt-0 mt-1 mb-3" data-toc-skip>[데브코스] 2주차 - linux 기초(필수 명령어, process)</h3><div class="text-muted small"><p> Linux 필수 개념 i18n internationalization i~n사이의 알파뱃 개수 절대 경로 , 상대 경로 절대 경로(absolute path = abs-path) root directory를 시작으로 하는 경로 e.g. /usr/local/bin 상대 경로(relative path...</p></div></div></a></div></div></div><div class="post-navigation d-flex justify-content-between"> <a href="/posts/vim/" class="btn btn-outline-primary" prompt="Older"><p>[데브코스] 2주차 - linux 기초(vim)</p></a> <a href="/posts/regex/" class="btn btn-outline-primary" prompt="Newer"><p>[데브코스] 2주차 - linux 기초(REGEX)</p></a></div><div id="disqus_thread" class="pt-2 pb-2"><p class="text-center text-muted small"> Comments powered by <a href="https://disqus.com/">Disqus</a>.</p></div><script type="text/javascript"> var disqus_config = function () { this.page.url = 'https://dkssud8150.github.io/posts/packageandtcp/'; this.page.identifier = '/posts/packageandtcp/'; }; /* Lazy loading */ var disqus_observer = new IntersectionObserver(function (entries) { if(entries[0].isIntersecting) { (function () { var d = document, s = d.createElement('script'); s.src = 'https://httpsdkssud8150githubio.disqus.com/embed.js'; s.setAttribute('data-timestamp', +new Date()); (d.head || d.body).appendChild(s); })(); disqus_observer.disconnect(); } }, { threshold: [0] }); disqus_observer.observe(document.querySelector('#disqus_thread')); /* Auto switch theme */ function reloadDisqus() { /* Disqus hasn't been loaded */ if (typeof DISQUS === "undefined") { return; } if (document.readyState == 'complete') { DISQUS.reset({ reload: true, config: disqus_config }); } } const modeToggle = document.querySelector(".mode-toggle"); if (typeof modeToggle !== "undefined") { /* modeToggle.addEventListener('click', reloadDisqus); // not pretty for 'color-scheme' */ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', reloadDisqus); } </script></div></div></div><footer class="d-flex w-100 justify-content-center"><div class="d-flex justify-content-between align-items-center text-muted"><div class="footer-left"><p class="mb-0"> © 2022 <a href="https://twitter.com/username">JaeHo YooN</a>. <span data-toggle="tooltip" data-placement="top" title="Except where otherwise noted, the blog posts on this site are licensed under the Creative Commons Attribution 4.0 International (CC BY 4.0) License by the author.">Some rights reserved.</span></p></div><div class="footer-right"><p class="mb-0"> Powered by <a href="https://jekyllrb.com" target="_blank" rel="noopener">Jekyll</a> with <a href="https://github.com/cotes2020/jekyll-theme-chirpy" target="_blank" rel="noopener">Chirpy</a> theme.</p></div></div></footer></div><div id="search-result-wrapper" class="d-flex justify-content-center unloaded"><div class="col-12 col-sm-11 post-content"><div id="search-hints"><div id="access-tags"><div class="panel-heading">Trending Tags</div><div class="d-flex flex-wrap mt-3 mb-1 mr-3"> <a class="post-tag" href="/tags/devcourse/">devcourse</a> <a class="post-tag" href="/tags/deeplearning/">deeplearning</a> <a class="post-tag" href="/tags/cs231n/">CS231N</a> <a class="post-tag" href="/tags/ros/">ros</a> <a class="post-tag" href="/tags/coding-test/">coding test</a> <a class="post-tag" href="/tags/linux/">linux</a> <a class="post-tag" href="/tags/opencv/">OpenCV</a> <a class="post-tag" href="/tags/pytorch-tutorial/">pytorch tutorial</a> <a class="post-tag" href="/tags/autonomous-driving/">Autonomous Driving</a> <a class="post-tag" href="/tags/visual-slam/">Visual-SLAM</a></div></div></div><div id="search-results" class="d-flex flex-wrap justify-content-center text-muted mt-3"></div></div></div></div><div id="mask"></div><a id="back-to-top" href="#" aria-label="back-to-top" class="btn btn-lg btn-box-shadow" role="button"> <i class="fas fa-angle-up"></i> </a> <script src="https://cdn.jsdelivr.net/npm/simple-jekyll-search@1.10.0/dest/simple-jekyll-search.min.js"></script> <script> SimpleJekyllSearch({ searchInput: document.getElementById('search-input'), resultsContainer: document.getElementById('search-results'), json: '/assets/js/data/search.json', searchResultTemplate: '<div class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-lg-4 pr-lg-4 pl-xl-0 pr-xl-0"> <a href="{url}">{title}</a><div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1"> {categories} {tags}</div><p>{snippet}</p></div>', noResultsText: '<p class="mt-5">Oops! No result founds.</p>', templateMiddleware: function(prop, value, template) { if (prop === 'categories') { if (value === '') { return `${value}`; } else { return `<div class="mr-sm-4"><i class="far fa-folder fa-fw"></i>${value}</div>`; } } if (prop === 'tags') { if (value === '') { return `${value}`; } else { return `<div><i class="fa fa-tag fa-fw"></i>${value}</div>`; } } } }); </script> <script src="https://cdn.jsdelivr.net/combine/npm/lozad/dist/lozad.min.js,npm/magnific-popup@1/dist/jquery.magnific-popup.min.js,npm/clipboard@2/dist/clipboard.min.js"></script> <script defer src="/assets/js/dist/post.min.js"></script> <script src="https://cdn.jsdelivr.net/combine/npm/popper.js@1.16.1,npm/bootstrap@4/dist/js/bootstrap.min.js"></script> <script defer src="/app.js"></script> <script defer src="https://www.googletagmanager.com/gtag/js?id=G-NC7MWHVXJE"></script> <script> document.addEventListener("DOMContentLoaded", function(event) { window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-NC7MWHVXJE'); }); </script>
