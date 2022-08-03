@@ -195,6 +195,78 @@ opencv를 편리하게 사용하기 위해서는 opencv 폴더 위치를 시스�
 4.5.5
 ```
 
+&nbsp;
+
+&nbsp;
+
+### 2. 소스코드로 직접 설치
+
+- [참고 자료](https://hayunjong83.tistory.com/15)
+
+&nbsp;
+
+1.소스코드 다운로드
+
+```bash
+$ mkdir opencv && cd opencv
+$ git clone https://github.com/opencv/opencv.git
+$ git clone https://github.com/opencv/opencv_contrib
+```
+
+&nbsp;
+
+2.openCV 빌드를 위한 디렉토리 구조 생성
+
+```bash
+$ mkdir build
+```
+
+&nbsp;
+
+3.cmake-gui 실행
+
+<img src="/assets/img/dev/week5/day1/cmake_gui.png">
+
+실행 후 source code에는 opencv.git 을 한 폴더를, build binaries에는 build 폴더를 지정한다.
+
+&nbsp;
+
+4.configure 버튼 누르기
+
+configure 버튼을 누르면 환경 설정 창이 뜬다.
+
+1. generator for this project : visual studio 17 2022
+2. optional platform for generator : x64
+3. use default native compilers
+4. finish
+
+&nbsp;
+
+그리고 나와서, 필요한 옵션들을 선택한다. 중요 표시된 부분은 반드시 해줘야 하고, 나머지는 추가로 해주면 된다.
+1. (✨중요) BUILD_opencv_world
+2. EIGEN_INCLUDE_PATH
+3. INSTALL_C_EXAMPLES
+4. OPENCV_DNN_CUDA
+5. OPENCV_ENABLE_NONFREE
+
+여기서 나의 경우 DNN_CUDA가 오류가 발생하여, 체크하지 않았다.
+
+&nbsp;
+
+다 선택한 후 `configure` 버튼을 눌러 설정을 반영시키고, 다 되면, `generate` 버튼을 누른다. 이 또한 다 수행되면 그 옆에 `open project`를 누른다. 누르게 되면 visual studio가 열린다. 
+
+<img src="/assets/img/dev/week5/day1/visual_studio.png">
+
+여기서 `빌드 -> 솔루션 빌드`를 해준다.
+
+&nbsp;
+
+다되면, INSTALL 폴더에 옮겨야 하므로, `CMakeTargets -> INSTALL` 파일을 우클릭하여 빌드해준다.
+
+&nbsp;
+
+다하고 나면, 환경 변수 편집과 visual studio를 설정해줘야 한다. 이 부분은 위에서 설명한 것과 동일하다.
+
 <br>
 
 <br>
