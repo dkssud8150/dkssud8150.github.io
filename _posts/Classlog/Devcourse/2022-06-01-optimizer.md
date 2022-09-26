@@ -171,7 +171,8 @@ Factor graph의 사용보다 least squares 를 쉽게 적용할 수 있는 방�
 
 # Bundle Adjustment
 
-<img src="/assets/img/dev/week16/day3/ba.png">[이미지 출처 - 장형기님 블로그](http://www.cv-learn.com/20210313-ba/)
+<img src="/assets/img/dev/week16/day3/ba.png">
+[이미지 출처 - 장형기님 블로그](http://www.cv-learn.com/20210313-ba/)
 
 마찬가지로 지난 글에서의 Triangulation을 배웠는데, 이는 2view geometry에 대한 내용이었다. Bundle Adjustment는 한 단계 더 나아가 N-view geometry에 대한 내용이다. N개의 프레임 또는 N개의 카메라가 존재하고, 그에 따른 각각의 Rotation, translation이 존재한다. 이 때, 서로의 2D-2D correspondence를 공유하며, 3d point인 landmark에 대한 거리도 공유하고 있다고 가정한다. 그리고 1개의 landmark마다 2개 이상의 2D-3D correspondence를 가지고 있다.
 
@@ -181,7 +182,7 @@ Factor graph의 사용보다 least squares 를 쉽게 적용할 수 있는 방�
 
 3D landmark position과 camera pose가 완벽한 값이라고 가정하면 3D landmark를 image plane에 투영했을 때는 정확한 keypoint위치로 맞아떨어지겠지만, 모든 센서는 노이즈를 가지고 있기 때문에 조금의 오차가 발생한다. 이 때 reprojection error에 대한 function이 $ \pi $이고, landmark를 image plane으로 투영한 위치와 원래 keypoint와의 오차를 $ \triangle z_{ij} $에 해당할 때 오차가 제일 작아지는 keypoint는 다음과 같이 표현할 수 있다. landmark에서의 좌표를 P로, image plane에서의 좌표를 C로 표현되어 있다.
 
-$ argmin_x \sum_i \sum_j \| x_{ij} - \pi(P_j,C_i) \|_{w_{ij}}^2 $
+$ argmin_x \sum_i \sum_j || x_{ij} - \pi(P_j,C_i) ||_{w_{ij}}^2 $
 
 <img src="/assets/img/dev/week16/day3/reprojection_error.png">
 
