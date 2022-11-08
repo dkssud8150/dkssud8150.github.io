@@ -383,10 +383,10 @@ SUN RGB-D : [https://rgbd.cs.princeton.edu/](https://rgbd.cs.princeton.edu/)
 해당 사이트로 들어가 Data → SUNRGBD V1을 다운로드한다.
 
 ```bash
+mkdir SUNRGBD
+cd SUBRGBD
 curl https://rgbd.cs.princeton.edu/data/SUNRGBD.zip -o sun_rgbd.zip
 unzip sun_rgbd.zip
-
-mkdir SUNRGBD
 ```
 
 &nbsp;
@@ -401,6 +401,7 @@ cityscapes : [https://www.cityscapes-dataset.com/downloads/](https://www.citysca
 
 ```bash
 mkdir cityscapes
+cd cityscapes
 ```
 
 &nbsp;
@@ -415,7 +416,7 @@ mkdir cityscapes
 bash ./tools/dist_train.sh configs/depthformer/depthformer_swinl_22k_w7_kitti.py 1 --work-dir work_dirs/saves/depthformer/depthformer_swinl_22k_w7_kitti
 ```
 
-- sh [./tools/dist_train.sh] ${CONFIG_FILE} ${GPU_NUM} —work_dir [work_dir]
+- sh [./tools/dist_train.sh] \${CONFIG_FILE} \${GPU_NUM} —work_dir [work_dir]
 
 &nbsp;
 
@@ -429,7 +430,7 @@ bash ./tools/dist_train.sh configs/depthformer/depthformer_swinl_22k_w7_kitti.py
 python ./tools/test.py ./configs/depthformer/depthformer_swinl_22k_w7_kitti.py ./checkpoints/depthformer_swinl_22k_kitti.pth --show-dir depthformer_swinl_22k_w7_kitti_result
 ```
 
-show-dir은 test 결과를 해당 디렉토리에 저장하겠다는 의미이다. 
+show-dir은 test 결과를 저장할 디렉토리 경로다.
 
 <img src="/assets/img/dev/result_directory.png">
 
@@ -449,13 +450,17 @@ CUDA_VISIBLE_DEVICES=-1 python tools/test.py configs/depthformer/depthformer_swi
 
 ## Custom dataset inference 해보기
 
-1. `configs/depthformer/`에 있는 자신이 사용할 pretrained model의 파일을 복사하여 `_base_`에 `_base_/datasets/kitti.py` 와 같은 kitti나 nyu 등을 custom으로 변경한다.
+custom dataset에 대해 depth를 추론해보고자 한다.
 
-<img src="/assets/img/dev/depthformer.png">
+&nbsp;
+
+1. `configs/depthformer/`에 있는 자신이 사용할 pretrained model에 대한 py파일을 복사하여 custom으로 이름을 바꿔준 뒤, `_base_`에 `_base_/datasets/kitti.py` 와 같은 kitti나 nyu 등을 custom으로 변경한다.
+
+  <img src="/assets/img/dev/depthformer.png">
 
 2. `data/custom/rgb` 폴더를 생성하고, 추론할 RGB 데이터를 넣는다.
 
-<img src="/assets/img/dev/files.png">
+  <img src="/assets/img/dev/files.png">
 
 3. test 파일 실행
 
