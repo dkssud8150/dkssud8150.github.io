@@ -1,0 +1,1305 @@
+<!DOCTYPE html><html lang="en" data-mode="light" ><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><meta name="day-prompt" content="days ago"><meta name="hour-prompt" content="hours ago"><meta name="minute-prompt" content="minutes ago"><meta name="justnow-prompt" content="just now"><meta name="generator" content="Jekyll v4.3.2" /><meta property="og:title" content="[데브코스] 9주차 - Docker (chroot, pseudo path)" /><meta name="author" content="JaeHo YooN" /><meta property="og:locale" content="en" /><meta name="description" content="Do focus on developing ‘your ability’ rather than waste time on making you famous." /><meta property="og:description" content="Do focus on developing ‘your ability’ rather than waste time on making you famous." /><link rel="canonical" href="https://dkssud8150.github.io/posts/docker/" /><meta property="og:url" content="https://dkssud8150.github.io/posts/docker/" /><meta property="og:site_name" content="JaeHo Yoon" /><meta property="og:type" content="article" /><meta property="article:published_time" content="2022-04-15T15:40:00+09:00" /><meta name="twitter:card" content="summary" /><meta property="twitter:title" content="[데브코스] 9주차 - Docker (chroot, pseudo path)" /><meta name="twitter:site" content="@" /><meta name="twitter:creator" content="@JaeHo YooN" /><meta name="google-site-verification" content="znvuGsQGYxMZPBslC4XG6doCYao6Y-fWibfGlcaMHH8" /> <script type="application/ld+json"> {"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"JaeHo YooN"},"dateModified":"2022-07-26T03:37:05+09:00","datePublished":"2022-04-15T15:40:00+09:00","description":"Do focus on developing ‘your ability’ rather than waste time on making you famous.","headline":"[데브코스] 9주차 - Docker (chroot, pseudo path)","mainEntityOfPage":{"@type":"WebPage","@id":"https://dkssud8150.github.io/posts/docker/"},"url":"https://dkssud8150.github.io/posts/docker/"}</script><title>[데브코스] 9주차 - Docker (chroot, pseudo path) | JaeHo Yoon</title><link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicons/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicons/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/img/favicons/favicon-16x16.png"><link rel="manifest" href="/assets/img/favicons/site.webmanifest"><link rel="shortcut icon" href="/assets/img/favicons/favicon.ico"><meta name="apple-mobile-web-app-title" content="JaeHo Yoon"><meta name="application-name" content="JaeHo Yoon"><meta name="msapplication-TileColor" content="#da532c"><meta name="msapplication-config" content="/assets/img/favicons/browserconfig.xml"><meta name="theme-color" content="#ffffff"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"><link rel="dns-prefetch" href="https://fonts.gstatic.com"><link rel="preconnect" href="https://www.google-analytics.com" crossorigin="use-credentials"><link rel="dns-prefetch" href="https://www.google-analytics.com"><link rel="preconnect" href="https://www.googletagmanager.com" crossorigin="anonymous"><link rel="dns-prefetch" href="https://www.googletagmanager.com"><link rel="preconnect" href="https://cdn.jsdelivr.net"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.11.2/css/all.min.css"><link rel="stylesheet" href="/assets/css/style.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@1.0.1/dist/bootstrap-toc.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/magnific-popup@1.1.0/dist/magnific-popup.min.css"> <script src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script><body data-spy="scroll" data-target="#toc" data-topbar-visible="true"><div id="sidebar" class="d-flex flex-column align-items-end" lang="en"><div class="profile-wrapper text-center"><div id="avatar"> <a href="/" alt="avatar" class="mx-auto"> <img src="/assets/img/shin_chan.png" alt="avatar" onerror="this.style.display='none'"> </a></div><div class="site-title mt-3"> <a href="/">JaeHo Yoon</a></div><div class="site-subtitle font-italic">Mamba Mentality</div></div><ul class="w-100"><li class="nav-item"> <a href="/" class="nav-link"> <i class="fa-fw fas fa-home ml-xl-3 mr-xl-3 unloaded"></i> <span>HOME</span> </a><li class="nav-item"> <a href="/categories/" class="nav-link"> <i class="fa-fw fas fa-stream ml-xl-3 mr-xl-3 unloaded"></i> <span>CATEGORIES</span> </a><li class="nav-item"> <a href="/tags/" class="nav-link"> <i class="fa-fw fas fa-tag ml-xl-3 mr-xl-3 unloaded"></i> <span>TAGS</span> </a><li class="nav-item"> <a href="/archives/" class="nav-link"> <i class="fa-fw fas fa-archive ml-xl-3 mr-xl-3 unloaded"></i> <span>ARCHIVES</span> </a><li class="nav-item"> <a href="/about/" class="nav-link"> <i class="fa-fw fab fa-angellist ml-xl-3 mr-xl-3 unloaded"></i> <span>ABOUT</span> </a></ul><div class="sidebar-bottom mt-auto d-flex flex-wrap justify-content-center align-items-center"> <a href="https://github.com/dkssud8150" aria-label="github" target="_blank" rel="noopener"> <i class="fab fa-github"></i> </a> <a href=" javascript:location.href = 'mailto:' + ['hoya58150','gmail.com'].join('@')" aria-label="email" > <i class="fas fa-envelope"></i> </a> <a href="https://www.notion.so/18490713817d403696812c57d0abe730" aria-label="notion" target="_blank" rel="noopener"> <i class="fab fa-battle-net"></i> </a> <a href="https://www.linkedin.com/in/jaeho-yoon-90b62b230" aria-label="linkedin" target="_blank" rel="noopener"> <i class="fab fa-linkedin"></i> </a> <a href="https://www.instagram.com/jai_ho8150/" aria-label="instagram" target="_blank" rel="noopener"> <i class="fab fa-instagram"></i> </a></div></div><div id="topbar-wrapper" class="row justify-content-center"><div id="topbar" class="col-11 d-flex h-100 align-items-center justify-content-between"> <span id="breadcrumb"> <span> <a href="/"> Home </a> </span> <span>[데브코스] 9주차 - Docker (chroot, pseudo path)</span> </span> <i id="sidebar-trigger" class="fas fa-bars fa-fw"></i><div id="topbar-title"> Post</div><i id="search-trigger" class="fas fa-search fa-fw"></i> <span id="search-wrapper" class="align-items-center"> <i class="fas fa-search fa-fw"></i> <input class="form-control" id="search-input" type="search" aria-label="search" autocomplete="off" placeholder="Search..."> <i class="fa fa-times-circle fa-fw" id="search-cleaner"></i> </span> <span id="search-cancel" >Cancel</span></div></div><div id="main-wrapper"><div id="main"><div class="row"><div id="core-wrapper" class="col-12 col-lg-11 col-xl-8"><div class="post pl-1 pr-1 pl-sm-2 pr-sm-2 pl-md-4 pr-md-4"><h1 data-toc-skip>[데브코스] 9주차 - Docker (chroot, pseudo path)</h1><div class="post-meta text-muted"><div> By <em> <a href="https://github.com/dkssud8150">JaeHo YooN</a> </em></div><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6611243953442169" crossorigin="anonymous"></script><div class="d-flex"><div> <span> Posted <em class="timeago" date="2022-04-15 15:40:00 +0900" data-toggle="tooltip" data-placement="bottom" title="Fri, Apr 15, 2022, 3:40 PM +0900" >Apr 15, 2022</em> </span> <span> Updated <em class="timeago" date="2022-07-26 03:37:05 +0900 " data-toggle="tooltip" data-placement="bottom" title="Tue, Jul 26, 2022, 3:37 AM +0900" >Jul 26, 2022</em> </span> <span class="readtime" data-toggle="tooltip" data-placement="bottom" title="10094 words"> <em>56 min</em> read</span></div></div></div><div class="post-content"><p><br /></p><h1 id="chroot">chroot</h1><p>change root directory의 약자로 root dir를 특정 디렉토리로 변경하는 기능이다. UNIX command, c언어의 형태로 존재한다. 초기 chroot의 경우 SVr4에서 등장했고, system 설치나 복구 등에 대해 사용되었다. 부수적으로 jail(감옥)의 기능을 가지고 있다.</p><p><br /></p><p>특정 폴더를 생성하고, bin,etc,lib,usr 등 폴더를 생성하고 <code class="language-plaintext highlighter-rouge">chroot / /mnt/chroot</code> 를 하게 되면 루트 디렉토리가 /mnt/chroot로 변경된다. 이 후 /usr/local로 이동하면 실제로는 /mnt/chroot/usr/local로 이동이 되는 셈이다.</p><p><br /></p><p>chroot는 부수적 기능으로서 보안적 측면의 격리 기능을 가지고 있다. 이를 <code class="language-plaintext highlighter-rouge">sandbox</code>의 개념이라고 하는데, 특서한 목적을 위해 격리된 형태의 공간을 의미한다. chroot를 사용하게 되면 특정 디렉토리 안에서 격리가 되고, 동일한 프로그램을 다른 환경으로 복제할 수 있도록 해준다. 구현체 중에 sandboxf라는 이름이 있는데, 이것과 다른 기능이므로 주의해야 한다.</p><p><br /></p><ul><li>준비 작업</ul><p>1.먼저 ftp 서비스를 제공하는 vsftpd를 설치한다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="nv">$ </span><span class="nb">sudo </span>apt <span class="nt">-y</span> <span class="nb">install </span>vsftpd
+</pre></table></code></div></div><p><br /></p><p>2.설치가 되었는지 확인한다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre><span class="nv">$ </span><span class="nb">sudo </span>systemctl is-active vsftpd
+active
+</pre></table></code></div></div><p><br /></p><p>2-1.active 상태가 아니라면 다음과 같이 명령한다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="nv">$ </span><span class="nb">sudo </span>systemctl start vsftpd
+</pre></table></code></div></div><p><br /></p><p>3.ftp클라이언트 프로그램인 filezilla를 설치 후 실행</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre><span class="nv">$ </span><span class="nb">sudo </span>apt <span class="nt">-y</span> <span class="nb">install </span>filezilla
+<span class="nv">$ </span>filezilla
+</pre></table></code></div></div><p><img data-src="/assets/img/dev/week9/day5/setting.png" data-proofer-ignore></p><p>설치 후 실행하면 창이 뜨는데, 좌측 상단에 제일 왼쪽 버튼을 누르면 사이트 관리자가 나온다. 여기서 새 사이트를 누르고 이름은 아무렇게나 넣으면 된다. ip주소는 <code class="language-plaintext highlighter-rouge">127.0.0.1</code>, 포로토콜은 FTP, 로그온은 일반으로 설정 후 시스템에 있는 일반 유저명과 암호를 넣는다. 이 때, 중요한 것은 한글이 깨지는 것을 방지하기 위해 문자셋을 설정해야 한다. 문자셋 탭에 가서 <code class="language-plaintext highlighter-rouge">utf-8로 강제 설정</code>을 선택한다.</p><p><img data-src="/assets/img/dev/week9/day5/directory1.png" data-proofer-ignore></p><p><br /></p><p><img data-src="/assets/img/dev/week9/day5/filezilla1.png" data-proofer-ignore></p><p>접속이 완료되면 창이 2개 나온다. 왼쪽이 local, 오른쪽이 remote이다. 오른쪽의 홈 디렉토리를 확인한 후 연결을 끊는다.</p><p><br /></p><p>4.vsftpd.conf 파일을 수정한다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="nv">$ </span><span class="nb">sudo </span>vim /etc/vsftpd.conf
+</pre></table></code></div></div><p>그 후 아래 2가지를 추가한다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre><span class="nv">chroot_local_user</span><span class="o">=</span>YES
+<span class="nv">allow_writeable_chroot</span><span class="o">=</span>YES
+</pre></table></code></div></div><p>설정을 저장한 뒤 vsftpd를 재시작한다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre><span class="nv">$ </span><span class="nb">sudo </span>systemctl restart vsftpd
+<span class="nv">$ </span><span class="nb">sudo </span>systemctl status vsftpd
+</pre></table></code></div></div><p><br /></p><p>5.filezilla에 재접속 하여 home 디렉토리를 확인한다.</p><p>확인해보면 오른쪽 화면에 디렉토리가 <code class="language-plaintext highlighter-rouge">/</code>로 되어 있을 것이다.</p><p><img data-src="/assets/img/dev/week9/day5/rootdirectory.png" data-proofer-ignore></p><p><br /></p><p>chroot는 rescue모드 부팅에서 사용될 수 있다. 예를 들어 A와 B시스템이 있는데, A가 고장나서 부팅이 안되고, B는 정상일 때 B에 A의 디스크를 붙이고 부팅한 뒤 A를 B에 마운트한 후 <code class="language-plaintext highlighter-rouge">chroot /mnt</code>를 하면 B디스크에 A시스템이 붙어서 A에 있는 파일을 실행시킬 수 있다.</p><p><br /></p><h2 id="isolation">Isolation <a href="#isolation" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><ul><li>격리의 필요성 시스템 내에 존재하는 자원은 한정적이다. 한정적인 자원을 효율적으로 분배하면 시스템의 가용성을 올릴 수 있다. 현대적인 OS는 프로세스가 독립적인 공간을 가지게 해준다. 즉 고유한 공간이기 때문에 다른 사람들이 볼 수 없다. 그러나 외부 통신을 위해 IPC를 사용해야 해서 I/O 비용이 높아진다. 여러 프로세스가 협동해야 하는 프로그램에서는 단점이 더 커진다. 예를 들어 DBMS이나 server 네트워크를 다룰 때, 한 시스템에 2개의 DBMS를 구동하기 힘들다. 그 이유는 DBMS를 구성하는 각종 프로세스들이 특정 디렉토리를 독점적으로 사용하는 경우가 많기 때문이다. 이를 함께 사용하면 충돌이 발생한다.</ul><p><br /></p><h3 id="isolation의-활용">Isolation의 활용 <a href="#isolation의-활용" class="anchor"><i class="fas fa-hashtag"></i></a></h3></h3><ol><li><p>보안, 자원 관리적 측면 특정 파일 경로의 접근을 제한할 수 있다. 예를 들어 위에서 했듯이 root directory를 변경하여 특정 공간 안에서만 이동이 가능하도록 만들면 독립적인 공간을 가질 수 있다. 또는 호스팅 업체라면 고성능의 컴퓨터 1대로 여러 사업자에게 DB나 웹을 제공할 수 있다.</p><li><p>호환, 충돌 측면 동일한 디렉토리를 사용하는 프로세스는 독립된 실행하거나, 서로 다른 버전의 파일을 사용하는 프로세스를 사용하고자 한다면 격리된 공간을 사용해야 할 것이다.</p></ol><p><br /></p><p><br /></p><h2 id="name-space">Name space <a href="#name-space" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><p>chroot에는 chroot 기능하나만 있는 것이 아니라 name space라는 기능이 또 있다.</p><h3 id="history">History <a href="#history" class="anchor"><i class="fas fa-hashtag"></i></a></h3></h3><p>Plan 9이라는 기업에서 1992년도에 분산 컴퓨팅 시스템으로서 local system, remote system을 계층적 file system으로 표현한 기능을 만들었다. 예를 들어, <code class="language-plaintext highlighter-rouge">/usr</code> 폴더 안에 <code class="language-plaintext highlighter-rouge">/a/aa/aaa</code> 폴더가 있고, <code class="language-plaintext highlighter-rouge">/b/bb/bbb</code> 폴더가 있는 것이 이 계층적 file system이다. 이를 linux에도 구현이 되어 있다.isolated resouces(독립된 자원)를 NS의 계층적 file system 형태로 구현했다. 방식의 위의 폴더 방식과 동일하다. 이 name space를 줄여서 <code class="language-plaintext highlighter-rouge">NS</code>로 표기하기도 한다.</p><p><br /></p><p>Namespace 종류</p><ul><li>mount<li>UTS(UNIX Time-sharing : 유닉스 시분할 시스템)<ul><li>UTS는 가상머신과 비슷한 것으로 호스트 네임을 분리하여 하나의 시스템이 여러 개의 이름을 가질 수 있다.</ul><li>IPC<li>network<li>PID<li>user<li>cgroup<ul><li>2006년도에는 <code class="language-plaintext highlighter-rouge">process container</code>로 만들어져, 2007년에 <code class="language-plaintext highlighter-rouge">cgroup</code>으로 이름이 바뀌었다.<li>group별로 가상화된 공간을 만들고 자원을 제약할 수 있게 한다. 다른 그룹은 격리되어있으므로 물리적으로 다른 호스트처럼 인식한다.<li>docker, hadoop, systemd 등 수많은 프로젝트들이 cgroup을 사용한다.</ul></ul><p><br /></p><p>namespace 관리하는 명령어</p><ul><li>unshare<li>lsns<li>nsenter</ul><p><br /></p><h3 id="namespace-기본-작동">Namespace 기본 작동 <a href="#namespace-기본-작동" class="anchor"><i class="fas fa-hashtag"></i></a></h3></h3><p>unshare과 lsns를 사용해보고자 한다. unshare의 경우 고유의 공간을 만들고 그 안에서 프로그램을 실행할 수 있게 해주는 기능이고, lsns를 통해 namespace를 살펴본다.</p><p><br /></p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="c"># unshare -pf --mount-proc /bin/bash</span>
+</pre></table></code></div></div><p>격리된 프로세스를 만드는데, 그 프로세스의 이름이 bash이다.</p><p>옵션</p><ul><li>-p : –pid = pid를 격리시켜서 새로운 pid를 생성<li>-f : –fork = 자식 프로세스를 만들어서 실행<li>–mount-proc : proc파일 시스템을 고유의 공간으로 가져가기<ul><li>프로세스 컨트롤 블록을 고유하게 사용</ul></ul><p><br /></p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+</pre><td class="rouge-code"><pre><span class="c"># ps</span>
+   PID TTY          TIME CMD
+     1 pts/0    00:00:00 bash
+    57 pts/0    00:00:00 ps
+
+<span class="c"># exit</span>
+</pre></table></code></div></div><p>pid는 낮은 숫자부터 실행된다.</p><p><br /></p><ul><li>network를 격리해보기</ul><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+</pre><td class="rouge-code"><pre><span class="c"># ss -nltp</span>
+
+State    Recv-Q    Send-Q        Local Address:Port       Peer Address:Port    
+LISTEN   0         128           127.0.0.53%lo:53              0.0.0.0:<span class="k">*</span>       
+LISTEN   0         128                 0.0.0.0:22              0.0.0.0:<span class="k">*</span>       
+LISTEN   0         5                 127.0.0.1:631             0.0.0.0:<span class="k">*</span>       
+LISTEN   0         32                        <span class="k">*</span>:21                    <span class="k">*</span>:<span class="k">*</span>       
+LISTEN   0         128                    <span class="o">[</span>::]:22                 <span class="o">[</span>::]:<span class="k">*</span>       
+LISTEN   0         5                     <span class="o">[</span>::1]:631                <span class="o">[</span>::]:<span class="k">*</span>   
+
+
+
+host에서 5000번 포트를 listen
+<span class="c"># nc -l 5000 &gt;nc_host_outout.txt  &amp; </span>
+<span class="o">[</span>1] 32400
+
+<span class="c"># ss -nltp</span>
+
+State    Recv-Q    Send-Q        Local Address:Port       Peer Address:Port                                                                                   
+LISTEN   0         128           127.0.0.53%lo:53              0.0.0.0:<span class="k">*</span>                                                                                      
+LISTEN   0         128                 0.0.0.0:22              0.0.0.0:<span class="k">*</span>                                                                                      
+LISTEN   0         5                 127.0.0.1:631             0.0.0.0:<span class="k">*</span>                                                                                      
+LISTEN   0         1                   0.0.0.0:5000            0.0.0.0:<span class="k">*</span>        <span class="nb">users</span>:<span class="o">((</span><span class="s2">"nc"</span>,pid<span class="o">=</span>32400,fd<span class="o">=</span>3<span class="o">))</span>                                                 
+LISTEN   0         32                        <span class="k">*</span>:21                    <span class="k">*</span>:<span class="k">*</span>                                                                                      
+LISTEN   0         128                    <span class="o">[</span>::]:22                 <span class="o">[</span>::]:<span class="k">*</span>                                                                                      
+LISTEN   0         5                     <span class="o">[</span>::1]:631                <span class="o">[</span>::]:<span class="k">*</span>  
+</pre></table></code></div></div><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+</pre><td class="rouge-code"><pre><span class="c"># unshare -n /bin/bash</span>
+
+port list, host의 PID까지 다 보임
+<span class="c"># ps</span>
+   PID TTY          TIME CMD
+ 32419 pts/0    00:00:00 <span class="nb">sudo
+ </span>32420 pts/0    00:00:00 bash
+ 32476 pts/0    00:00:00 ps
+
+
+
+격리를 했기 때문에 나오지 않음
+<span class="c"># ss -nlt</span>
+State   Recv-Q    Send-Q        Local Address:Port        Peer Address:Port
+
+
+다시 listen
+<span class="c"># nc -l 5000 &gt;nc_host_outout.txt  &amp; </span>
+<span class="o">[</span>1] 32479
+
+
+<span class="c"># ss -nlt</span>
+State    Recv-Q    Send-Q        Local Address:Port       Peer Address:Port    
+LISTEN   0         1                   0.0.0.0:5000            0.0.0.0:<span class="k">*</span>   
+</pre></table></code></div></div><p><br /></p><p>위의 창은 그대로 유지한채로 터미널을 한개 더 켜서 확인해본다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+</pre><td class="rouge-code"><pre><span class="c"># lsns</span>
+        NS TYPE   NPROCS   PID USER             COMMAND
+4026531835 cgroup    330     1 root             /sbin/init splash
+4026531836 pid       330     1 root             /sbin/init splash
+4026531837 user      330     1 root             /sbin/init splash
+4026531838 uts       330     1 root             /sbin/init splash
+...
+4026532583 net         2 32420 root             /bin/bash
+4026532672 mnt         1  1274 root             /usr/lib/bluetooth/bluetoothd
+...
+
+</pre></table></code></div></div><p>방금 연결한 net /bin/bash가 보인다. 여기서 <code class="language-plaintext highlighter-rouge">unshare -pf --mount-proc /bin/bash</code>를 하면 NPROCS가 올라가는 것을 볼 수 있다.</p><p><br /></p><h2 id="docker">Docker <a href="#docker" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><blockquote><p>LXC(Linux Container)</p><ul><li>현재 cononical에서 공식적으로 지원하고 있고, 초창기 리눅스 컨테이너 기술의 발판이 되었다. docker의 경우도 초창기에는 lxc를 사용했다.</ul></blockquote><p>docker는 container runtime 기술로 2008년에 설립하여 2013년에 릴리즈했다. docker는 container를 세련된 방식으로 구현한 제품의 일종으로 격리된 자원의 묶음과 런타임으로 구성된다. 기본적으로 C/S 구조를 가지므로 daemon이 작동된다.</p><p>docker는 host os위에서 작동되는 격리된 프로세스의 일종이므로 virtual machine과 달리 memory, file system 등의 문제가 발생하지 않는다. 그러나 단점으로는 daemon으로 작동하기 때문에 daemon이 버그가 걸리면 밑에 있던 모든 container가 죽어버린다. 또 docker는 관리자 권한으로 실행해야 한다. 따라서 보안적 문제가 발생하기 쉽다.</p><p><br /></p><p><img data-src="/assets/img/dev/week9/day5/lxc.png" data-proofer-ignore></p><p>왼쪽은 conatiner의 작동방식이고, 오른쪽은 virtual machine의 작동 방식이다. container는 바로 바로 전달받아서 동작하나, virtual machine의 경우 hypervisor를 통해 전달해서 virtual machine으로 들어갔다가 다시 나온다. 이 hypervisor과 virtual machine간의 통신이 성능이 매우 저하되는 곳이다.</p><h2 id="podman">podman <a href="#podman" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><p>docker의 보안성문제로 인해 대안책으로 podman이라는 linux container가 있다. podman은 RedHat에서 지원하고, daemon을 사용하지 않고, 관리자 권한도 사용하지 않으며, systemd와 잘 어울리므로 중앙집중이 잘된다.</p><p><br /></p><blockquote><p>container 기술은 매우 자주 변화하는 기술이다. 따라서 1가지만 사용하는 것이 아닌 트랜드에 맞춰 바꿔가며 사용하는 것이 좋다.</p></blockquote><p><br /></p><h2 id="virtualization">Virtualization <a href="#virtualization" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><h3 id="virtual-machine">Virtual machine <a href="#virtual-machine" class="anchor"><i class="fas fa-hashtag"></i></a></h3></h3><p>가상 머신도 격리의 일종이다. 가상머신의 경우는 full virtualization을 사용한다. 가상머신은 소프트웨어로 가상화된 하드웨어를 구현시켜준다. 이를 통해 격리된 공간을 제공한다. 하지만 이로 인해 실행을 하면 성능이 너무 안좋아진다. 또 독점적인 자원을 점유한다. 즉 서로 VM끼리는 자원을 공유할 수 없다.</p><p><br /></p><h3 id="sandbox">Sandbox <a href="#sandbox" class="anchor"><i class="fas fa-hashtag"></i></a></h3></h3><p>사전적 의미 그대로 격리된 공간을 의미한다. 다양한 방법이 가능하다. (VM, container, chroot ,…), 이 sandbox는 테스트 유닛으로서 격리된 공간, 보안 공간, 복제된 서비스 공간에 사용된다.</p><ul><li>장점 프로그램이 작동하기 위해서 많은 외부 자원을 필요로 한다. 예를 들어 게임을 설치할 때 directX, VC+ redist, library 2014,,, 등에 대한 버전을 여러 개 설치해야 하는데, 이에 대한 충돌이 발생할 수 있는데, 이를 해결해줄 수 있다.</ul><p>단지 격리만을 목적이라면 VM을 사용할 필요도 없이 lightweight container을 사용하면 된다. 이는 공유할 부분은 공유하고, 따로 사용할 부분은 따로 사용할 수 있다. 그러나 host OS와 공유하는 부분이 있으므로 이기종의 OS를 사용할 수 없다.</p><p><br /></p><p><br /></p><h1 id="docker-설치">docker 설치</h1><p><a href="https://docs.docker.com/engine/install/ubuntu">docker 사이트</a></p><h2 id="old-version-삭제">old version 삭제 <a href="#old-version-삭제" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><p>docker 버전이 여러 개 있으면 충돌이 발생하기 때문에 옛살 버전을 삭제해야 한다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+</pre><td class="rouge-code"><pre><span class="nv">$ </span>su -
+<span class="c"># apt list docker{,-engine,.ip} containerd runc</span>
+Listing... Done
+containerd/bionic-updates,bionic-security 1.5.5-0ubuntu3~18.04.2 amd64
+docker/bionic 1.5-1build1 amd64
+runc/bionic-updates 1.0.1-0ubuntu2~18.04.1 amd64
+</pre></table></code></div></div><p>[installed] 되어 있으면 제거한다.</p><p><br /></p><h2 id="필요-패키지-설치-및-key-file-추가">필요 패키지 설치 및 key file 추가 <a href="#필요-패키지-설치-및-key-file-추가" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre><td class="rouge-code"><pre><span class="c"># apt update</span>
+
+<span class="c"># apt -y install apt-transport-https  ca-certificates  curl  gnupg  lsb-release</span>
+
+<span class="c"># curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg</span>
+</pre></table></code></div></div><p>위 명령이 실행되면 /usr/share/keyrings/docker-archive-keyring.gpg에 key파일이 생성된다. 이는 https에 필요한 파일이다.</p><p><br /></p><h2 id="apt-저장소-sourcelist-추가">APT 저장소 source.list 추가 <a href="#apt-저장소-sourcelist-추가" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="nb">echo</span> <span class="s2">"deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu </span><span class="si">$(</span>lsb_release <span class="nt">-cs</span><span class="si">)</span><span class="s2"> stable"</span> <span class="o">&gt;</span> /etc/apt/sources.list.d/docker.list
+</pre></table></code></div></div><p>이 명령이 성공하면 /etc/apt/source.list.d에 docker.list가 생성된다.</p><ul><li>deb : 데비안 패키지<li><code class="language-plaintext highlighter-rouge">arch=amd64</code> : intel 호환 x86 64bit를 사용<li>signed-by= : 앞에서 저장한 key 파일 위치<li>url : 다운로드 경로<li>lsb_Reelase -cs : binoic stable 파일을 다운</ul><p><br /></p><h2 id="docker-engine-설치">docker engine 설치 <a href="#docker-engine-설치" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre><td class="rouge-code"><pre><span class="c"># apt update</span>
+
+<span class="c"># apt -y install docker-ce docker-ce-cli containerd.io</span>
+</pre></table></code></div></div><ul><li>docker daemon 실행 확인</ul><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+</pre><td class="rouge-code"><pre><span class="c"># systemctl status docker</span>
+● docker.service - Docker Application Container Engine
+   Loaded: loaded <span class="o">(</span>/lib/systemd/system/docker.service<span class="p">;</span> enabled<span class="p">;</span> vendor preset: e
+   Active: active <span class="o">(</span>running<span class="o">)</span> since Fri 2022-04-15 16:39:55 KST<span class="p">;</span> 14s ago
+     Docs: https://docs.docker.com
+ Main PID: 8891 <span class="o">(</span>dockerd<span class="o">)</span>
+    Tasks: 13
+   CGroup: /system.slice/docker.service
+           └─8891 /usr/bin/dockerd <span class="nt">-H</span> fd:// <span class="nt">--containerd</span><span class="o">=</span>/run/containerd/contain
+
+</pre></table></code></div></div><p><br /></p><h2 id="docker-실행">docker 실행 <a href="#docker-실행" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+</pre><td class="rouge-code"><pre><span class="c"># docker run hello-world</span>
+Unable to find image <span class="s1">'hello-world:latest'</span> locally
+latest: Pulling from library/hello-world
+2db29710123e: Pull <span class="nb">complete 
+</span>Digest: sha256:10d7d58d5ebd2a652f4d93fdd86da8f265f5318c6a73cc5b6a9798ff6d2b2e67
+Status: Downloaded newer image <span class="k">for </span>hello-world:latest
+
+Hello from Docker!
+This message shows that your installation appears to be working correctly.
+
+To generate this message, Docker took the following steps:
+ 1. The Docker client contacted the Docker daemon.
+ 2. The Docker daemon pulled the <span class="s2">"hello-world"</span> image from the Docker Hub.
+    <span class="o">(</span>amd64<span class="o">)</span>
+ 3. The Docker daemon created a new container from that image which runs the
+    executable that produces the output you are currently reading.
+ 4. The Docker daemon streamed that output to the Docker client, which sent it
+    to your terminal.
+
+To try something more ambitious, you can run an Ubuntu container with:
+ <span class="nv">$ </span>docker run <span class="nt">-it</span> ubuntu bash
+
+Share images, automate workflows, and more with a free Docker ID:
+ https://hub.docker.com/
+
+For more examples and ideas, visit:
+ https://docs.docker.com/get-started/
+
+</pre></table></code></div></div><ol><li>hello-world라는 image가 없으므로 다운<li>docker client가 docker daemon에 접속<li>docker daemon이 hello-world image를 가져온다. (amd64)<li>image를 통해 새로운 컨테이너를 생성<li>만든 이미지 안에서 실행된 결과를 터미널로 가져온다.</ol><p>완료되면 <code class="language-plaintext highlighter-rouge">$ docker run -it ubuntu bash</code> 를 실행해보라는 말이 나온다. 이를 실행하면 docker안으로 들어갈 수 있게 된다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+</pre><td class="rouge-code"><pre><span class="c"># docker run -it ubuntu bash</span>
+Unable to find image <span class="s1">'ubuntu:latest'</span> locally
+latest: Pulling from library/ubuntu
+e0b25ef51634: Pull <span class="nb">complete 
+</span>Digest: sha256:9101220a875cee98b016668342c489ff0674f247f6ca20dfc91b91c0f28581ae
+Status: Downloaded newer image <span class="k">for </span>ubuntu:latest
+root@3102cd9f9b3f:/# 
+</pre></table></code></div></div><p>옵션</p><ul><li>-i : interactive mode (open stdin) = shell을 쓸 수 있게 하는 옵션<li>-t : terminal (allocate a pseudo-tty , stdio) = 터미널을 쓸 수 있게 하는 옵션</ul><p><br /></p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+</pre><td class="rouge-code"><pre>root@3102cd9f9b3f:/# ps
+  PID TTY          TIME CMD
+    1 pts/0    00:00:00 bash
+    9 pts/0    00:00:00 ps
+root@3102cd9f9b3f:/# <span class="nb">cd
+</span>root@3102cd9f9b3f:~# <span class="nb">pwd</span>
+/root
+root@3102cd9f9b3f:~# <span class="nb">ls</span> <span class="nt">-al</span>
+total 16
+drwx------ 2 root root 4096 Apr  5 05:02 <span class="nb">.</span>
+drwxr-xr-x 1 root root 4096 Apr 15 07:50 ..
+<span class="nt">-rw-r--r--</span> 1 root root 3106 Dec  5  2019 .bashrc
+<span class="nt">-rw-r--r--</span> 1 root root  161 Dec  5  2019 .profile
+
+root@3102cd9f9b3f:~# <span class="nb">exit
+exit</span>
+</pre></table></code></div></div><p>이 때, root는 docker안의 루트이고, ps 를 치면 이는 격리된 공간으로서 1번을 받게 된다. <code class="language-plaintext highlighter-rouge">ls -al</code>을 통해 파일을 보게 되면 실제 우리 host os의 root 디렉토리가 아니라는 것을 알 수 있다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre><td class="rouge-code"><pre><span class="c"># docker ps -a</span>
+CONTAINER ID   IMAGE         COMMAND    CREATED          STATUS                      PORTS     NAMES
+3102cd9f9b3f   ubuntu        <span class="s2">"bash"</span>     4 minutes ago    Exited <span class="o">(</span>0<span class="o">)</span> 4 seconds ago              interesting_chandrasekhar
+cf5599884127   hello-world   <span class="s2">"/hello"</span>   13 minutes ago   Exited <span class="o">(</span>0<span class="o">)</span> 13 minutes ago             practical_antonelli
+</pre></table></code></div></div><p>생성된 시간과 현재 상태를 보여준다. 여기서 중요한 것은 container의 Id와 이름 둘다 나오고 있으며, 이것들을 통해 구분이 가능하다.</p><p><br /></p><p><br /></p><h1 id="docker-clicommand-line-interface">docker CLI(Command Line Interface)</h1><p>docker는 기본적으로 docker이라는 binary명령을 사용한다. docker는 docker daemon과 통신하기 때문에 먼저 daemon을 실행시켜줘야 한다. 추가적으로 docker group을 supplemetary group에 포함시켜야 사용이 가능하다. 즉 나의 일반 유저의 그룹에 추가해야 한다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+</pre><td class="rouge-code"><pre><span class="nv">$ </span><span class="nb">whoami
+</span>jhyoon
+
+<span class="nv">$ </span><span class="nb">sudo </span>usermod <span class="nt">-aG</span> docker jhyoon
+
+<span class="nv">$ </span><span class="nb">id
+</span><span class="nv">uid</span><span class="o">=</span>1000<span class="o">(</span>jhyoon<span class="o">)</span> <span class="nv">gid</span><span class="o">=</span>1000<span class="o">(</span>jhyoon<span class="o">)</span> <span class="nb">groups</span><span class="o">=</span>1000<span class="o">(</span>jhyoon<span class="o">)</span>,4<span class="o">(</span>adm<span class="o">)</span>,24<span class="o">(</span>cdrom<span class="o">)</span>,27<span class="o">(</span><span class="nb">sudo</span><span class="o">)</span>,30<span class="o">(</span>dip<span class="o">)</span>,46<span class="o">(</span>plugdev<span class="o">)</span>,116<span class="o">(</span>lpadmin<span class="o">)</span>,126<span class="o">(</span>sambashare<span class="o">)</span>
+
+<span class="nv">$ </span><span class="nb">id </span>jhyoon
+<span class="nv">uid</span><span class="o">=</span>1000<span class="o">(</span>jhyoon<span class="o">)</span> <span class="nv">gid</span><span class="o">=</span>1000<span class="o">(</span>jhyoon<span class="o">)</span> <span class="nb">groups</span><span class="o">=</span>1000<span class="o">(</span>jhyoon<span class="o">)</span>,4<span class="o">(</span>adm<span class="o">)</span>,24<span class="o">(</span>cdrom<span class="o">)</span>,27<span class="o">(</span><span class="nb">sudo</span><span class="o">)</span>,30<span class="o">(</span>dip<span class="o">)</span>,46<span class="o">(</span>plugdev<span class="o">)</span>,116<span class="o">(</span>lpadmin<span class="o">)</span>,126<span class="o">(</span>sambashare<span class="o">)</span>,999<span class="o">(</span>docker<span class="o">)</span>
+
+</pre></table></code></div></div><p>그냥 <code class="language-plaintext highlighter-rouge">id</code>에서는 docker가 나오지 않는 이유는 id는 런타임된 부분을 보여주고 이름까지 타이핑하면 설정된 그룹을 표시해주기 때문이다. 그룹 추가 후 session을 재생성해야 보인다. 즉, 재로그인을 해야 하므로 컴퓨터를 재부팅을 하거나 다음과 같은 방법을 사용한다.</p><ol><li>X Window 로그아웃 (우측 상단에 logout)<li>&lt;CTRL - ALT - F4&gt;를 눌러 tty4로 이동한 뒤 console에서 root로 로그인<li>systemctl restart gdm<li>&lt;cTRL - ALT - F1&gt;를 눌러 X window 로그인</ol><p>그 후 Docker가 들어가 있는지 확인한다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre><span class="nv">$ </span><span class="nb">id
+</span><span class="nv">uid</span><span class="o">=</span>1000<span class="o">(</span>jhyoon<span class="o">)</span> <span class="nv">gid</span><span class="o">=</span>1000<span class="o">(</span>jhyoon<span class="o">)</span> <span class="nb">groups</span><span class="o">=</span>1000<span class="o">(</span>jhyoon<span class="o">)</span>,4<span class="o">(</span>adm<span class="o">)</span>,24<span class="o">(</span>cdrom<span class="o">)</span>,27<span class="o">(</span><span class="nb">sudo</span><span class="o">)</span>,30<span class="o">(</span>dip<span class="o">)</span>,46<span class="o">(</span>plugdev<span class="o">)</span>,116<span class="o">(</span>lpadmin<span class="o">)</span>,126<span class="o">(</span>sambashare<span class="o">)</span>,999<span class="o">(</span>docker<span class="o">)</span>
+</pre></table></code></div></div><p>여기서 안나오면, 그냥 재부팅하기를 추천한다.</p><p><br /></p><p>이를 통해 루트가 아닌 개인 계정으로도 docker를 실행할 수 있게 되었다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+</pre><td class="rouge-code"><pre><span class="nv">$ </span>docker ps
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+<span class="nv">$ </span>docker ps <span class="nt">-a</span>
+CONTAINER ID   IMAGE         COMMAND    CREATED          STATUS                      PORTS     NAMES
+3102cd9f9b3f   ubuntu        <span class="s2">"bash"</span>     25 minutes ago   Exited <span class="o">(</span>0<span class="o">)</span> 20 minutes ago             interesting_chandrasekhar
+cf5599884127   hello-world   <span class="s2">"/hello"</span>   34 minutes ago   Exited <span class="o">(</span>0<span class="o">)</span> 34 minutes ago             practical_antonelli
+
+</pre></table></code></div></div><p>그냥 ps를 치면 현재 진행중인 컨테이너를 보여주는데, 여기에 -a 옵션을 추가하면 종료된 컨테이너도 보여준다. image 부분이 컨테이너 이미지, Command는 컨테이너 안에서 실행된 명령어이다. status는 명령어에 대한 출력이다.0이면 성공을 의미한다. 이름은 랜덤으로 주어지는 이름이다.</p><p><br /></p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+</pre><td class="rouge-code"><pre><span class="nv">$ </span>docker run hello-world
+...
+
+<span class="nv">$ </span>docker ps <span class="nt">-a</span>
+CONTAINER ID   IMAGE         COMMAND    CREATED          STATUS                      PORTS     NAMES
+dcb316d5d2f6   hello-world   <span class="s2">"/hello"</span>   40 seconds ago   Exited <span class="o">(</span>0<span class="o">)</span> 25 seconds ago             happy_euler
+3102cd9f9b3f   ubuntu        <span class="s2">"bash"</span>     30 minutes ago   Exited <span class="o">(</span>0<span class="o">)</span> 25 minutes ago             interesting_chandrasekhar
+cf5599884127   hello-world   <span class="s2">"/hello"</span>   39 minutes ago   Exited <span class="o">(</span>0<span class="o">)</span> 38 minutes ago             practical_antonelli
+
+<span class="nv">$ </span>docker <span class="nb">rm </span>dcb316d5d2f6
+</pre></table></code></div></div><p>rm 명령을 통해 컨테이너를 삭제할 수 있다. 여기서 id또는 이름을 지정해주면 된다.</p><p><br /></p><p>컨테이너의 이름을 직접 지정해줄 수 있다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+</pre><td class="rouge-code"><pre><span class="nv">$ </span>docker run <span class="nt">--name</span> hello-world_01 hello-world
+...
+
+<span class="nv">$ </span>docker ps <span class="nt">-a</span>
+CONTAINER ID   IMAGE         COMMAND    CREATED          STATUS                      PORTS     NAMES
+dcb316d5d2f6   hello-world   <span class="s2">"/hello"</span>   40 seconds ago   Exited <span class="o">(</span>0<span class="o">)</span> 25 seconds ago             hello-world_01
+3102cd9f9b3f   ubuntu        <span class="s2">"bash"</span>     30 minutes ago   Exited <span class="o">(</span>0<span class="o">)</span> 25 minutes ago             interesting_chandrasekhar
+cf5599884127   hello-world   <span class="s2">"/hello"</span>   39 minutes ago   Exited <span class="o">(</span>0<span class="o">)</span> 38 minutes ago             practical_antonelli
+
+<span class="nv">$ </span>docker <span class="nb">rm </span>hello-world_01
+</pre></table></code></div></div><p>이처럼 이름을 직접 지정해주면 사용 용도나 제작 의도를 알 수 있다.</p><p><br /></p><p>10개의 hello-world 컨테이너를 실행해보자.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre><td class="rouge-code"><pre><span class="nv">$ </span><span class="k">for </span>ii <span class="k">in</span> <span class="o">{</span>1..10<span class="o">}</span><span class="p">;</span> <span class="k">do </span>docker run <span class="nt">--name</span> hello-world_<span class="k">${</span><span class="nv">ii</span><span class="k">}</span> hello-world<span class="p">;</span> <span class="k">done</span>
+
+<span class="nv">$ </span>docker ps <span class="nt">-a</span>
+
+
+</pre></table></code></div></div><p><br /></p><h2 id="filter-기능">filter 기능 <a href="#filter-기능" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><p>docker cLI의 option에는 filter 기능이 제공한다. 모든 명령어에 제공되는 것은 아니지만, ps에서는 제공된다.</p><p><br /></p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+</pre><td class="rouge-code"><pre><span class="nv">$ </span>docker ps <span class="nt">-a</span>
+CONTAINER ID   IMAGE         COMMAND    CREATED          STATUS                      PORTS     NAMES
+5e64b7abf4f5   hello-world   <span class="s2">"/hello"</span>   2 minutes ago    Exited <span class="o">(</span>0<span class="o">)</span> 2 minutes ago              hello-world_10
+912c9f14910a   hello-world   <span class="s2">"/hello"</span>   2 minutes ago    Exited <span class="o">(</span>0<span class="o">)</span> 2 minutes ago              hello-world_9
+ccdda8a7d6e7   hello-world   <span class="s2">"/hello"</span>   2 minutes ago    Exited <span class="o">(</span>0<span class="o">)</span> 2 minutes ago              hello-world_8
+7e8f2369071f   hello-world   <span class="s2">"/hello"</span>   2 minutes ago    Exited <span class="o">(</span>0<span class="o">)</span> 2 minutes ago              hello-world_7
+eed82f62df9d   hello-world   <span class="s2">"/hello"</span>   3 minutes ago    Exited <span class="o">(</span>0<span class="o">)</span> 3 minutes ago              hello-world_6
+64fb8ef6f1e3   hello-world   <span class="s2">"/hello"</span>   3 minutes ago    Exited <span class="o">(</span>0<span class="o">)</span> 3 minutes ago              hello-world_5
+a93fe3dbd077   hello-world   <span class="s2">"/hello"</span>   3 minutes ago    Exited <span class="o">(</span>0<span class="o">)</span> 3 minutes ago              hello-world_4
+92e289160f8f   hello-world   <span class="s2">"/hello"</span>   3 minutes ago    Exited <span class="o">(</span>0<span class="o">)</span> 3 minutes ago              hello-world_3
+5115345eec80   hello-world   <span class="s2">"/hello"</span>   4 minutes ago    Exited <span class="o">(</span>0<span class="o">)</span> 4 minutes ago              hello-world_2
+f41fdc72a8f5   hello-world   <span class="s2">"/hello"</span>   4 minutes ago    Exited <span class="o">(</span>0<span class="o">)</span> 4 minutes ago              hello-world_1
+dcb316d5d2f6   hello-world   <span class="s2">"/hello"</span>   10 minutes ago   Exited <span class="o">(</span>0<span class="o">)</span> 9 minutes ago              happy_euler
+3102cd9f9b3f   ubuntu        <span class="s2">"bash"</span>     39 minutes ago   Exited <span class="o">(</span>0<span class="o">)</span> 35 minutes ago             interesting_chandrasekhar
+cf5599884127   hello-world   <span class="s2">"/hello"</span>   48 minutes ago   Exited <span class="o">(</span>0<span class="o">)</span> 48 minutes ago             practical_antonelli
+
+<span class="nv">$ </span>docker ps <span class="nt">-af</span> <span class="s1">'name=hello-world_[1-3]'</span>
+   PORTS     NAMES
+5e64b7abf4f5   hello-world   <span class="s2">"/hello"</span>   3 minutes ago   Exited <span class="o">(</span>0<span class="o">)</span> 2 minutes ago             hello-world_10
+92e289160f8f   hello-world   <span class="s2">"/hello"</span>   4 minutes ago   Exited <span class="o">(</span>0<span class="o">)</span> 4 minutes ago             hello-world_3
+5115345eec80   hello-world   <span class="s2">"/hello"</span>   4 minutes ago   Exited <span class="o">(</span>0<span class="o">)</span> 4 minutes ago             hello-world_2
+f41fdc72a8f5   hello-world   <span class="s2">"/hello"</span>   5 minutes ago   Exited <span class="o">(</span>0<span class="o">)</span> 5 minutes ago             hello-world_1
+</pre></table></code></div></div><p>glob pattern패턴을 지원하는 것을 볼 수 있다. 그러나 extglob은 지원하지 않는다.</p><p><br /></p><p>filter에는 name외에 id, label, status 등이 가능하다.</p><p><br /></p><p>필터와는 비슷한 기능으로 format option을 사용하면 원하는 column만 뽑을 수 있다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+</pre><td class="rouge-code"><pre><span class="nv">$ </span>docker ps <span class="nt">-af</span> <span class="s1">'name=hel'</span> <span class="nt">--format</span> <span class="s2">"   "</span>
+5e64b7abf4f5 hello-world Exited <span class="o">(</span>0<span class="o">)</span> 8 minutes ago hello-world_10
+912c9f14910a hello-world Exited <span class="o">(</span>0<span class="o">)</span> 8 minutes ago hello-world_9
+ccdda8a7d6e7 hello-world Exited <span class="o">(</span>0<span class="o">)</span> 8 minutes ago hello-world_8
+7e8f2369071f hello-world Exited <span class="o">(</span>0<span class="o">)</span> 9 minutes ago hello-world_7
+eed82f62df9d hello-world Exited <span class="o">(</span>0<span class="o">)</span> 9 minutes ago hello-world_6
+64fb8ef6f1e3 hello-world Exited <span class="o">(</span>0<span class="o">)</span> 9 minutes ago hello-world_5
+a93fe3dbd077 hello-world Exited <span class="o">(</span>0<span class="o">)</span> 10 minutes ago hello-world_4
+</pre></table></code></div></div><p>formatting에 사용될 수 있는 항목은 많다.</p><ul><li>.ID<li>.Image<li>.Command<li>.CreatedAt<li>.Ports<li>.Status<li>.State</ul><p>앞에 항상 .이 붙어 있고, 대/소문자 구분을 반드시 해줘야 한다.</p><p><br /></p><p>삭제할 때 format을 사용하여 삭제해준다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+</pre><td class="rouge-code"><pre><span class="nv">$ </span>docker ps <span class="nt">-af</span> <span class="s1">'name=hello'</span> <span class="nt">--format</span> <span class="s2">""</span>
+
+<span class="nv">$ </span>docker ps <span class="nt">-af</span> <span class="s1">'name=hello'</span> <span class="nt">--format</span> <span class="s2">""</span> | xargs docker <span class="nb">rm
+</span>hello-world_10
+hello-world_9
+hello-world_8
+hello-world_7
+hello-world_6
+hello-world_5
+hello-world_4
+hello-world_3
+hello-world_2
+hello-world_1
+</pre></table></code></div></div><p>대신 을 사용해도 된다. xargs를 통해 파이프 앞에서 출력되는 결과를 인자로 받아주어 삭제한다. 앞에서 실행한 결과의 hello-world_10을 <code class="language-plaintext highlighter-rouge">docker rm hello-world_10</code>로 실행된다.</p><p><br /></p><p><br /></p><p>rm을 통해 컨테이너는 삭제했지만, 컨테이너에서 사용되었던 images를 지우지는 않는다. 그래서 <code class="language-plaintext highlighter-rouge">rmi</code>를 통해 삭제한다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre><span class="nv">$ </span>docker rmi hello-world
+Error response from daemon: conflict: unable to remove repository reference <span class="s2">"hello-world"</span> <span class="o">(</span>must force<span class="o">)</span> - container cf5599884127 is using its referenced image feb5d9fea6a5
+</pre></table></code></div></div><p>이 때 에러가 나오는 이유는 container가 존재하기 때문에 실패한 것이다. 강제로 지울 수 있지만, 되도록이면 container를 삭제한 뒤 image를 삭제해야 한다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+</pre><td class="rouge-code"><pre><span class="nv">$ </span>docker ps <span class="nt">-af</span> <span class="s1">'ancestor=hello-world'</span> <span class="nt">--format</span> <span class="s2">""</span> | xargs docker <span class="nb">rm
+</span>happy_euler
+practical_antonelli
+
+
+
+<span class="nv">$ </span>docker rmi hello-world
+Untagged: hello-world:latest
+Untagged: hello-world@sha256:10d7d58d5ebd2a652f4d93fdd86da8f265f5318c6a73cc5b6a9798ff6d2b2e67
+Deleted: sha256:feb5d9fea6a5e9606aa995e879d862b825965ba48de054caab5ef356dc6b3412
+Deleted: sha256:e07ee1baac5fae6a26f30cabfe54a36d3402f96afda318fe0a96cec4ca393359
+</pre></table></code></div></div><p>anscestor은 이미지를 통해 검색하는 것이다. hello-world를 사용하는 컨테이너를 모두 삭제한다.</p><p><br /></p><p><br /></p><h2 id="docker-image">docker image <a href="#docker-image" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+</pre><td class="rouge-code"><pre><span class="nv">$ </span>docker image
+
+Usage:  docker image COMMAND
+
+Manage images
+
+Commands:
+  build       Build an image from a Dockerfile
+  <span class="nb">history     </span>Show the <span class="nb">history </span>of an image
+  import      Import the contents from a tarball to create a filesystem image
+  inspect     Display detailed information on one or more images
+  load        Load an image from a <span class="nb">tar </span>archive or STDIN
+  <span class="nb">ls          </span>List images
+  prune       Remove unused images
+  pull        Pull an image or a repository from a registry
+  push        Push an image or a repository to a registry
+  <span class="nb">rm          </span>Remove one or more images
+  save        Save one or more images to a <span class="nb">tar </span>archive <span class="o">(</span>streamed to STDOUT by default<span class="o">)</span>
+  tag         Create a tag TARGET_IMAGE that refers to SOURCE_IMAGE
+
+Run <span class="s1">'docker image COMMAND --help'</span> <span class="k">for </span>more information on a command.
+
+</pre></table></code></div></div><p>현재는 아직 이미지를 직접 생성하지 않을 것이므로 운용 명령인 inspect, load, ls, pull, rm, save 를 중점적으로 보도록 하자.</p><p><br /></p><h3 id="ls">ls <a href="#ls" class="anchor"><i class="fas fa-hashtag"></i></a></h3></h3><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre><td class="rouge-code"><pre><span class="nv">$ </span>docker image <span class="nb">ls
+</span>REPOSITORY   TAG       IMAGE ID       CREATED      SIZE
+ubuntu       latest    825d55fb6340   9 days ago   72.8MB
+</pre></table></code></div></div><ul><li>REPOSITORY : docker image 저장소 이름<li>TAG : 태그 이름 ( 버전 )</ul><p><br /></p><h3 id="pull">pull <a href="#pull" class="anchor"><i class="fas fa-hashtag"></i></a></h3></h3><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+</pre><td class="rouge-code"><pre><span class="nv">$ </span>docker image pull nginx
+Using default tag: latest
+latest: Pulling from library/nginx
+c229119241af: Pull <span class="nb">complete 
+</span>2215908dc0a2: Pull <span class="nb">complete 
+</span>08c3cb2073f1: Pull <span class="nb">complete 
+</span>18f38162c0ce: Pull <span class="nb">complete 
+</span>10e2168f148a: Pull <span class="nb">complete 
+</span>c4ffe9532b5f: Pull <span class="nb">complete 
+</span>Digest: sha256:2275af0f20d71b293916f1958f8497f987b8d8fd8113df54635f2a5915002bf1
+Status: Downloaded newer image <span class="k">for </span>nginx:latest
+docker.io/library/nginx:latest
+
+
+<span class="nv">$ </span>docker image <span class="nb">ls
+</span>REPOSITORY   TAG       IMAGE ID       CREATED       SIZE
+ubuntu       latest    825d55fb6340   9 days ago    72.8MB
+nginx        latest    12766a6745ee   2 weeks ago   142MB
+
+</pre></table></code></div></div><p>run에는 이미지가 없으면 Pull하는 기능이 포함되어 있다. 그러나 run이 목적이 아니라 save나 build를 하기 위한 목적인 경우 pull한다.</p><p><br /></p><h3 id="inspect">inspect <a href="#inspect" class="anchor"><i class="fas fa-hashtag"></i></a></h3></h3><p>이미지 안에 있는 설정이나 환경을 보기 위한 명령이다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+</pre><td class="rouge-code"><pre><span class="nv">$ </span>docker image inspect nginx
+<span class="o">[</span>
+    <span class="o">{</span>
+        <span class="s2">"Id"</span>: <span class="s2">"sha256:12766a6745eea133de9fdcd03ff720fa971fdaf21113d4bc72b417c123b15619"</span>,
+        <span class="s2">"RepoTags"</span>: <span class="o">[</span>
+            <span class="s2">"nginx:latest"</span>
+        <span class="o">]</span>,
+        <span class="s2">"RepoDigests"</span>: <span class="o">[</span>
+            <span class="s2">"nginx@sha256:2275af0f20d71b293916f1958f8497f987b8d8fd8113df54635f2a5915002bf1"</span>
+        <span class="o">]</span>,
+        <span class="s2">"Parent"</span>: <span class="s2">""</span>,
+        <span class="s2">"Comment"</span>: <span class="s2">""</span>,
+        <span class="s2">"Created"</span>: <span class="s2">"2022-03-29T16:02:44
+...
+
+</span></pre></table></code></div></div><p>이렇게 하면 모든 환경을 출력하는데, 특정 포맷만 출력할 수도 있다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+</pre><td class="rouge-code"><pre><span class="nv">$ </span>docker image inspect <span class="nt">-f</span> <span class="s1">''</span> nginx
+<span class="o">[</span><span class="nv">PATH</span><span class="o">=</span>/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin <span class="nv">NGINX_VERSION</span><span class="o">=</span>1.21.6 <span class="nv">NJS_VERSION</span><span class="o">=</span>0.7.2 <span class="nv">PKG_RELEASE</span><span class="o">=</span>1~bullseye]
+
+
+<span class="nv">$ </span>docker image inspect <span class="nt">-f</span> <span class="s1">''</span> nginx
+<span class="o">[</span><span class="s2">"PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"</span>,<span class="s2">"NGINX_VERSION=1.21.6"</span>,<span class="s2">"NJS_VERSION=0.7.2"</span>,<span class="s2">"PKG_RELEASE=1~bullseye"</span><span class="o">]</span>
+</pre></table></code></div></div><p>json 포멧으로 보여달라 하면 <code class="language-plaintext highlighter-rouge">json</code> 옵션을 추가하면 된다.</p><p><br /></p><h3 id="saveload">save/load <a href="#saveload" class="anchor"><i class="fas fa-hashtag"></i></a></h3></h3><p>docker에서 큰 용량을 다운받거나 계속 다운/삭제를 반복하게 되면 해당 ip가 불이익을 받을 수 있다. 그래서 자주 사용하는 이미지는 저장해놓는 것이 좋다. save를 하면 stdout형태로 출력되므로 redirection 을 통해 저장하거나 옵션 -o 를 사용한다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre><td class="rouge-code"><pre><span class="nv">$ </span>docker image save nginx <span class="o">&gt;</span> docker_nginx_1.21.6.tar
+
+<span class="nv">$ </span>file docker_nginx_1.21.6.tar
+docker_nginx_1.21.6.tar: POSIX <span class="nb">tar </span>archive
+
+</pre></table></code></div></div><p>image가 tar파일로 저장된다. 작성할 때 inspect를 통해 버전을 확인한 후 저장하는 것이 좋다.</p><p><br /></p><p>불러올 때는 stdin으로 불러와야 한다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+</pre><td class="rouge-code"><pre><span class="nv">$ </span>docker image <span class="nb">ls
+</span>REPOSITORY   TAG       IMAGE ID       CREATED       SIZE
+ubuntu       latest    825d55fb6340   9 days ago    72.8MB
+nginx        latest    12766a6745ee   2 weeks ago   142MB
+
+<span class="nv">$ </span>docker image <span class="nb">rm </span>nginx
+Untagged: nginx:latest
+Untagged: nginx@sha256:2275af0f20d71b293916f1958f8497f987b8d8fd8113df54635f2a5915002bf1
+Deleted: sha256:12766a6745eea133de9fdcd03ff720fa971fdaf21113d4bc72b417c123b15619
+Deleted: sha256:3ea962f6f388096ab9798790d363fc6f9c779c924a5eddf5c699d8da080114f7
+Deleted: sha256:091a2aef7242e42505b69f1ad027d6a442cfce2403e260ac914f0fd6cc2d275f
+Deleted: sha256:4e72a31f1cd6fd655cc0826c91e886967b6e965e13ac21f31f9f66c27a3b7732
+Deleted: sha256:e3d1cdf9772a260b3e81a22c1940d63ac45dfe67720f78f00ca73834d9498934
+Deleted: sha256:af40da71a8618ea9cbcdc333d5e60bd5b6df820f0d07a55f7c9a1c21fd930095
+Deleted: sha256:608f3a074261105f129d707e4d9ad3d41b5baa94887f092b7c2857f7274a2fce
+
+<span class="nv">$ </span>docker image <span class="nb">ls
+</span>REPOSITORY   TAG       IMAGE ID       CREATED      SIZE
+ubuntu       latest    825d55fb6340   9 days ago   72.8MB
+
+<span class="nv">$ </span>docker image load &lt; docker_nginx_1.21.6.tar
+608f3a074261: Loading layer   83.9MB/83.9MB
+ea207a4854e7: Loading layer     62MB/62MB
+33cf1b723f65: Loading layer  3.072kB/3.072kB
+5c77d760e1f4: Loading layer  4.096kB/4.096kB
+fac199a5a1a5: Loading layer  3.584kB/3.584kB
+ea4bc0cd4a93: Loading layer  7.168kB/7.168kB
+Loaded image: nginx:latest
+</pre></table></code></div></div><p>이 때, image rm 이나 rmi나 동일하게 작동한다.</p><p><br /></p><p>또 위에서 배운 docker image의 모든 명령어는 다 단축이 가능하다.</p><p><code class="language-plaintext highlighter-rouge">docker image load == docker load</code></p><p><br /></p><p><br /></p><h2 id="run">run <a href="#run" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><p>일단 시작 전에 이미 존재하는 컨테이너를 모두 삭제하는 것이 좋다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre><span class="nv">$ </span>docker ps <span class="nt">-a</span> <span class="nt">--format</span> <span class="s1">''</span> | xargs docker <span class="nb">rm</span>
+
+</pre></table></code></div></div><p><br /></p><p>터미널을 2개 실행해서 각각 docker run을 해보자.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+</pre><td class="rouge-code"><pre><span class="nv">$ </span>docker run <span class="nt">-it</span> <span class="nt">--name</span> ubuntu_top ubuntu <span class="s2">"top"</span> <span class="s2">"-d 1"</span>
+top - 09:59:24 up  1:48,  0 <span class="nb">users</span>,  load average: 2.33, 2.46, 2.19
+Tasks:   1 total,   1 running,   0 sleeping,   0 stopped,   0 zombie
+%Cpu<span class="o">(</span>s<span class="o">)</span>: 34.5 us,  5.1 sy,  0.0 ni, 60.0 <span class="nb">id</span>,  0.0 wa,  0.0 hi,  0.4 si,  0.0 st
+MiB Mem :  15680.4 total,   7678.9 free,   3078.9 used,   4922.6 buff/cache
+MiB Swap:   6939.0 total,   6939.0 free,      0.0 used.  11506.3 avail Mem 
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND    
+    1 root      20   0    6088   3208   2704 R   0.0   0.0   0:00.10 top  
+
+
+
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+
+<span class="nv">$ </span>docker run <span class="nt">-it</span> <span class="nt">--name</span> ubuntu_top ubuntu <span class="s2">"top"</span> <span class="s2">"-d 1"</span>
+docker: Error response from daemon: Conflict. The container name <span class="s2">"/ubuntu_top"</span> is already <span class="k">in </span>use by container <span class="s2">"5d31836dac6bfee687ad4bfc050dec2893ab56426518535625a3a752250085df"</span><span class="nb">.</span> You have to remove <span class="o">(</span>or rename<span class="o">)</span> that container to be able to reuse that name.
+See <span class="s1">'docker run --help'</span><span class="nb">.</span>
+</pre></table></code></div></div><p>ubuntu_top이라는 이름의 anscestor이 ubuntu인 컨테이너를 실행하고, 명령어는 top, argument는 딜레이를 1준다는 것이다. 두번째에서 에러가 나는 이유는 동일한 이름을 가진 컨테이너를 만들 수 없기 때문이다.</p><p><br /></p><p><br /></p><h2 id="exec">exec <a href="#exec" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><p>그 다음으로는 같은 컨테이너에서 2개의 top을 실행시켜보고자 한다. 1번 터미널의 ubuntu_top은 그대로 두고 2번에서 <code class="language-plaintext highlighter-rouge">docker ps -a</code> 를 확인해보면 ubuntu_top이 실행중인 것을 확인할 수 있다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre><td class="rouge-code"><pre><span class="nv">$ </span>docker ps <span class="nt">-a</span>
+CONTAINER ID   IMAGE     COMMAND        CREATED         STATUS         PORTS     NAMES
+5d31836dac6b   ubuntu    <span class="s2">"top '-d 1'"</span>   4 minutes ago   Up 4 minutes             ubuntu_top
+</pre></table></code></div></div><p>이 2개의 top을 실행시키기 위해 exec를 사용한다. run은 새롭게 컨테이너를 실행하는 명령이고, exec는 기존에 존재하는 컨테이너에서 실행하는 명령이다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+</pre><td class="rouge-code"><pre><span class="nv">$ </span>docker <span class="nb">exec</span> <span class="nt">-it</span> ubuntu_top top <span class="s2">"-d 0.2"</span>
+top - 10:04:03 up  1:53,  0 <span class="nb">users</span>,  load average: 2.42, 2.44, 2.26
+Tasks:   2 total,   1 running,   1 sleeping,   0 stopped,   0 zombie
+%Cpu<span class="o">(</span>s<span class="o">)</span>:  5.0 us,  2.5 sy,  0.0 ni, 92.5 <span class="nb">id</span>,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st
+MiB Mem :  15680.4 total,   7561.3 free,   3139.4 used,   4979.7 buff/cache
+MiB Swap:   6939.0 total,   6939.0 free,      0.0 used.  11390.6 avail Mem 
+
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND    
+    1 root      20   0    6088   3208   2704 S   0.0   0.0   0:00.24 top        
+    7 root      20   0    6088   3156   2652 R   0.0   0.0   0:00.05 top        
+
+</pre></table></code></div></div><p>이 때 보이는 7번이 방금 실행시킨 exec에 의한 process이다.</p><p><br /></p><p>이번에는 3번째 터미널에서 bash를 실행시켜본다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+</pre><td class="rouge-code"><pre><span class="nv">$ </span>docker <span class="nb">exec</span> <span class="nt">-it</span> ubuntu_top bash
+
+root@5d31836dac6b:/# ps <span class="nt">-ef</span>
+UID        PID  PPID  C STIME TTY          TIME CMD
+root         1     0  0 09:56 pts/0    00:00:00 top <span class="nt">-d</span> 1
+root         7     0  0 10:03 pts/1    00:00:00 top <span class="nt">-d</span> 0.2
+root        13     0  0 10:05 pts/2    00:00:00 bash
+root        22    13  0 10:05 pts/2    00:00:00 ps <span class="nt">-ef</span>
+
+</pre></table></code></div></div><p>그 후 1번 터미널에서 다시 확인해보면 bash가 추가된 것을 볼 수 있다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre><td class="rouge-code"><pre>  PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND    
+    7 root      20   0    6088   3156   2652 S   1.0   0.0   0:00.42 top        
+    1 root      20   0    6088   3208   2704 R   0.0   0.0   0:00.31 top        
+   13 root      20   0    4116   3460   2912 S   0.0   0.0   0:00.02 bash  
+</pre></table></code></div></div><p><br /></p><p>컨테이너를 종료하기 위해서는 1번 터미널만 닫아도 된다. 1번이 오리지널 프로세스이므로 1번이 꺼지면 나머지는 쫓겨나게 된다.</p><p><br /></p><h2 id="binding">Binding <a href="#binding" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><p>컴네이너의 자원을 외부와 연결하는 명령이다. 일반적으로는 I/O 나 storage관련, 또는 환경을 연결한다.</p><p>i/o에서는 대표적으로 network을 연결하는데 연결 방식은 2가지가 있다.</p><ul><li><strong>port binding</strong> : host OS의 port 와 컨테이너의 port를 바인딩해서 port를 통해 연결<li>network : docker network를 사용</ul><p>파일에서는 대표적으로 directory나 file, block device 등을 연결한다. 이에 대해서도 3가지의 방법이 있다.</p><ul><li><strong>mount binding</strong> : host OS의 디렉토리를 바인딩<li>volume : docker volume 저장소를 사용<li>device : host os의 device, gpu를 바인딩</ul><p>환경에서는 shell environment를 지정해줘서 연결할 수 있다. docker는 컨테이너라서 커스터마이징이 가능하다. 환경 변수를 통해 어떤 값이 들어오면 특정 설정으로 작동한다는 식으로 만들 수 있다.</p><p><br /></p><h3 id="port-binding">port binding <a href="#port-binding" class="anchor"><i class="fas fa-hashtag"></i></a></h3></h3><p>port binding은 네트워크 서비스를 사용한다는 것이므로 nginx web server를 사용한다. 그래서 nginx container가 사용할 port를 확인해보고자 한다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+</pre><td class="rouge-code"><pre><span class="nv">$ </span>docker inspect nginx
+<span class="s2">"Config"</span>: <span class="o">{</span>
+    <span class="s2">"Hostname"</span>: <span class="s2">""</span>,
+    <span class="s2">"Domainname"</span>: <span class="s2">""</span>,
+    <span class="s2">"User"</span>: <span class="s2">""</span>,
+    <span class="s2">"AttachStdin"</span>: <span class="nb">false</span>,
+    <span class="s2">"AttachStdout"</span>: <span class="nb">false</span>,
+    <span class="s2">"AttachStderr"</span>: <span class="nb">false</span>,
+    <span class="s2">"ExposedPorts"</span>: <span class="o">{</span>
+        <span class="s2">"80/tcp"</span>: <span class="o">{}</span>
+    <span class="o">}</span>,
+    <span class="s2">"Tty"</span>: <span class="nb">false</span>,
+    <span class="s2">"OpenStdin"</span>: <span class="nb">false</span>,
+    <span class="s2">"StdinOnce"</span>: <span class="nb">false</span>,
+    <span class="s2">"Env"</span>: <span class="o">[</span>
+        <span class="s2">"PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"</span>,
+        <span class="s2">"NGINX_VERSION=1.21.6"</span>,
+        <span class="s2">"NJS_VERSION=0.7.2"</span>,
+        <span class="s2">"PKG_RELEASE=1~bullseye"</span>
+    <span class="o">]</span>,
+    <span class="s2">"Cmd"</span>: <span class="o">[</span>
+        <span class="s2">"nginx"</span>,
+        <span class="s2">"-g"</span>,
+        <span class="s2">"daemon off;"</span>
+</pre></table></code></div></div><p>config부분을 확인해보면 포트를 80/tcp를 외부에 노출하고 있음을 알 수 있다. 또는 stdin/stdout을 사용하지 않는 것으로 되어 있다. 그 이유는 기본적으로 daemon서비스는 std를 사용하지 않기 때문이다. SIGTTIN/SIGTTOUT을 발생시키지 않기 위해서이다.</p><p><br /></p><p>2개의 터미널을 통해 사용한다. 1번 터미널에서 run을 한다. 8080이 host의 Port번호 컨테이너의 port번호이다. 2번에서는 listen을 통해 확인한다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+</pre><td class="rouge-code"><pre><span class="nv">$ </span>docker run <span class="nt">--rm</span> <span class="nt">-p</span> 8080:80/tcp <span class="nt">--name</span> nginx_8080 nginx
+...
+2022/04/15 10:20:44 <span class="o">[</span>notice] 1#1: start worker process 34
+2022/04/15 10:20:44 <span class="o">[</span>notice] 1#1: start worker process 35
+2022/04/15 10:20:44 <span class="o">[</span>notice] 1#1: start worker process 36
+2022/04/15 10:20:44 <span class="o">[</span>notice] 1#1: start worker process 37
+2022/04/15 10:20:44 <span class="o">[</span>notice] 1#1: start worker process 38
+
+<span class="nv">$ </span>ss <span class="nt">-nlt</span> <span class="s1">'sport = :8080'</span>
+State    Recv-Q    Send-Q        Local Address:Port        Peer Address:Port    
+LISTEN   0         4096                0.0.0.0:8080             0.0.0.0:<span class="k">*</span>       
+LISTEN   0         4096                   <span class="o">[</span>::]:8080                <span class="o">[</span>::]:<span class="k">*</span>
+</pre></table></code></div></div><p>1번 터미널의 옵션</p><ul><li>–rm : 컨테이너를 껐을 때 자동 삭제<li>-p &lt;&gt; : 뒤에 오는 것은 호스트 port번호와 컨테이너 port번호</ul><p>2번 터미널의 옵션</p><ul><li>-n : numeric<li>-l : listen<li>-t : tcp</ul><p>filter</p><ul><li>port가 8080인 것만 보여달라</ul><p><br /></p><p>연결이 잘 되어 있는지 확인하기 위해 curl을 사용한다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+</pre><td class="rouge-code"><pre><span class="nv">$ </span>curl 127.0.0.1:8080
+&lt;<span class="o">!</span>DOCTYPE html&gt;
+&lt;html&gt;
+&lt;<span class="nb">head</span><span class="o">&gt;</span>
+&lt;title&gt;Welcome to nginx!&lt;/title&gt;
+&lt;style&gt;
+html <span class="o">{</span> color-scheme: light dark<span class="p">;</span> <span class="o">}</span>
+body <span class="o">{</span> width: 35em<span class="p">;</span> margin: 0 auto<span class="p">;</span>
+font-family: Tahoma, Verdana, Arial, sans-serif<span class="p">;</span> <span class="o">}</span>
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;Welcome to nginx!&lt;/h1&gt;
+&lt;p&gt;If you see this page, the nginx web server is successfully installed and
+working. Further configuration is required.&lt;/p&gt;
+
+&lt;p&gt;For online documentation and support please refer to
+&lt;a <span class="nv">href</span><span class="o">=</span><span class="s2">"http://nginx.org/"</span><span class="o">&gt;</span>nginx.org&lt;/a&gt;.&lt;br/&gt;
+Commercial support is available at
+&lt;a <span class="nv">href</span><span class="o">=</span><span class="s2">"http://nginx.com/"</span><span class="o">&gt;</span>nginx.com&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Thank you <span class="k">for </span>using nginx.&lt;/em&gt;&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre></table></code></div></div><p><img data-src="/assets/img/dev/week9/day5/nginx.png" data-proofer-ignore></p><p><br /></p><p>동작하고 있는 1번 터미널을 죽이기 위해서는 &lt;CTRL-C&gt;를 누른다.</p><p><br /></p><h3 id="detach">detach <a href="#detach" class="anchor"><i class="fas fa-hashtag"></i></a></h3></h3><p>위에서는 foreground에서 실행되고 있지만, 관리하기 귀찮을 경우 background에 놓고`` 실행시키고자 한다. 대부분 background에 놓고 실행한다.</p><p><br /></p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+</pre><td class="rouge-code"><pre><span class="nv">$ </span>docker ps <span class="nt">-a</span>
+
+<span class="nv">$ </span>docker run <span class="nt">-d</span> <span class="nt">--rm</span> <span class="nt">-p</span> 8080:80/tcp <span class="nt">--name</span> nginx_8080 nginx
+0c501f5680b67dfdbcd9585ea6798b3250e553389652fc416e0c1f3194998001
+
+<span class="nv">$ </span>docker ps
+CONTAINER ID   IMAGE     COMMAND                  CREATED          STATUS         PORTS                                   NAMES
+0c501f5680b6   nginx     <span class="s2">"/docker-entrypoint.…"</span>   13 seconds ago   Up 4 seconds   0.0.0.0:8080-&gt;80/tcp, :::8080-&gt;80/tcp   nginx_8080
+</pre></table></code></div></div><p><br /></p><p>현재는 background에서 실행했기 떄문에 로그가 나오지 않는다. 이 로그들을 보기 위해서 다른 터미널을 열어서 확인한다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+</pre><td class="rouge-code"><pre><span class="nv">$ </span>docker logs nginx_8080
+2022/04/15 10:50:42 <span class="o">[</span>notice] 1#1: start worker process 32
+2022/04/15 10:50:42 <span class="o">[</span>notice] 1#1: start worker process 33
+2022/04/15 10:50:42 <span class="o">[</span>notice] 1#1: start worker process 34
+2022/04/15 10:50:42 <span class="o">[</span>notice] 1#1: start worker process 35
+2022/04/15 10:50:42 <span class="o">[</span>notice] 1#1: start worker process 36
+2022/04/15 10:50:42 <span class="o">[</span>notice] 1#1: start worker process 37
+2022/04/15 10:50:42 <span class="o">[</span>notice] 1#1: start worker process 38
+</pre></table></code></div></div><p>이 때, 추적해서 관찰하고 싶다면 <code class="language-plaintext highlighter-rouge">-f</code>를 추가한다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="nv">$ </span>docker logs <span class="nt">-f</span> nginx_8080
+</pre></table></code></div></div><p><br /></p><p>위에서 docker run -it 을 사용할 때, interactive mode와 terminal을 사용하는 경우 container을 running 상태로 두고 잠시 빠져나올 때는 <code class="language-plaintext highlighter-rouge">^P^Q</code>를 통해 detach를 할 수 있다. 또는 처음 실행할 때 detach mode를 추가하면 된다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="nv">$ </span>docker run <span class="nt">--rm</span> <span class="nt">-itd</span> <span class="nt">--name</span> ubuntu_bash ubuntu bash
+</pre></table></code></div></div><p>이것만 실행하면 shell로 진입하지 않는다. 그래서 attach를 하여 진입한다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+</pre><td class="rouge-code"><pre><span class="nv">$ </span>docker attach ubuntu_bash
+root@4042467bb952:/# ps
+  PID TTY          TIME CMD
+    1 pts/0    00:00:00 bash
+    9 pts/0    00:00:00 ps
+
+^P^Q를 누르면
+root@4042467bb952:/# <span class="nb">read </span>escape sequence
+
+<span class="nv">$ </span>docker attach ubuntu_bash
+
+root@4042467bb952:/# 
+</pre></table></code></div></div><p><br /></p><h3 id="mount">mount <a href="#mount" class="anchor"><i class="fas fa-hashtag"></i></a></h3></h3><p>nginx에 외부 디렉토리를 mount해보고자 한다. 그전에 nginx 웹서버가 사용하는 디렉토리 구조를 알아야 한다. 이는 <a href="https://hub.docker.com/_/nginx">공식 사이트</a> 에 들어가면 정리되어 있다. 설정 파일 내용은 직접 컨테이너로 들어가 보는 것도 좋다.</p><p><br /></p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+</pre><td class="rouge-code"><pre><span class="nv">$ </span>docker run <span class="nt">--rm</span> <span class="nt">-it</span> nginx bash
+
+<span class="c"># alias ls='ls --color'</span>
+
+<span class="c"># cd /etc/nginx/conf.d</span>
+<span class="c"># ls</span>
+default.conf
+
+<span class="c"># more default.conf</span>
+server <span class="o">{</span>
+  listen      80<span class="p">;</span>
+  server_name localhost<span class="p">;</span>
+
+  <span class="c">#charset koi8-r;</span>
+  <span class="c">#access_log /var/log/nginx/host.access.log  main;</span>
+
+  location  / <span class="o">{</span>
+    root  /usr/share/nginx/html<span class="p">;</span>
+    index intex.html  index.htm<span class="p">;</span>l
+  <span class="o">}</span>
+<span class="o">}</span>
+</pre></table></code></div></div><p><code class="language-plaintext highlighter-rouge">/usr/share/nginx/html</code>이 바로 web document root이다. 여기를 외부 host에서 mount로 binding해야 한다.</p><p>host : home/nginx_doc_root -&gt; container : /usr/share/nginx/html 로 바인딩한다.</p><p><br /></p><p>마운트를 위해 다시 host os로 넘어온다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+</pre><td class="rouge-code"><pre><span class="nv">$ </span><span class="nb">mkdir</span> ~/nginx_doc_root
+<span class="nv">$ </span><span class="nb">readlink</span> <span class="nt">-f</span> ~/nginx_doc_root
+/home/jhyoon/nginx_doc_root
+
+<span class="nv">$ </span><span class="nb">echo</span> <span class="s2">"Hello Document root dir"</span> <span class="o">&gt;</span> ~/nginx_doc_root/hello.txt
+<span class="nv">$ </span><span class="nb">ls</span> ~/nginx_doc_root/
+hello.txt
+
+<span class="nv">$ </span>docker run <span class="nt">--rm</span> <span class="nt">-d</span> <span class="nt">-p</span> 8080:80/tcp <span class="nt">-v</span> /home/jhyoon/nginx_doc_root:/usr/share/nginx/html <span class="nt">--name</span> nginx_8080 nginx
+</pre></table></code></div></div><ul><li><code class="language-plaintext highlighter-rouge">-v host_file:container_file</code> : 지금은 1개만 했지만, 여러 개 지정해줄 수 있다.</ul><p><br /></p><p>위에서 작업했던 터미널 말고 1개더 실행해서 다음을 명령한다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+</pre><td class="rouge-code"><pre><span class="nv">$ </span>curl 127.0.0.1:8080
+
+
+<span class="nv">$ </span>curl http://127.0.0.1:8080/hello.txt
+
+<span class="nv">$ </span><span class="nb">echo</span> <span class="s2">"Hello World"</span> <span class="o">&gt;&gt;</span> ~/nginx_doc_root/hello.txt
+<span class="nv">$ </span>curl http://127.0.0.1:8080/hello.txt
+
+<span class="nv">$ </span>docker stop nginx_8080
+</pre></table></code></div></div><p>예전에 있던 파일에 바인딩했으므로 그 파일은 보이지 않고, 내가 생성한 파일로 출력된다. 이에 <code class="language-plaintext highlighter-rouge">&gt;&gt;</code>를 통해 내용을 더 추가했다. 컨테이너가 죽으면 <code class="language-plaintext highlighter-rouge">--rm</code>을 설정했기 때문에 바로 삭제된다.</p><p><br /></p><p>-v 대신 –mount를 사용할 수도 있다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="nv">$ </span>docker run <span class="nt">--rm</span> <span class="nt">-d</span> <span class="nt">-p</span> 8080:80/tcp <span class="nt">--mount</span> <span class="nb">type</span><span class="o">=</span><span class="nb">bind</span>,src<span class="o">=</span>/home/jhyoon/nginx_doc_root,dst<span class="o">=</span>/usr/share/nginx/html <span class="nt">--</span> name nginx_8080 nginx
+</pre></table></code></div></div><p>두 방법은 동일하다. 단지 직관성이 다를 뿐이므로 마음에 드는 것을 사용하면 된다.</p><p><br /></p><h3 id="environment-variables">Environment variables <a href="#environment-variables" class="anchor"><i class="fas fa-hashtag"></i></a></h3></h3><p>환경 변수 관리이다.</p><ul><li>–env KEY=value<li>–env-file env_file</ul><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+</pre><td class="rouge-code"><pre><span class="nv">$ </span>docker run <span class="nt">--rm</span> <span class="nt">-it</span> <span class="nt">--name</span> ubuntu_bash ubuntu bash
+<span class="c"># echo $LANG</span>
+<span class="c"># exit</span>
+
+<span class="nv">$ </span>docker run <span class="nt">--rm</span> <span class="nt">-it</span> <span class="nt">-e</span> <span class="nv">LANG</span><span class="o">=</span>en_US.utf8 <span class="nt">--name</span> ubuntu_bash ubuntu bash
+<span class="c"># echo $LANG</span>
+en_US.utf8
+</pre></table></code></div></div><p>–env를 사용해도 되지만, -e로 사용해도 된다.</p><p><br /></p><p><br /></p><h2 id="stopstart">stop/start <a href="#stopstart" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><p>docker stop/start는 어떤 경우에 사용하나?</p><ul><li>stop<ul><li>detach mode로 실행중이라면, 정지시키기 위해서 외부에서 docker stop으로 정지한다.<li>-it를 사용하지 않는 시스템은 signal이나 docker stop으로 정지할 수 밖에 없다.</ul><li>start<ul><li>docker run –rm을 쓰지 않는 경우 exit를 하면 container가 남아있어서 stop 후 재시작할 때 start로 가능하다.</ul></ul><p><br /></p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+</pre><td class="rouge-code"><pre><span class="nv">$ </span>docker run <span class="nt">-d</span> <span class="nt">-p</span> 8080:80/tcp <span class="nt">--mount</span> <span class="nb">type</span><span class="o">=</span><span class="nb">bind</span>,src<span class="o">=</span>/home/jhyoon/nginx_doc_root,dst<span class="o">=</span>/usr/share/nginx/html <span class="nt">--</span> name nginx_8080 nginx
+
+<span class="nv">$ </span>docker ps
+
+
+<span class="nv">$ </span>docker stop nginx_8080 <span class="o">&amp;&amp;</span> docker ps <span class="nt">-a</span>
+
+<span class="nv">$ </span>docker start nging_8080 <span class="o">&amp;&amp;</span> docker ps
+
+<span class="nv">$ </span>docker <span class="nb">rm </span>ID
+</pre></table></code></div></div><p><br /></p><p><br /></p><h1 id="docker-compose">Docker Compose</h1><p>docker를 실행시킬 때 설정들을 저장해서 만들어놓을 수 있다. 파일의 이름은 docker-compose.yml 이다. 이를 통해 매번 길게 치지 않아도 되기에 편리하다.</p><p><br /></p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre>docker-compose <span class="o">[</span><span class="nt">-f</span> &lt;arg&gt;...] <span class="o">[</span><span class="nt">--profile</span> &lt;name&gt;...] <span class="o">[</span>options] <span class="o">[</span>COMMAND] <span class="o">[</span>ARGS...]
+</pre></table></code></div></div><ul><li>-f <config file=""> </config><ul><li>config : yaml filetype<li>default filename : docker-compose.yml<li>docker-compose 파일을 사용할 때는 안써도 되지만, 다른 파일을 지정하고 싶은 경우 사용</ul></ul><p>compose를 할 경우 알아서 build, rebuild, create, start 까지 해준다.</p><p>더 궁금한 내용이 있다면 help(-h)를 사용한다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text=""><i class="far fa-file-code"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="nv">$ </span>docker-compose <span class="nt">-h</span>
+</pre></table></code></div></div><p><br /></p><h2 id="docker-compose-설치">docker-compose 설치 <a href="#docker-compose-설치" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="nv">$ </span><span class="nb">sudo </span>apt <span class="nt">-y</span> <span class="nb">install </span>docker-compose
+</pre></table></code></div></div><h2 id="docker-compose-설정">docker-compose 설정 <a href="#docker-compose-설정" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><p>설치 완료 후 간단한 설정을 만들어보자. 먼저 추후 편리하게 사용하기 위해 docker-compose를 작업할 디렉토리를 만들 것이다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre><td class="rouge-code"><pre><span class="nv">$ </span><span class="nb">mkdir</span> ~/docker-compose
+<span class="nv">$ </span><span class="nb">cd</span> ~/docker-compose
+<span class="nv">$ </span>vim docker-compose.yml
+</pre></table></code></div></div><p><br /></p><div class="language-yml highlighter-rouge"><div class="code-header"> <span data-label-text="YAML"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+</pre><td class="rouge-code"><pre><span class="na">version</span><span class="pi">:</span> <span class="s1">'</span><span class="s">3'</span>
+<span class="na">services</span><span class="pi">:</span>
+  <span class="na">nginx_8080</span><span class="pi">:</span>
+    <span class="na">image</span><span class="pi">:</span> <span class="s">nginx</span>
+    <span class="na">restart</span><span class="pi">:</span> <span class="s">always</span>
+    <span class="na">hostname</span><span class="pi">:</span> <span class="s">nginx1</span>
+    <span class="na">container_name</span><span class="pi">:</span> <span class="s">cmp_nginx1_1</span>
+    <span class="na">network</span><span class="pi">:</span>
+      <span class="na">mynet</span><span class="pi">:</span>
+        <span class="na">ipv4_address</span><span class="pi">:</span> <span class="s">172.20.0.10</span>
+    <span class="na">ports</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="s">8080.80</span>    
+    <span class="na">volume</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="s">/home/jhyoon/nginx_doc_root:/usr/share/nginx/html</span>
+
+<span class="na">networks</span><span class="pi">:</span>
+  <span class="na">mynet</span><span class="pi">:</span>
+    <span class="na">ipam</span><span class="pi">:</span>
+      <span class="na">driver</span><span class="pi">:</span> <span class="s">default</span>
+      <span class="na">config</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="na">subnet</span><span class="pi">:</span> <span class="s">172.20.0.0/24</span>
+</pre></table></code></div></div><p><a href="https://docs.docker.com/compose/compose-file/compose-versioning/">compose사이트</a></p><ul><li>version : 2, 3 등 원하는 것으로 쓰면 되지만, 3을 가장 많이 쓴다<li>nginx_8080 : 서비스의 이름<li>image : 이미지, 버전 명이 있는 경우 옆에 적으면 된다.<li>restart : 해당컨테이너가 종료되면 자동으로 재시작<li>hostname : 호스트 이름<li>container_name : 이를 지정하지 않으면 directory이름을 prefix로 자동 생성된다.<li>network : 쓸 network이름, 이는 아래에 선언함.<li>port : port binding, hostport.containerport<li>volume : mount binding, hostdir/containerdir</ul><p><br /></p><h2 id="docker-compose-실행">docker-compose 실행 <a href="#docker-compose-실행" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="nv">$ </span>docker-compose up
+</pre></table></code></div></div><p><br /></p><p>다른 터미널 창에서 다음을 명령한다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+</pre><td class="rouge-code"><pre><span class="nv">$ </span><span class="nb">pwd</span>
+/home/jhyoon/docker-compose
+
+<span class="nv">$ </span>docker-compose ps
+
+<span class="nv">$ </span>docker ps
+
+<span class="nv">$ </span>curl http://127.0.0.1:8080/hello.txt
+</pre></table></code></div></div><p>이를 detach로 실행하려면 <code class="language-plaintext highlighter-rouge">-d</code>를 추가해야 한다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+</pre><td class="rouge-code"><pre><span class="nv">$ </span>docker-compose up <span class="nt">-d</span>
+
+<span class="nv">$ </span>docker-compose ps
+
+<span class="nv">$ </span>docker-compose stop
+
+<span class="nv">$ </span>docker-compose ps
+</pre></table></code></div></div><p><br /></p><h3 id="web-서버를-2개-실행">web 서버를 2개 실행 <a href="#web-서버를-2개-실행" class="anchor"><i class="fas fa-hashtag"></i></a></h3></h3><p>2개를 실행하기 위해 docker-compose2.yml 파일을 생성한다.</p><div class="language-yml highlighter-rouge"><div class="code-header"> <span data-label-text="YAML"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+</pre><td class="rouge-code"><pre><span class="na">version</span><span class="pi">:</span> <span class="s1">'</span><span class="s">3'</span>
+<span class="na">services</span><span class="pi">:</span>
+  <span class="na">nginx_8080</span><span class="pi">:</span>
+    <span class="na">image</span><span class="pi">:</span> <span class="s">nginx</span>
+    <span class="na">restart</span><span class="pi">:</span> <span class="s">always</span>
+    <span class="na">hostname</span><span class="pi">:</span> <span class="s">nginx1</span>
+    <span class="na">container_name</span><span class="pi">:</span> <span class="s">cmp_nginx1_1</span>
+    <span class="na">network</span><span class="pi">:</span>
+      <span class="na">mynet</span><span class="pi">:</span>
+        <span class="na">ipv4_address</span><span class="pi">:</span> <span class="s">172.20.0.10</span>
+    <span class="na">ports</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="s">8080:80</span>    
+    <span class="na">volume</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="s">/home/jhyoon/nginx_doc_root:/usr/share/nginx/html</span>
+
+  <span class="na">nginx_8081</span><span class="pi">:</span>
+    <span class="na">image</span><span class="pi">:</span> <span class="s">nginx</span>
+    <span class="na">restart</span><span class="pi">:</span> <span class="s">always</span>
+    <span class="na">hostname</span><span class="pi">:</span> <span class="s">nginx2</span>
+    <span class="na">container_name</span><span class="pi">:</span> <span class="s">cmp_nginx2_1</span>
+    <span class="na">network</span><span class="pi">:</span>
+      <span class="na">mynet</span><span class="pi">:</span>
+        <span class="na">ipv4_address</span><span class="pi">:</span> <span class="s">172.20.0.20</span>
+    <span class="na">ports</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="s">8081:80</span>    
+    <span class="na">volume</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="s">/home/jhyoon/nginx2_doc_root:/usr/share/nginx/html</span>
+
+<span class="na">networks</span><span class="pi">:</span>
+  <span class="na">mynet</span><span class="pi">:</span>
+    <span class="na">ipam</span><span class="pi">:</span>
+      <span class="na">driver</span><span class="pi">:</span> <span class="s">default</span>
+      <span class="na">config</span><span class="pi">:</span>
+        <span class="pi">-</span> <span class="na">subnet</span><span class="pi">:</span> <span class="s">172.20.0.0/24</span>
+<span class="nn">...</span>
+</pre></table></code></div></div><p>여기서 DB나 API서버를 사용하여 container 끼리 서로 접속하려면 hostname을 설정해줘야 하고, 이런 경우에는 /etc/hosts에 서버를 등록한다.</p><div class="language-markdown highlighter-rouge"><div class="code-header"> <span data-label-text="Markdown"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre><span class="p">172.</span>20.0.10 nginx1.domainname
+<span class="p">172.</span>20.0.20 nginx2.domainname
+</pre></table></code></div></div><p><br /></p><p>2개를 실행할 때는 -f를 추가해야 한다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+</pre><td class="rouge-code"><pre><span class="nv">$ </span>docker-copmose <span class="nt">-f</span> compose-compose2.yml up <span class="nt">-d</span>
+
+
+
+<span class="nv">$ </span>docker-copmose <span class="nt">-f</span> compose-compose2.yml ps
+
+
+</pre></table></code></div></div><p><br /></p><h2 id="network">network <a href="#network" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+</pre><td class="rouge-code"><pre><span class="nv">$ </span>docker network <span class="nb">ls</span>
+
+
+<span class="nv">$ </span>docker-compose <span class="nt">-f</span> docker-compose2.yml stop
+<span class="nv">$ </span>docker network <span class="nb">rm </span>dockercompose_mynet
+
+<span class="nv">$ </span>docker-compose <span class="nt">-f</span> docker-compose2.yml up <span class="nt">-d</span>
+
+</pre></table></code></div></div><p>실행을 하면 에라가 뜬다. 왜냐하면 network가 재생성되면서 id 값이 달라지기 때문이다. 따라서 재생성해야 한다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="nv">$ </span>docker-compose <span class="nt">-f</span> docker-compose2.yml up <span class="nt">--force-recreate</span> <span class="nt">-d</span>
+</pre></table></code></div></div><p><br /></p><p><br /></p><h1 id="wsl2에-systemd-사용하기">wsl2에 systemd 사용하기</h1><p>wsl2에 도커를 사용하기 위해서는 설정을 해줘야 한다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre>git clone https://github.com/DamionGans/ubuntu-wsl2-systemd-script.git
+</pre></table></code></div></div><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="nb">cd </span>ubuntu-wsl2-systemd-script/
+</pre></table></code></div></div><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre>bash ubuntu-wsl2-systemd-script.sh
+</pre></table></code></div></div><p>이 후, wsl을 닫고, powershell에 들어가서 <code class="language-plaintext highlighter-rouge">wsl --shutdown</code>을 한다. 그리고 wsl을 다시 실행한다.</p><p>만약 이 때, <code class="language-plaintext highlighter-rouge">cannot execute daemonize to start systemd.</code>라는 에러가 뜬다면, powershell을 다시 실행한다. 그리고 wsl에 접속해야 한다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre>wsl <span class="nt">-u</span> root
+</pre></table></code></div></div><p><br /></p><p>그리고 daemonize 패키지가 있는지 확인한다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="nb">sudo </span>apt <span class="nb">install </span>daemonize
+</pre></table></code></div></div><p>없으면 설치하고, 있다면 삭제하고 재설치한다.</p><p><br /></p><p>설치가 끝나면, wsl을 빠져나와 다시 <code class="language-plaintext highlighter-rouge">wsl --shutdown</code> 한다. 그리고 wsl을 실행하면 systemctl을 사용할 수 있게 될 것이다.</p><ul><li>reference<ul><li>https://velog.io/@guswns3371/wsl2-%EC%97%90%EC%84%9C-systemctl-%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0</ul></ul></div><div class="post-tail-wrapper text-muted"><div style="text-align: left;"> <a href="http://hits.dwyl.com/dkssud8150.github.io/posts/docker/" target="_blank"> <img data-src="http://hits.dwyl.com/dkssud8150.github.io/posts/docker.svg" data-proofer-ignore> </a></div><div class="post-meta mb-3"> <i class="far fa-folder-open fa-fw mr-1"></i> <a href='/categories/classlog/'>Classlog</a>, <a href='/categories/devcourse/'>devcourse</a></div><div class="post-tags"> <i class="fa fa-tags fa-fw mr-1"></i> <a href="/tags/devcourse/" class="post-tag no-text-decoration" >devcourse</a> <a href="/tags/docker/" class="post-tag no-text-decoration" >docker</a></div><div class="post-tail-bottom d-flex justify-content-between align-items-center mt-3 pt-5 pb-2"><div class="license-wrapper"> This post is licensed under <a href="https://creativecommons.org/licenses/by/4.0/"> CC BY 4.0 </a> by the author.</div><div class="share-wrapper"> <span class="share-label text-muted mr-1">Share</span> <span class="share-icons"> <a href="https://twitter.com/intent/tweet?text=[데브코스] 9주차 - Docker (chroot, pseudo path) - JaeHo Yoon&amp;url=https://dkssud8150.github.io/posts/docker/" data-toggle="tooltip" data-placement="top" title="Twitter" target="_blank" rel="noopener" aria-label="Twitter"> <i class="fa-fw fab fa-twitter"></i> </a> <a href="https://www.facebook.com/sharer/sharer.php?title=[데브코스] 9주차 - Docker (chroot, pseudo path) - JaeHo Yoon&amp;u=https://dkssud8150.github.io/posts/docker/" data-toggle="tooltip" data-placement="top" title="Facebook" target="_blank" rel="noopener" aria-label="Facebook"> <i class="fa-fw fab fa-facebook-square"></i> </a> <a href="https://t.me/share/url?url=https://dkssud8150.github.io/posts/docker/&amp;text=[데브코스] 9주차 - Docker (chroot, pseudo path) - JaeHo Yoon" data-toggle="tooltip" data-placement="top" title="Telegram" target="_blank" rel="noopener" aria-label="Telegram"> <i class="fa-fw fab fa-telegram"></i> </a> <a href="https://www.linkedin.com/sharing/share-offsite/?url=https://dkssud8150.github.io/posts/docker/" data-toggle="tooltip" data-placement="top" title="Linkedin" target="_blank" rel="noopener" aria-label="Linkedin"> <i class="fa-fw fab fa-linkedin"></i> </a> <i id="copy-link" class="fa-fw fas fa-link small" data-toggle="tooltip" data-placement="top" title="Copy link" data-title-succeed="Link copied successfully!"> </i> </span></div></div><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6611243953442169" crossorigin="anonymous"></script></div><script src="https://utteranc.es/client.js" repo="dkssud8150/dkssud8150.github.io" issue-term="pathname" theme="github-light" crossorigin="anonymous" async> </script></div></div><div id="panel-wrapper" class="col-xl-3 pl-2 text-muted"><div class="access"><div id="access-lastmod" class="post"><div class="panel-heading">Recently Updated</div><ul class="post-content pl-0 pb-1 ml-1 mt-2"><li><a href="/posts/gitpage/">[깃허브 프로필 꾸미기] github 프로필 만들기</a><li><a href="/posts/product/">[깃허브 프로필 꾸미기] productive box 만들기</a><li><a href="/posts/regex/">[데브코스] 2주차 - linux 기초(REGEX)</a><li><a href="/posts/Kfold/">KFold Cross Validation 과 StratifiedKFold</a><li><a href="/posts/cmake/">[데브코스] 17주차 - CMake OpenCV, Eigen, Pangolin install </a></ul></div><div id="access-tags"><div class="panel-heading">Trending Tags</div><div class="d-flex flex-wrap mt-3 mb-1 mr-3"> <a class="post-tag" href="/tags/devcourse/">devcourse</a> <a class="post-tag" href="/tags/deeplearning/">deeplearning</a> <a class="post-tag" href="/tags/cs231n/">CS231N</a> <a class="post-tag" href="/tags/ros/">ros</a> <a class="post-tag" href="/tags/coding-test/">coding test</a> <a class="post-tag" href="/tags/linux/">linux</a> <a class="post-tag" href="/tags/kooc/">kooc</a> <a class="post-tag" href="/tags/opencv/">OpenCV</a> <a class="post-tag" href="/tags/pytorch-tutorial/">pytorch tutorial</a> <a class="post-tag" href="/tags/autonomous-driving/">Autonomous Driving</a></div></div></div><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@1.0.1/dist/bootstrap-toc.min.js"></script><div id="toc-wrapper" class="pl-0 pr-4 mb-5"><div class="panel-heading pl-3 pt-2 mb-2">Contents</div><nav id="toc" data-toggle="toc"></nav></div></div></div><div class="row"><div class="col-12 col-lg-11 col-xl-8"><div id="tail-wrapper" class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-md-4 pr-md-4"><div id="related-posts" class="mt-5 mb-2 mb-sm-4"><h3 class="pt-2 mt-1 mb-4 ml-1" data-toc-skip>Further Reading</h3><div class="card-deck mb-4"><div class="card"> <a href="/posts/start/"><div class="card-body"> <em class="timeago small" date="2022-02-14 13:00:00 +0900" >Feb 14, 2022</em><h3 class="pt-0 mt-1 mb-3" data-toc-skip>[데브코스] 카테고리 설명 및 개요</h3><div class="text-muted small"><p> 데브코스라는 교육을 받으면서 배웠던 내용을 기재하고자 한다. 최대한 많은 내용을 담고 싶지만, 저작권으로 인해 적지 못하는 부분도 많을 것 같다. 원래는 노션에 기록하고 있었지만, 매번 블로그에 기재하던 것처럼 블로그에 업로드해야 계속 기록에 남기도 하고 다음 번에도 계속 볼 것 같다.</p></div></div></a></div><div class="card"> <a href="/posts/algorithm/"><div class="card-body"> <em class="timeago small" date="2022-02-15 13:00:00 +0900" >Feb 15, 2022</em><h3 class="pt-0 mt-1 mb-3" data-toc-skip>[데브코스] 1주차 - 알고리즘 문제 풀기 (1)</h3><div class="text-muted small"><p> 코드에 대한 주석들은 추후에 달도록 하겠습니다. 현재는 블로그 정리만 하려고 올리는 것입니다. 자료구조와 알고리즘 자료구조 문자열 (str) “this is a string” 리스트 (list) [4,9,2,7] 사전 (dict) {‘a’:2, ‘bc’,:6} 순서쌍 (tuple), 집합 (set), … 해결할 문제에...</p></div></div></a></div><div class="card"> <a href="/posts/algorithm2/"><div class="card-body"> <em class="timeago small" date="2022-02-17 13:00:00 +0900" >Feb 17, 2022</em><h3 class="pt-0 mt-1 mb-3" data-toc-skip>[데브코스] 1주차 - 알고리즘 문제 풀기 (2)</h3><div class="text-muted small"><p> 스택 (stack) 스택: 자료를 보관할 수 있는 선형 구조 x.isempty() : 스택이 비어있는지 판단한다. x.peek() : 스택에 가장 나중에 저장된 데이터 원소를 참조한다. x.size() x.push() x.pop() 단, 넣을 때는 한 쪽 끝에서 밀어 넣어야 하는 push 연산, 꺼낼 때는 같은 쪽에서 뽑아 ...</p></div></div></a></div></div></div><div class="post-navigation d-flex justify-content-between"> <a href="/posts/multiperceptron/" class="btn btn-outline-primary" prompt="Older"><p>[데브코스] 9주차 - DeepLearning Multi Layer Perceptron</p></a> <a href="/posts/lanedetect/" class="btn btn-outline-primary" prompt="Newer"><p>[lane detection] sliding window를 c++로 구현하기</p></a></div></div></div></div><footer class="d-flex w-100 justify-content-center"><div class="d-flex justify-content-between align-items-center text-muted"><div class="footer-left"><p class="mb-0"> © 2023 <a href="https://twitter.com/username">JaeHo YooN</a>. <span data-toggle="tooltip" data-placement="top" title="Except where otherwise noted, the blog posts on this site are licensed under the Creative Commons Attribution 4.0 International (CC BY 4.0) License by the author.">Some rights reserved.</span></p></div><div class="footer-right"><p class="mb-0"> Powered by <a href="https://jekyllrb.com" target="_blank" rel="noopener">Jekyll</a> with <a href="https://github.com/cotes2020/jekyll-theme-chirpy" target="_blank" rel="noopener">Chirpy</a> theme.</p></div></div></footer></div><div id="search-result-wrapper" class="d-flex justify-content-center unloaded"><div class="col-12 col-sm-11 post-content"><div id="search-hints"><div id="access-tags"><div class="panel-heading">Trending Tags</div><div class="d-flex flex-wrap mt-3 mb-1 mr-3"> <a class="post-tag" href="/tags/devcourse/">devcourse</a> <a class="post-tag" href="/tags/deeplearning/">deeplearning</a> <a class="post-tag" href="/tags/cs231n/">CS231N</a> <a class="post-tag" href="/tags/ros/">ros</a> <a class="post-tag" href="/tags/coding-test/">coding test</a> <a class="post-tag" href="/tags/linux/">linux</a> <a class="post-tag" href="/tags/kooc/">kooc</a> <a class="post-tag" href="/tags/opencv/">OpenCV</a> <a class="post-tag" href="/tags/pytorch-tutorial/">pytorch tutorial</a> <a class="post-tag" href="/tags/autonomous-driving/">Autonomous Driving</a></div></div></div><div id="search-results" class="d-flex flex-wrap justify-content-center text-muted mt-3"></div></div></div></div><div id="mask"></div><a id="back-to-top" href="#" aria-label="back-to-top" class="btn btn-lg btn-box-shadow" role="button"> <i class="fas fa-angle-up"></i> </a> <script src="https://cdn.jsdelivr.net/npm/simple-jekyll-search@1.10.0/dest/simple-jekyll-search.min.js"></script> <script> SimpleJekyllSearch({ searchInput: document.getElementById('search-input'), resultsContainer: document.getElementById('search-results'), json: '/assets/js/data/search.json', searchResultTemplate: '<div class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-lg-4 pr-lg-4 pl-xl-0 pr-xl-0"> <a href="{url}">{title}</a><div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1"> {categories} {tags}</div><p>{snippet}</p></div>', noResultsText: '<p class="mt-5">Oops! No result founds.</p>', templateMiddleware: function(prop, value, template) { if (prop === 'categories') { if (value === '') { return `${value}`; } else { return `<div class="mr-sm-4"><i class="far fa-folder fa-fw"></i>${value}</div>`; } } if (prop === 'tags') { if (value === '') { return `${value}`; } else { return `<div><i class="fa fa-tag fa-fw"></i>${value}</div>`; } } } }); </script> <script src="https://cdn.jsdelivr.net/combine/npm/lozad/dist/lozad.min.js,npm/magnific-popup@1/dist/jquery.magnific-popup.min.js,npm/clipboard@2/dist/clipboard.min.js"></script> <script defer src="/assets/js/dist/post.min.js"></script> <script> /* see: <https://docs.mathjax.org/en/latest/options/input/tex.html#tex-options> */ MathJax = { tex: { inlineMath: [ /* start/end delimiter pairs for in-line math */ ['$','$'], ['\\(','\\)'] ], displayMath: [ /* start/end delimiter pairs for display math */ ['$$', '$$'], ['\\[', '\\]'] ] } }; </script> <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script> <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"> </script> <script src="https://cdn.jsdelivr.net/combine/npm/popper.js@1.16.1,npm/bootstrap@4/dist/js/bootstrap.min.js"></script> <script defer src="/app.js"></script> <script defer src="https://www.googletagmanager.com/gtag/js?id=G-NC7MWHVXJE"></script> <script> document.addEventListener("DOMContentLoaded", function(event) { window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-NC7MWHVXJE'); }); </script>

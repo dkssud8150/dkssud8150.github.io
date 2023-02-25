@@ -1,0 +1,667 @@
+<!DOCTYPE html><html lang="en" data-mode="light" ><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><meta name="day-prompt" content="days ago"><meta name="hour-prompt" content="hours ago"><meta name="minute-prompt" content="minutes ago"><meta name="justnow-prompt" content="just now"><meta name="generator" content="Jekyll v4.3.2" /><meta property="og:title" content="[데브코스] 2주차 - linux 기초(File System)" /><meta name="author" content="JaeHo YooN" /><meta property="og:locale" content="en" /><meta name="description" content="Do focus on developing ‘your ability’ rather than waste time on making you famous." /><meta property="og:description" content="Do focus on developing ‘your ability’ rather than waste time on making you famous." /><link rel="canonical" href="https://dkssud8150.github.io/posts/mkfs/" /><meta property="og:url" content="https://dkssud8150.github.io/posts/mkfs/" /><meta property="og:site_name" content="JaeHo Yoon" /><meta property="og:type" content="article" /><meta property="article:published_time" content="2022-02-25T13:00:00+09:00" /><meta name="twitter:card" content="summary" /><meta property="twitter:title" content="[데브코스] 2주차 - linux 기초(File System)" /><meta name="twitter:site" content="@" /><meta name="twitter:creator" content="@JaeHo YooN" /><meta name="google-site-verification" content="znvuGsQGYxMZPBslC4XG6doCYao6Y-fWibfGlcaMHH8" /> <script type="application/ld+json"> {"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"JaeHo YooN"},"dateModified":"2022-03-21T02:10:44+09:00","datePublished":"2022-02-25T13:00:00+09:00","description":"Do focus on developing ‘your ability’ rather than waste time on making you famous.","headline":"[데브코스] 2주차 - linux 기초(File System)","mainEntityOfPage":{"@type":"WebPage","@id":"https://dkssud8150.github.io/posts/mkfs/"},"url":"https://dkssud8150.github.io/posts/mkfs/"}</script><title>[데브코스] 2주차 - linux 기초(File System) | JaeHo Yoon</title><link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicons/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicons/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/img/favicons/favicon-16x16.png"><link rel="manifest" href="/assets/img/favicons/site.webmanifest"><link rel="shortcut icon" href="/assets/img/favicons/favicon.ico"><meta name="apple-mobile-web-app-title" content="JaeHo Yoon"><meta name="application-name" content="JaeHo Yoon"><meta name="msapplication-TileColor" content="#da532c"><meta name="msapplication-config" content="/assets/img/favicons/browserconfig.xml"><meta name="theme-color" content="#ffffff"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"><link rel="dns-prefetch" href="https://fonts.gstatic.com"><link rel="preconnect" href="https://www.google-analytics.com" crossorigin="use-credentials"><link rel="dns-prefetch" href="https://www.google-analytics.com"><link rel="preconnect" href="https://www.googletagmanager.com" crossorigin="anonymous"><link rel="dns-prefetch" href="https://www.googletagmanager.com"><link rel="preconnect" href="https://cdn.jsdelivr.net"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.11.2/css/all.min.css"><link rel="stylesheet" href="/assets/css/style.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@1.0.1/dist/bootstrap-toc.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/magnific-popup@1.1.0/dist/magnific-popup.min.css"> <script src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script><body data-spy="scroll" data-target="#toc" data-topbar-visible="true"><div id="sidebar" class="d-flex flex-column align-items-end" lang="en"><div class="profile-wrapper text-center"><div id="avatar"> <a href="/" alt="avatar" class="mx-auto"> <img src="/assets/img/shin_chan.png" alt="avatar" onerror="this.style.display='none'"> </a></div><div class="site-title mt-3"> <a href="/">JaeHo Yoon</a></div><div class="site-subtitle font-italic">Mamba Mentality</div></div><ul class="w-100"><li class="nav-item"> <a href="/" class="nav-link"> <i class="fa-fw fas fa-home ml-xl-3 mr-xl-3 unloaded"></i> <span>HOME</span> </a><li class="nav-item"> <a href="/categories/" class="nav-link"> <i class="fa-fw fas fa-stream ml-xl-3 mr-xl-3 unloaded"></i> <span>CATEGORIES</span> </a><li class="nav-item"> <a href="/tags/" class="nav-link"> <i class="fa-fw fas fa-tag ml-xl-3 mr-xl-3 unloaded"></i> <span>TAGS</span> </a><li class="nav-item"> <a href="/archives/" class="nav-link"> <i class="fa-fw fas fa-archive ml-xl-3 mr-xl-3 unloaded"></i> <span>ARCHIVES</span> </a><li class="nav-item"> <a href="/about/" class="nav-link"> <i class="fa-fw fab fa-angellist ml-xl-3 mr-xl-3 unloaded"></i> <span>ABOUT</span> </a></ul><div class="sidebar-bottom mt-auto d-flex flex-wrap justify-content-center align-items-center"> <a href="https://github.com/dkssud8150" aria-label="github" target="_blank" rel="noopener"> <i class="fab fa-github"></i> </a> <a href=" javascript:location.href = 'mailto:' + ['hoya58150','gmail.com'].join('@')" aria-label="email" > <i class="fas fa-envelope"></i> </a> <a href="https://www.notion.so/18490713817d403696812c57d0abe730" aria-label="notion" target="_blank" rel="noopener"> <i class="fab fa-battle-net"></i> </a> <a href="https://www.linkedin.com/in/jaeho-yoon-90b62b230" aria-label="linkedin" target="_blank" rel="noopener"> <i class="fab fa-linkedin"></i> </a> <a href="https://www.instagram.com/jai_ho8150/" aria-label="instagram" target="_blank" rel="noopener"> <i class="fab fa-instagram"></i> </a></div></div><div id="topbar-wrapper" class="row justify-content-center"><div id="topbar" class="col-11 d-flex h-100 align-items-center justify-content-between"> <span id="breadcrumb"> <span> <a href="/"> Home </a> </span> <span>[데브코스] 2주차 - linux 기초(File System)</span> </span> <i id="sidebar-trigger" class="fas fa-bars fa-fw"></i><div id="topbar-title"> Post</div><i id="search-trigger" class="fas fa-search fa-fw"></i> <span id="search-wrapper" class="align-items-center"> <i class="fas fa-search fa-fw"></i> <input class="form-control" id="search-input" type="search" aria-label="search" autocomplete="off" placeholder="Search..."> <i class="fa fa-times-circle fa-fw" id="search-cleaner"></i> </span> <span id="search-cancel" >Cancel</span></div></div><div id="main-wrapper"><div id="main"><div class="row"><div id="core-wrapper" class="col-12 col-lg-11 col-xl-8"><div class="post pl-1 pr-1 pl-sm-2 pr-sm-2 pl-md-4 pr-md-4"><h1 data-toc-skip>[데브코스] 2주차 - linux 기초(File System)</h1><div class="post-meta text-muted"><div> By <em> <a href="https://github.com/dkssud8150">JaeHo YooN</a> </em></div><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6611243953442169" crossorigin="anonymous"></script><div class="d-flex"><div> <span> Posted <em class="timeago" date="2022-02-25 13:00:00 +0900" data-toggle="tooltip" data-placement="bottom" title="Fri, Feb 25, 2022, 1:00 PM +0900" >Feb 25, 2022</em> </span> <span> Updated <em class="timeago" date="2022-03-21 02:10:44 +0900 " data-toggle="tooltip" data-placement="bottom" title="Mon, Mar 21, 2022, 2:10 AM +0900" >Mar 21, 2022</em> </span> <span class="readtime" data-toggle="tooltip" data-placement="bottom" title="5984 words"> <em>33 min</em> read</span></div></div></div><div class="post-content"><p><br /></p><p><a href="https://www.notion.so/c3d902dd1b1744c0936adc4209c89d94">오답노트</a></p><p><br /></p><h1 id="file-system">file system</h1><p>fs(file system)는 os에서 매우 큰 부분을 차지한다. 디렉토리도 파일 시스템의 일종이다.</p><p>파일 시스템 타입</p><ul><li>linux: xfs, ext4<li>windows: ntfs, exfat, fat32</ul><h2 id="새로운-fs-만드는-법">새로운 FS 만드는 법 <a href="#새로운-fs-만드는-법" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><ol><li>partitioning<ul><li>command: fdisk, parted</ul><li>file sysyem<ul><li>command: mkfs(==format),<li>만든 후 checking command: fsck or xfs_*</ul><li>mount<ul><li>command: mount / umount<li>mount를 자동으로 하기 위해 설정하는 파일인 /etc/fstab</ul></ol><blockquote><p>partition(구획)</p><p>물리적, 논리적 파티션이 존재한다. 예전에는 물리적, 즉 4TB를 둘로 나눴는데 1개를 거의 안써서 1개를 1/3로 나누고 싶다면 logical로 묶어야 했다.</p><p>최근에는 logical partition을 선호한다. 대표적으로 logical volume(LVM)을 사용하는 방법이 있다.</p><p>그러나 여기서는 physical만 다룰 것이다.</p></blockquote><p><br /></p><h3 id="physical-disk-나누는-방법">physical disk 나누는 방법 <a href="#physical-disk-나누는-방법" class="anchor"><i class="fas fa-hashtag"></i></a></h3></h3><p>디스크를 나누기 위해서는 labeling 작업을 해야하는데 label type이 2가지가 있다.</p><ul><li>DOS 방식: 고전<ul><li>2tb의 제한<li>tool: fdisk를 사용</ul><li>GPT 방식: DOS레이블 문제를 개선하기 위해 나온 새로운 방식<ul><li>용량 제한이 없음<li>tool: parted / gparted or gdisk를 사용</ul></ul><p>dos가 고전이긴 하나 2tb가 넘어가지 않는다면 dos도 많이 사용하긴 한다.</p><h3 id="dos-labeled-disk-mbr">DOS labeled disk (MBR) <a href="#dos-labeled-disk-mbr" class="anchor"><i class="fas fa-hashtag"></i></a></h3></h3><p>DOS partition의 종류</p><ul><li>primary partition(주 파티션)<ul><li>최대 4 partitions per disk</ul><li>extended partition(확장 파티션)<ul><li>4개 이상의 파티션이 필요할 때 주 파티션 대신에 1개를 만들 수 있다.<li>extended partition은 다시 여러 개의 logical drive로 나눌 수 있다.</ul><li>logical drive(논리 드라이브)</ul><p>파티션이 4개 이하여도 확장, 논리 드라이브를 만들 수 있다.</p><p><br /></p><h2 id="fdisk">fdisk <a href="#fdisk" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+</pre><td class="rouge-code"><pre>
+<span class="c"># fdisk -l</span>
+
+fdisk <span class="nt">-l</span>를 대체하는 요즘 용어
+<span class="c"># lsblk</span>
+NAME   MAJ:MIN RM   SIZE RO TYPE MOUNTPOINT
+...
+sda      8:0    0    50G  0 disk 
+<span class="sb">`</span><span class="nt">-sda1</span>   8:1    0    50G  0 part /
+sr0     11:0    1   2.3G  0 rom  /media/jaehoyoon/Ubuntu 18.04.6 LTS amd64
+</pre></table></code></div></div><h3 id="-block-device">+ block device <a href="#-block-device" class="anchor"><i class="fas fa-hashtag"></i></a></h3></h3><p>저장 장치를 이르는 용어이다. 입출력 장치는 <code class="language-plaintext highlighter-rouge">character device</code></p><p>모든 디바이스는 /dev/ 에 존재한다.</p><ul><li>그 안에 sd가 붙으면 SCSI(=scuzzy) disk<li>디바이스들은 순서대로 a,b,c,d…<ul><li>e.g. 두개가 있다면 sda, sdb가 있는 것</ul><li>NVME SSD사용하면 NVME로 뜸</ul><p><br /></p><h2 id="fdisk-1">fdisk <a href="#fdisk-1" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><p>command 옵션</p><ul><li>d: 파티션 삭제<li>l: 알려진 파티션 ID(다른 파티션 타입)<li>n: 새로운 파티션 생성<li>p: 현재 파티션 상태 출력<li>t: 파티션 ID 를 변경<li><strong>q: 변경된 상태를 저장하지 않고 종료</strong><li><strong>w: 변경된 상태로 저장하고 종료</strong></ul><p>실습 중에는 저장하지 않고 나가야 한다. 저장하지만 않으면 실제로 삭제되는 것도 아니라서, 문제가 안생긴다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+</pre><td class="rouge-code"><pre><span class="c"># fdisk /dev/sda</span>
+...
+<span class="c"># 현재 파티션 상태 출력</span>
+<span class="nb">command</span><span class="o">(</span>m <span class="k">for </span><span class="nb">help</span><span class="o">)</span> : p
+...
+Device     Boot Start       End   Sectors Size Id Type
+/dev/sda1  <span class="k">*</span>     2048 104855551 104853504  50G 83 Linux
+
+<span class="c"># 삭제</span>
+<span class="nb">command</span><span class="o">(</span>m <span class="k">for </span><span class="nb">help</span><span class="o">)</span> : d
+Selected partition 1
+Partition 1 has been deleted.
+
+<span class="c"># 생성</span>
+Command <span class="o">(</span>m <span class="k">for </span><span class="nb">help</span><span class="o">)</span>: n
+Partition <span class="nb">type
+   </span>p   primary <span class="o">(</span>0 primary, 0 extended, 4 free<span class="o">)</span>
+   e   extended <span class="o">(</span>container <span class="k">for </span>logical partitions<span class="o">)</span>
+Select <span class="o">(</span>default p<span class="o">)</span>: p
+Partition number <span class="o">(</span>1-4, default 1<span class="o">)</span>:  
+First sector <span class="o">(</span>2048-104857599, default 2048<span class="o">)</span>: 
+Last sector, +sectors or +size<span class="o">{</span>K,M,G,T,P<span class="o">}</span> <span class="o">(</span>2048-104857599, default 104857599<span class="o">)</span>: +4G
+
+Command <span class="o">(</span>m <span class="k">for </span><span class="nb">help</span><span class="o">)</span>: p
+Device     Boot Start     End Sectors Size Id Type
+/dev/sda1        2048 8390655 8388608   4G 83 Linux
+
+<span class="c"># extended를 만들 때는 대체로 4번을 지목해주는 것이 좋다.</span>
+Command <span class="o">(</span>m <span class="k">for </span><span class="nb">help</span><span class="o">)</span>: n
+Partition <span class="nb">type
+   </span>p   primary <span class="o">(</span>1 primary, 0 extended, 3 free<span class="o">)</span>
+   e   extended <span class="o">(</span>container <span class="k">for </span>logical partitions<span class="o">)</span>
+Select <span class="o">(</span>default p<span class="o">)</span>: e
+Partition number <span class="o">(</span>2-4, default 2<span class="o">)</span>: 4
+First sector <span class="o">(</span>8390656-104857599, default 8390656<span class="o">)</span>: 
+Last sector, +sectors or +size<span class="o">{</span>K,M,G,T,P<span class="o">}</span> <span class="o">(</span>8390656-104857599, default 104857599<span class="o">)</span>:
+
+Command <span class="o">(</span>m <span class="k">for </span><span class="nb">help</span><span class="o">)</span>: n
+All space <span class="k">for </span>primary partitions is <span class="k">in </span>use.
+Adding logical partition 5
+First sector <span class="o">(</span>8392704-104857599, default 8392704<span class="o">)</span>: 
+Last sector, +sectors or +size<span class="o">{</span>K,M,G,T,P<span class="o">}</span> <span class="o">(</span>8392704-104857599, default 104857599<span class="o">)</span>:
+
+Command <span class="o">(</span>m <span class="k">for </span><span class="nb">help</span><span class="o">)</span>: p
+Device     Boot   Start       End  Sectors Size Id Type
+/dev/sda1          2048   8390655  8388608   4G 83 Linux
+/dev/sda4       8390656 104857599 96466944  46G  5 Extended
+/dev/sda5       8392704 104857599 96464896  46G 83 Linux
+
+<span class="c"># 타입 변경</span>
+Command <span class="o">(</span>m <span class="k">for </span><span class="nb">help</span><span class="o">)</span>: t
+Selected partition 1
+Hex code <span class="o">(</span><span class="nb">type </span>L to list all codes<span class="o">)</span>: l
+0  Empty           24  NEC DOS         81  Minix / old Lin bf  Solaris        
+ 1  FAT12           27  Hidden NTFS Win 82  Linux swap / So c1  DRDOS/sec <span class="o">(</span>FAT-
+ 2  XENIX root      39  Plan 9          83  Linux           c4  DRDOS/sec <span class="o">(</span>FAT-
+ 3  XENIX usr       3c  PartitionMagic  84  OS/2 hidden or  c6  DRDOS/sec <span class="o">(</span>FAT-
+ 4  FAT16 &lt;32M      40  Venix 80286     85  Linux extended  c7  Syrinx         
+ 5  Extended        41  PPC PReP Boot   86  NTFS volume <span class="nb">set </span>da  Non-FS data    
+ 6  FAT16           42  SFS             87  NTFS volume <span class="nb">set </span>db  CP/M / CTOS / <span class="nb">.</span>
+ 7  HPFS/NTFS/exFAT 4d  QNX4.x          88  Linux plaintext de  Dell Utility   
+ 8  AIX             4e  QNX4.x 2nd part 8e  Linux LVM       <span class="nb">df  </span>BootIt         
+ 9  AIX bootable    4f  QNX4.x 3rd part 93  Amoeba          e1  DOS access     
+ a  OS/2 Boot Manag 50  OnTrack DM      94  Amoeba BBT      e3  DOS R/O        
+ b  W95 FAT32       51  OnTrack DM6 Aux 9f  BSD/OS          e4  SpeedStor      
+ c  W95 FAT32 <span class="o">(</span>LBA<span class="o">)</span> 52  CP/M            a0  IBM Thinkpad hi ea  Rufus alignment
+ e  W95 FAT16 <span class="o">(</span>LBA<span class="o">)</span> 53  OnTrack DM6 Aux a5  FreeBSD         eb  BeOS fs        
+ f  W95 Ext<span class="s1">'d (LBA) 54  OnTrackDM6      a6  OpenBSD         ee  GPT            
+10  OPUS            55  EZ-Drive        a7  NeXTSTEP        ef  EFI (FAT-12/16/
+11  Hidden FAT12    56  Golden Bow      a8  Darwin UFS      f0  Linux/PA-RISC b
+12  Compaq diagnost 5c  Priam Edisk     a9  NetBSD          f1  SpeedStor      
+14  Hidden FAT16 &lt;3 61  SpeedStor       ab  Darwin boot     f4  SpeedStor      
+16  Hidden FAT16    63  GNU HURD or Sys af  HFS / HFS+      f2  DOS secondary  
+17  Hidden HPFS/NTF 64  Novell Netware  b7  BSDI fs         fb  VMware VMFS    
+18  AST SmartSleep  65  Novell Netware  b8  BSDI swap       fc  VMware VMKCORE 
+1b  Hidden W95 FAT3 70  DiskSecure Mult bb  Boot Wizard hid fd  Linux raid auto
+1c  Hidden W95 FAT3 75  PC/IX           bc  Acronis FAT32 L fe  LANstep        
+1e  Hidden W95 FAT1 80  Old Minix       be  Solaris boot    ff  BBT
+Hex code (type L to list all codes): ^CHex code (type L to list all codes): 82
+
+Command (m for help): p
+Device     Boot Start       End   Sectors Size Id Type
+/dev/sda1  *     2048 104855551 104853504  50G 82 Linux swap / Solaris
+
+Command (m for help): t
+Selected partition 1
+Hex code (type L to list all codes): 7
+Changed type of partition '</span>Linux swap / Solaris<span class="s1">' to '</span>HPFS/NTFS/exFAT<span class="s1">'.
+
+Command (m for help): p
+...
+Device     Boot Start       End   Sectors Size Id Type
+/dev/sda1  *     2048 104855551 104853504  50G  7 HPFS/NTFS/exFAT
+</span></pre></table></code></div></div><p><br /></p><p><br /></p><h3 id="-mask-fs">+ Mask fs <a href="#-mask-fs" class="anchor"><i class="fas fa-hashtag"></i></a></h3></h3><p>저장 장치를 아주 커다란 종이로 생각했을 때, 이를 통째로 쓰기 힘들 것이다.</p><ul><li>partitioning : 종이를 몇개로 자르는 작업<li>make FS: 파티션된 종이를 A4 같은 규격화된 형태로 잘라서 분철하는 것과 비슷하다.<ul><li>분철하면 권수와 페이지 번호가 만들어짐 = 인덱싱 가능<li>방식, 밑줄, 칸의 간격 혹은 자물쇠를 설치하는 등의 세부 방식에 대한 것이 FS type<ul><li>ext4,xfs,ntfs,fat32 등의 타입이 주로 사용됨<li>그러나 IOT기기에는 ext4를 주로 사용하고, 고성능 SSD를 사용하는 경우 xfs를 사용함</ul></ul></ul><p><br /></p><h3 id="-ext4-extended-file-system-4">+ ext4 (extended file system 4) <a href="#-ext4-extended-file-system-4" class="anchor"><i class="fas fa-hashtag"></i></a></h3></h3><p>ext4 : 대부분의 linux에서 사용하는 FS</p><p>특징:</p><ul><li>저널링 지원 : 무엇을 적는, 파일이 깨지는 것 등을 쓰고 지움<li>연속된 파일의 접근, 작은 파일들의 접근이 빠른 장점<li>저성능의 I/O에서 효율이 높음, IoT, HD<li>삭제된 파일을 복구</ul><h3 id="-xfs">+ xfs <a href="#-xfs" class="anchor"><i class="fas fa-hashtag"></i></a></h3></h3><p>xfs : 저널링 기반의 대용량 파일 시스템</p><p>특징:</p><ul><li>online 상태(사용중인 상태)에서 확장이 가능<li>대용량 파일 처리 시 성능 좋음<li>삭제된 파일을 복구할 수 없음<li>깨진 파일 시스템 복구를 위한 명령어로 xfs_repair를 제공</ul><p><br /></p><h2 id="mkfs-make-file-system">mkfs (make file system) <a href="#mkfs-make-file-system" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><p>추가한 디스크 확인 방법</p><ol><li>virtual machines을 사용하는 경우 virtual machines setting에서 cd/dvd에서 hard-disk, add 누르고 csci 등 선택<li>lsblk<li>추가한 디스크가 안보이면 코드를 쳐야 하는데, 공백 지켜서 쳐야 한다.</ol><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="c"># ls /sys/class/scsi_host/ | while read hostdev ; do echo "- - -" &gt; /sys/class/scsi_host/$hostdev/scan ; done</span>
+</pre></table></code></div></div><h3 id="새로-추가한-디스크에-fdisk로-partition을-만들어보자">새로 추가한 디스크에 fdisk로 partition을 만들어보자. <a href="#새로-추가한-디스크에-fdisk로-partition을-만들어보자" class="anchor"><i class="fas fa-hashtag"></i></a></h3></h3><p>1.fdisk 로 디스크 상태 확인</p><ul><li>fdisk /dev/sdb ```bash<h1 id="fdisk-devsdb">fdisk /dev/sdb</h1><p>Command (m for help): n Partition type p primary (1 primary, 0 extended, 3 free) e extended (container for logical partitions) Select (default p): p Partition number (2-4, default 2): First sector (2099200-20971519, default 2099200): Last sector, +sectors or +size{K,M,G,T,P} (2099200-20971519, default 20971519): +1G</p></ul><p>Created a new partition 2 of type ‘Linux’ and of size 1 GiB.</p><p>Command (m for help): n Partition type p primary (1 primary, 0 extended, 3 free) e extended (container for logical partitions) Select (default p): p Partition number (2-4, default 2): First sector (2099200-20971519, default 2099200): Last sector, +sectors or +size{K,M,G,T,P} (2099200-20971519, default 20971519): +2G</p><p>Created a new partition 2 of type ‘Linux’ and of size 2 GiB.</p><p>Command (m for help): p … Device Boot Start End Sectors Size Id Type /dev/sdb1 2048 2099199 2097152 1G 83 Linux /dev/sdb2 2099200 6293503 4194304 2G 83 Linux</p><p>Command (m for help): w</p><div class="language-plaintext highlighter-rouge"><div class="code-header"> <span data-label-text="Plaintext"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+</pre><td class="rouge-code"><pre>
+&lt;br&gt;
+
+2.특정 디스크 파티션 파일 시스템(타입) 지정
+- mkfs [-t fstype] [options] &lt;device&gt;
+
+```bash
+# mkfs -t ext4 /dev/sdb2
+mke2fs 1.44.1 (24-Mar-2018)
+Creating filesystem with 524288 4k blocks and 131072 inodes
+Filesystem UUID: 67d17692-1557-4b47-806f-8276a9f5eac0
+Superblock backups stored on blocks: 
+    32768, 98304, 163840, 229376, 294912
+
+Allocating group tables: done                            
+Writing inode tables: done                            
+Creating journal (16384 blocks): done
+Writing superblocks and filesystem accounting information: done
+</pre></table></code></div></div><p><br /></p><p>3.FS checking</p><ul><li>fsck [-y] [options] [-t fstype] <device></device></ul><p>처음 파일 시스템을 만들 때는 그 파일 시스템을 켜주기 위해 체크해야 한다. 일반적으로 offline된 fs를 체크해야 한다. <strong>online 상태의 fs를 검사하는 경우에는 안전을 보장할 수 없다.</strong></p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+</pre><td class="rouge-code"><pre>fsck의 종료를 확인하기 위해 종료코드를 쳐봐야 한다. <span class="sb">`</span><span class="nv">$?</span><span class="sb">`</span>는 바로 이전에 했던 명령어의 결과값 , 0이 아니면 실패
+<span class="c"># fsck -y -t ext4 /dev/sdb2</span>
+fsck from util-linux 2.31.1
+e2fsck 1.44.1 <span class="o">(</span>24-Mar-2018<span class="o">)</span>
+/dev/sdb2: clean, 11/131072 files, 26156/524288 blocks
+<span class="c"># echo $?</span>
+0
+
+이 때, <span class="nb">sum </span>값으로 출력되기 때문에 3이 나온다면 1+2
+<span class="c"># man fsck</span>
+The <span class="nb">exit </span>code returned by fsck is the <span class="nb">sum </span>of the following conditions:
+
+                0      No errors
+                1      Filesystem errors corrected
+                2      System should be rebooted
+                4      Filesystem errors left uncorrected
+                8      Operational error
+                16     Usage or syntax error
+                32     Checking canceled by user request
+                128    Shared-library error
+</pre></table></code></div></div><p><br /></p><h2 id="swap">SWAP <a href="#swap" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><p>스왑 공간은 메모리가 부족할 때 디스크에다가 메모리의 일부분을 바꿔치기하는 것이다.(ms windows에는 pagefile이라 부름)</p><ul><li>swap in/out<li>mkswap(스왑 공간 작성), swapon(활성), swapoff(비활성)<ul><li>mkswap [-L label] <device></device><li><div class="table-wrapper"><table><tbody><tr><td>swapon &lt;device<td>swapfile<td>-L label&gt;</table></div><li><div class="table-wrapper"><table><tbody><tr><td>swapoff &lt;device<td>swapfile<td>-L label&gt;</table></div></ul></ul><h3 id="스왑-공간-작성">스왑 공간 작성 <a href="#스왑-공간-작성" class="anchor"><i class="fas fa-hashtag"></i></a></h3></h3><blockquote><p>스왑공간으로 해주기 위해 fdisk를 통해 83을 82로 바꿔야 하지만, 안바꿔줘도 쓸수는 있다.</p></blockquote><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+</pre><td class="rouge-code"><pre><span class="c"># mkswap -L swapfs2 /dev/sdb1</span>
+Setting up swapspace version 1, size <span class="o">=</span> 1024 MiB <span class="o">(</span>1073737728 bytes<span class="o">)</span>
+<span class="nv">LABEL</span><span class="o">=</span>swapfs2, <span class="nv">UUID</span><span class="o">=</span>52154162-328f-4596-b6b8-d721e438a0cb
+
+일반 파일을 스왑 공간으로 사용 <span class="o">(</span>일시적 스왑파일로서<span class="o">)</span>
+<span class="c"># dd if=/dev/zero of =./swapfile1 bs=1024 count=262144</span>
+</pre></table></code></div></div><p>이 때, UUID는 겹치지 않기 위해 만든 ID이다.</p><p><code class="language-plaintext highlighter-rouge">if= input file of = output file</code> : if를 읽어서 of를 만들어라, bs=block size, count = 개수</p><blockquote><p>bs * count = 용량</p></blockquote><h3 id="스왑-공간-활성--비활성">스왑 공간 활성 / 비활성 <a href="#스왑-공간-활성--비활성" class="anchor"><i class="fas fa-hashtag"></i></a></h3></h3><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+</pre><td class="rouge-code"><pre><span class="c"># swapon /dev/sdb1</span>
+
+파일 올리기
+<span class="c"># swapon ./swapfile1</span>
+
+스왑공간을 레이블로 선언
+<span class="c"># swapon -L swapfs2</span>
+
+스왑 공간 상태 확인
+<span class="c"># cat /proc/swaps</span>
+Filename				Type		Size	Used	Priority
+/swapfile                               file		2097148	524	<span class="nt">-2</span>
+/dev/sdb1                               partition	1048572	0	<span class="nt">-3</span>
+
+특정 1개 공간 중지
+<span class="c"># swapoff /dev/sdb1</span>
+
+전체 중지
+<span class="c"># swapoff -a</span>
+</pre></table></code></div></div><p>priority는 2가 우선 순위로 2-&gt;3-&gt;4…, 우선 순위를 먼저 사용하고 다 사용하면 다음꺼를 사용한다.</p><p><br /></p><ul><li>fstab에 등록된 스왑 공간 확인</ul><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre><td class="rouge-code"><pre>grep으로 /etc/fstab에서 swap이란 문자가 들어간 행을 추출
+<span class="c"># grep swap /etc/fstab</span>
+/swapfile                                 none            swap    sw              0       0
+</pre></table></code></div></div><p><br /></p><blockquote><p>tip: 간혹 몇몇 linux 설치 프로그램이 한국어를 사용하여 설치할 때 파티션 레이블이 한글로 되어 있기도 함, 한글을 다시 영문으로 바꿔주는 것이 좋다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+</pre><td class="rouge-code"><pre><span class="c"># cat /etc/fstab | grep swap</span>
+<span class="nv">LABLE</span><span class="o">=</span>?3???^^???L
+
+device 확인
+<span class="c"># lsblk</span>
+
+mkswap <span class="o">[</span><span class="nt">-L</span> label] &lt;device&gt;
+<span class="c"># mkswap -L swapfs1 /dev/sda8</span>
+
+fatab에서 swap 파티션의 레이블을 swapfs1으로 수정
+<span class="c"># vi /etc/fstab</span>
+</pre></table></code></div></div></blockquote><p><br /></p><p><br /></p><h1 id="mount란">Mount란?</h1><p>마운트란 파일 시스템을 탑재하는 것을 의미한다. 마운트는 root directory를 기점으로 시작된다.</p><p>명령어</p><ul><li>mount: 마운트하는 명령<li>umount: 언마운트<li>findmnt: 마운트 리스트</ul><p><img data-src="/assets/img/dev/week2/day5/mount.png" data-proofer-ignore></p><p><br /></p><h2 id="mount-umount">mount, umount <a href="#mount-umount" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><p>mount [-t fstype] [-o option] [device] <directory></directory></p><ul><li>fstype은 알아서 판단하므로 안적어줘도 됨<li>option: rw, ro 등이 있지만 아직 사용하지 않을 예정<li>device: /dev/sda, /dev/sdb<li>directory: 마운트 대상 지점 (mount point) 즉, device가 붙을 지점</ul><p><br /></p><div class="table-wrapper"><table><tbody><tr><td>umount &lt;directory<td>device&gt;</table></div><blockquote><div class="table-wrapper"><table><tbody><tr><td>== or 연산자로 둘 중 아무거나 적어줘도 상관없음</table></div></blockquote><p>디바이스 이름</p><ul><li>sda1 ⇒ usb의 1번째 장치의 첫번째 파티션<li>sdb5 ⇒ usb의 2번째 장치의 다섯번째 파티션<li>sde2 ⇒ usb의 5번째 장치의 두번째 파티션</ul><p><br /></p><h2 id="실습">실습 <a href="#실습" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><p>sdb1은 스왑공간으로 했으니 2로 마운트 할 것이다.</p><p>순서</p><ol><li><code class="language-plaintext highlighter-rouge">mkfs -t ext4 /dev/sdb2</code> : /dev/sdb2 파티션을 ext4 파일시스템으로 만듦<li><code class="language-plaintext highlighter-rouge">mkdir /media/backup</code> : media/backup 파일 생성<li><code class="language-plaintext highlighter-rouge">mount -t ext4 /dev/sdb2 /media/backup</code> : sdb2 파티션을 backup 파일에 ext4 파일시스템 타입으로 마운트</ol><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+</pre><td class="rouge-code"><pre><span class="c"># mkfs -t ext4 /dev/sdb2</span>
+Creating filesystem with 524288 4k blocks and 131072 inodes
+Filesystem UUID: 6989fcda-bfb6-47a8-9ba8-69fb972b7e1a
+Superblock backups stored on blocks: 
+	32768, 98304, 163840, 229376, 294912
+
+Allocating group tables: <span class="k">done                            
+</span>Writing inode tables: <span class="k">done                            
+</span>Creating journal <span class="o">(</span>16384 blocks<span class="o">)</span>: <span class="k">done
+</span>Writing superblocks and filesystem accounting information: <span class="k">done</span>
+
+<span class="c"># mkdir /media/backup</span>
+<span class="c"># mount -t ext4 /dev/sdb2 /media/backup</span>
+
+
+확인
+<span class="c"># lsblk</span>
+...
+sdb      8:16   0    10G  0 disk 
+├─sdb1   8:17   0     1G  0 part <span class="o">[</span>SWAP]
+└─sdb2   8:18   0     2G  0 part /media/backup
+
+
+압축, c는 create, f는 파일명 지정, a 는 auto, /etc 파일을 backup에 etc_backup.tar.gz로 압축
+<span class="c"># tar cfa /media/backup/etc_backup.tar.gz /etc</span>
+
+
+파일 확인
+<span class="c"># ls -l /media/backup</span>
+합계 1820
+<span class="nt">-rw-r--r--</span> 1 root root 1844734  2월 25 18:13 etc_backup.tar.gz
+drwx------ 2 root root   16384  2월 25 18:08 lost+found
+</pre></table></code></div></div><ul><li>umount</ul><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+</pre><td class="rouge-code"><pre><span class="c"># cd /media/backup</span>
+~/media/backup# <span class="nb">pwd</span>
+/media/backup
+
+~/media/backup# umount /media/backup
+umount: /media/backup: target is busy
+</pre></table></code></div></div><p>해당 디바이스에 들어가 있으면 작업중이라 umount할 수 없다. 따라서 작동되고 있는 프로세스를 죽이던지, 다른데로 옮겨가던지 해야 한다.</p><p>이럴 때 범인, 즉 작업중인 프로세스를 찾기 위해 <code class="language-plaintext highlighter-rouge">fuser &lt;dir&gt;</code>로 PID를 알 수 있다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre><td class="rouge-code"><pre>해당 파일 시스템 아래에서 작동하는 프로세스를 체크, 이를 실행하면 여기서 작동중인 PID를 추출해줌
+<span class="c"># fuser -c /media/</span>
+
+찾아내서 죽이기까지 하려면 
+<span class="c"># fuser -ck /media/</span>
+</pre></table></code></div></div><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+</pre><td class="rouge-code"><pre>디바이스로도 umount 가능
+<span class="c"># umount /dev/sdb2</span>
+<span class="c"># lsblk</span>
+...
+sdb      8:16   0    10G  0 disk 
+├─sdb1   8:17   0     1G  0 part <span class="o">[</span>SWAP]
+└─sdb2   8:18   0     2G  0 part
+</pre></table></code></div></div><p><br /></p><p>여기서 주의해야 할 점이 있다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+</pre><td class="rouge-code"><pre><span class="c"># ls -l /media/backup</span>
+합계 0
+
+새 파일 생성
+<span class="c"># touch /media/backup/hey.txt</span>
+
+리스트를 보면 파일이 존재한다.
+<span class="c"># ls /media/backup</span>
+hey.txt
+
+마운트
+<span class="c"># mount /dev/sdb2 /media/backup</span>
+
+이 때는 보이지 않는다. 삭제된 것이 아니라 보이지 않을 뿐 umount하면 다시 보임
+<span class="c"># ls /media/backup</span>
+etc_backup.tar.gz  lost+found 
+
+<span class="c"># umount /dev/sdb2</span>
+
+<span class="c"># ls /media/backup</span>
+etc_backup.tar.gz  hey.txt  lost+found 
+</pre></table></code></div></div><p><br /></p><ul><li>마운트 옵션 사용</ul><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+</pre><td class="rouge-code"><pre>마운트 테이블 보기
+<span class="c"># findmnt</span>
+...
+├─/media/backup                             /dev/sdb2      ext4   rw,relatime
+
+
+rw<span class="o">(</span>readwrit<span class="o">)</span>를 ro<span class="o">(</span><span class="nb">readonly</span><span class="o">)</span>로 리마운트
+<span class="c"># mount -o remount,rw /dev/sdb2</span>
+...
+├─/media/backup                             /dev/sdb2      ext4   ro,relatime
+
+
+<span class="c"># mount -o remount,ro /dev/sdb2</span>
+├─/media/backup                             /dev/sdb2      ext4   rw,relatime
+</pre></table></code></div></div><p><br /></p><h2 id="usb-memory">USB memory <a href="#usb-memory" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><p>usb 메모리를 장착하면 lsblk에서 장치명이 인식된다.</p><ul><li>e.g. 현재는 sda, sdb까지 있으면 usb 장치의 이름은 <strong>sdc</strong></ul><p>USB 장치는 mount 명령으로 인식시키면 된다. 그러나 fstype을 알고 있어야 한다. 대부분은 vfat, fat32, exfat등이지만, ntfs이기도 한다.</p><ul><li>VMware은 사용하는 usb장치가 2.0인지 3.x인지에 따라 설정이 다르다. virtual machine setting에서 usb 누르면 connection이 어떻게 되어 있는지 확인이 가능하다. 3.0 3.1, 3.2 다 같다.</ul><p><br /></p><p>주의해야 할 것은 x windows는 usb연결시 자동 마운트를 해주기 때문에 실습을 위해 x windows를 사용하지 않도록 콘솔창으로 이동</p><ol><li>ctrl+alt+f3을 눌러 console로 이동<li>usb연결: vmware팝업창을 볼 수 있음<ul><li>connect to a virtual machine을 선택</ul><li>root로 로그인 후 lsblk를 쳐서 마운트 상태 확인<li>마운트할 위치를 먼저 만들어야 함<ul><li>mkdir /media/usbstick<li>mount /dev/sdc1 &lt;ALT+.&gt;<li>더 자세하게 디바이스를 보고자 한다면</ul><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre> <span class="c"># blkid /dev/sdc1</span>
+ /dev/sdc1: LABEL <span class="o">=</span> <span class="s2">"USB32"</span> <span class="nv">UUID</span><span class="o">=</span> ... <span class="nv">TYPE</span><span class="o">=</span><span class="s2">"vfat"</span> ...
+</pre></table></code></div></div><li><p>usb 메모리에 데이터를 써보기</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre> <span class="c"># cp ~/.bashrc /media/usbstick/</span>
+</pre></table></code></div></div><li>umount<ul><li>umount를 하지 않으면 데이터가 꼬일 수도 있음</ul><li>disconnect<ul><li>host로 다시 연결하기 위해서는 우측 상단에 disconnect 누르면 댐</ul><li>host(window)에서 usb를 들어가 .bashrc를 열어보자</ol><p><br /></p><h3 id="mount-binding">mount binding <a href="#mount-binding" class="anchor"><i class="fas fa-hashtag"></i></a></h3></h3><p>많이 쓰는 기능으로 디렉토리를 다른 위치의 디렉토리에 붙이는 기능이다.</p><p>cp(copy)를 하게 되면 용량이 2배로 먹기 때문에 비효율적이다. 그래서 mount —bind 옵션을 사용한다. 접근할 수 있는 가짜 디렉토리를 만들어준다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="c"># mount --bind /usr/src/redhat/RPMS /Var/www/html/rpms</span>
+</pre></table></code></div></div><p>이 기능은 ftp나 웹서비스에서 다른 위치의 디렉토리를 노출시킬 때 편리하다. 노출시키려는 디렉토리가 다른 상위 디렉토리에 있을 때도 편리하고, binding을 해제하기만 하면 안보이게 할 수 있다.</p><p><br /></p><p><br /></p><h1 id="fstab-filesystem-table">Fstab (filesystem table)</h1><p>디렉토리는 /etc/fstab에 위치하고 있고, 부팅시 파일 시스템을 자동 마운트하기 위한 정보를 담고 있다. 대체로 6개의 필드로 구성된다.</p><ul><li>device, mount point, fstype, options, dump<li>장치파일, 마운트할 곳, 파일 시스템 타입, 옵션, 덤프 여부, 부팅시 체크 순서</ul><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre><td class="rouge-code"><pre>&lt;file system&gt; &lt;mount point&gt;   &lt;<span class="nb">type</span><span class="o">&gt;</span>  &lt;options&gt;       &lt;dump&gt;  &lt;pass&gt;
+<span class="nv">UUID</span><span class="o">=</span>08364a41-d369-4d72-bd50-6081da820786 /   ext4    <span class="nv">errors</span><span class="o">=</span>remount-ro 0       1
+/swapfile                               none            swap    sw              0       0
+</pre></table></code></div></div><p>ext4를 이용할 때만 부팅하면서 검증해야 하기에 1로 지정되어 있다.</p><p>여기서 디바이스 장치(file system)에 다양한 형태가 존재한다.</p><ol><li>/dev/sd* : 실제 디바이스 장치로 설정하는 방식<ul><li>단점: 가장 오래된 방식으로 port를 순서대로 연결하지 않는 경우 장치명의 변경되거나 역전될 가능성이 있다.<ul><li>e.g. port 0,3,4번에 장치가 연결되어 있다면 0(sda),3(sdb),4(sdc)인데, 2번포트에 1개를 더 연결하면 1칸씩 밀려야 한다. 그러면 3:sdc, 4:sdd가 되어야 하는데, 이름이 바뀌어 있지 않으므로 오류가 난다.</ul></ul><li>LABEL=name : 레이블 이름으로 검색하여 장치를 찾아내는 방식<ul><li>LABEL : 식별 가능한 문자열을 FS의 label부분에 넣어서 찾음</ul><li>UUID=uuid : UUID값으로 검색해서 장치를 찾아내는 방식<ul><li>가장 세련된 방식으로 UUID(universally unique identidfie)를 FS에 넣어 찾는 방법<li>UUID를 변경하려면 uuidgen으로 생성한 다음 e2label, xfs_admin을 통해 수행한다.</ul></ol><p>fstab 옵션</p><ul><li>defaults : 기본값 사용<li>noauto : 읽기/스기 가능<li>rw : 읽기/쓰기 가능<li>ro : 읽기만 가능<li>user : 일반 유저도 마운트 가능<li>nouser: 일반 유저는 마운트 할 수 없음<li>noexec : 실행 파일 사용 금지</ul><blockquote><p>linux fs 튜닝 목적의 옵션 - relatime : atime을 특정 경우에만 업데이트 (자주 업데이트하면 성능이 떨어질 수 있음 - noatime: atime 자체를 사용하지 않음 (log및 매우 많은 깊이를 가지는 디렉토리 및 파일 시스템에서 유리</p></blockquote><p><br /></p><h2 id="e2label--findfs--tune2fs">e2label / findfs / tune2fs <a href="#e2label--findfs--tune2fs" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><p>label이나 uuid를 찾고 변경하는 방법이다.</p><ul><li>e2label : ext4 리눅스 파일 시스템의 레이블을 확인 및 편집<ul><li>e2label <device> [new-label]</device></ul><li><strong>tune2fs</strong> : ext4 파일 시스템의 다양한 설정 조정<li>xfs_admin : XFS 파일 시스템의 레이블 / UUID 확인 및 편집<li>findfs : 레이블을 검색</ul><p>대체로 e2label,tune2fs는 설정하는 용도, findfs는 찾는 용도로 많이 사용된다.</p><p><br /></p><h3 id="tune2fs">tune2fs <a href="#tune2fs" class="anchor"><i class="fas fa-hashtag"></i></a></h3></h3><div class="table-wrapper"><table><tbody><tr><td>tune2fs -U &lt;clear<td>random<td>time<td>uuid_value&gt;</table></div><ul><li>clear: 삭제<li>random, time: 무작위로 또는 시간 기반으로 생성<li>uuid_value: uuid를 직접 넣어줄 때</ul><blockquote><p>uuidgen : UUID 생성 유틸</p></blockquote><p>디바이스를 fstab에 등록하면 부팅시 자동 마운트가 가능하다.</p><p><br /></p><h3 id="실습-1">실습 <a href="#실습-1" class="anchor"><i class="fas fa-hashtag"></i></a></h3></h3><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+</pre><td class="rouge-code"><pre><span class="nb">id</span>, <span class="nb">type </span>확인
+<span class="c"># blkid /dev/sdb2</span>
+/dev/sdb2: <span class="nv">UUID</span><span class="o">=</span><span class="s2">"6989fcda-bfb6-47a8-9ba8-69fb972b7e1a"</span> <span class="nv">TYPE</span><span class="o">=</span><span class="s2">"ext4"</span> <span class="nv">PARTUUID</span><span class="o">=</span><span class="s2">"cde1097b-02"</span>
+
+sdb2에 random UUID 설정
+<span class="c"># tune2fs -U random /dev/sdb2</span>
+tune2fs 1.44.1 <span class="o">(</span>24-Mar-2018<span class="o">)</span>
+
+This operation requires a freshly checked filesystem.
+
+Please run e2fsck <span class="nt">-f</span> on the filesystem.
+
+
+<span class="c"># blkid /dev/sdb2</span>
+/dev/sdb2: <span class="nv">UUID</span><span class="o">=</span><span class="s2">"6989fcda-bfb6-47a8-9ba8-69fb972b7e1a"</span> <span class="nv">TYPE</span><span class="o">=</span><span class="s2">"ext4"</span> <span class="nv">PARTUUID</span><span class="o">=</span><span class="s2">"cde1097b-02"</span>
+
+<span class="c"># mount /media/backup</span>
+<span class="c"># findmnt </span>
+...
+├─/media/backup                             /dev/sdb2      ext4   rw,noexec,rel
+
+</pre></table></code></div></div><p><br /></p><p><br /></p><h1 id="udisks2">udisks2</h1><p>D-bus 기반의 block device manager로 daemon service로 작동하고 다양한 block device에 대한 관리를 함, 중요한 것은 udiskctl CLI를 제공하는데 일반 유저로 명령 가능하다. 그러나 sudo를 쓰면 더 안좋게 발생할 수도 있다.</p><h2 id="서비스-확인">서비스 확인 <a href="#서비스-확인" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+</pre><td class="rouge-code"><pre><span class="nv">$ </span>systemctl status udisks2
+● udisks2.service - Disk Manager
+   Loaded: loaded <span class="o">(</span>/lib/systemd/system/udisks2.service<span class="p">;</span> enabled<span class="p">;</span> vendor preset:
+   Active: active <span class="o">(</span>running<span class="o">)</span> since Sun 2022-02-27 15:11:53 KST<span class="p">;</span> 4h 5min ago
+     Docs: man:udisks<span class="o">(</span>8<span class="o">)</span>
+ Main PID: 773 <span class="o">(</span>udisksd<span class="o">)</span>
+    Tasks: 5 <span class="o">(</span>limit: 2292<span class="o">)</span>
+   CGroup: /system.slice/udisks2.service
+           └─773 /usr/lib/udisks2/udisksd
+...
+</pre></table></code></div></div><p><br /></p><p><br /></p><h2 id="udisksctl">udisksctl <a href="#udisksctl" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre><td class="rouge-code"><pre><span class="c"># lsblk</span>
+
+<span class="c"># mount --block-device /dev/sdc1</span>
+
+<span class="c"># lsblk</span>
+</pre></table></code></div></div><p><img data-src="/assets/img/dev/week2/day5/udisksctl1.png" data-proofer-ignore> <img data-src="/assets/img/dev/week2/day5/udisksctl2.png" data-proofer-ignore> <img data-src="/assets/img/dev/week2/day5/udisksctl3.png" data-proofer-ignore></p><p>sdc1의 옆에 추가로 /media/root/ESD-USB가 추가되었다.</p><p>언마운트는 다음과 같다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="c"># udisksctl unmount --block-device /dev/sdc1</span>
+</pre></table></code></div></div><p>여기서 —block-device 는-b로 줄여서 쓸 수 있다.</p><p><br /></p><h3 id="loopback-device">loopback device <a href="#loopback-device" class="anchor"><i class="fas fa-hashtag"></i></a></h3></h3><p>loopback device를 설정해줄 수 있다. 이는 파일을 디바이스처럼 마운트한다는 것으로 주로 ISO, DVD, image를 마운트, loopback device는 read-only이다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre><td class="rouge-code"><pre><span class="nv">$ </span><span class="nb">ls</span> <span class="nt">-l</span> <span class="k">*</span>.iso
+
+<span class="nv">$ </span>udisksctl loop-setup <span class="nt">--file</span> ubuntu-18.04.7-server-amd64.iso
+</pre></table></code></div></div><p><br /></p><h3 id="dump">dump <a href="#dump" class="anchor"><i class="fas fa-hashtag"></i></a></h3></h3><p>dump명령으로 device를 살펴볼 수 있다. 전체 장치를 다 볼 수 있음</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre><span class="c"># udisksctl dump</span>
+</pre></table></code></div></div><p><img data-src="/assets/img/dev/week2/day5/dump.png" data-proofer-ignore></p><p>개별 장치 정보는 <code class="language-plaintext highlighter-rouge">$ udisksctl info -b /dev/sdc1</code>을 사용</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+</pre><td class="rouge-code"><pre><span class="nv">$ </span>udisksctl info <span class="nt">-b</span> /dev/sdb1
+/org/freedesktop/UDisks2/block_devices/sdb1:
+  org.freedesktop.UDisks2.Block:
+    Configuration:              <span class="o">[]</span>
+    CryptoBackingDevice:        <span class="s1">'/'</span>
+    Device:                     /dev/sdb1
+    DeviceNumber:               2065
+    Drive:                      <span class="s1">'/org/freedesktop/UDisks2/drives/VMware_2c_VMware_Virtual_S_1'</span>
+    HintAuto:                   <span class="nb">false
+    </span>HintIconName:               
+    HintIgnore:                 <span class="nb">false
+    </span>HintName:                   
+    ...
+</pre></table></code></div></div><p><br /></p><h3 id="status">status <a href="#status" class="anchor"><i class="fas fa-hashtag"></i></a></h3></h3><p>현재 시스템에 어떤 디스크들이 어디에 맵핑되어 있는지 확인할 수 있다.</p><div class="language-bash highlighter-rouge"><div class="code-header"> <span data-label-text="Shell"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+</pre><td class="rouge-code"><pre><span class="nv">$ </span>udisksctl status
+MODEL                     REVISION  SERIAL               DEVICE
+<span class="nt">--------------------------------------------------------------------------</span>
+VMware, VMware Virtual S  1.0                            sda     
+VMware, VMware Virtual S  1.0                            sdb     
+VMware Virtual SATA CDRW Drive 00000001  01000000000000000001 sr0
+</pre></table></code></div></div><p>USB나 flash 메모리를 리더기를 통해 사용할 때 udisk를 많이 사용한다. mount -t를 사용해서도 할 수 있지만 옵션도 길어지고, 쳐야할 것도 많아지는 등 귀찮아지기 때문에 잘 사용 안한다.</p><p><br /></p><p><br /></p><h1 id="linux-디렉토리-구조">LINUX 디렉토리 구조</h1><ul><li>/ : root 디렉토리 ( root 유저의 홈디렉토리와는 다름 - root 유저의 홈 디렉토리는 /root)<li>/dev : 장치 파일들 (device file)<li>/tmp : 임시 파일 저장용 디렉토리 (temporary directory)<li>/dev/null : null device<li>/dev/console : 시스템 콘솔 장치<li>/boot : 부팅을 위한 커널 관련 이미지<li><strong>/bin</strong> : 기본 실행 명령어 파일들 (binary == 실행파일)<ul><li>요즘에는 대체로 /bin → usr/bin을 syslink로 연결하기도 함</ul><li><strong>/sbin</strong> : 수퍼유저용 시스템 관리용 명령어 파일들<li><strong>/etc</strong> : 시스템 설정 파일 및 관련 스크립트<li>/lib : 시스템 라이브러리<li>/usr : 응용 프로그램 관련 파일들<li>/usr/bin : 응용 프로그램 실행 파일<li>/usr/sbin : 관리자용 응용 프로그램 실행 파일<li>/usr/lib : 라이브러리<li>/usr/include : C언어용 헤더 파일<li>/usr/share : 응용 프로그램이 공유하는 파일<li>/usr/src : 소스코드 (커널,패키지)<li><strong>/usr/local</strong> : 패키지가 아닌 임의로 설치되는 응용 프로그램 파일<ul><li>직접 소스코드를 쳐서 다운 받는 것들 bin,lib, apt 등</ul><li>/var : 각종 잡다한 파일<li>/var/log : 로그 파일<li>/media : 마운트용 디렉토리<li>/exp : 외부 저장 장치 ( 사용자가 자주 만들어서 쓰는 디렉토리)</ul></div><div class="post-tail-wrapper text-muted"><div style="text-align: left;"> <a href="http://hits.dwyl.com/dkssud8150.github.io/posts/mkfs/" target="_blank"> <img data-src="http://hits.dwyl.com/dkssud8150.github.io/posts/mkfs.svg" data-proofer-ignore> </a></div><div class="post-meta mb-3"> <i class="far fa-folder-open fa-fw mr-1"></i> <a href='/categories/classlog/'>Classlog</a>, <a href='/categories/devcourse/'>devcourse</a></div><div class="post-tags"> <i class="fa fa-tags fa-fw mr-1"></i> <a href="/tags/linux/" class="post-tag no-text-decoration" >linux</a> <a href="/tags/file-system/" class="post-tag no-text-decoration" >file-system</a> <a href="/tags/devcourse/" class="post-tag no-text-decoration" >devcourse</a></div><div class="post-tail-bottom d-flex justify-content-between align-items-center mt-3 pt-5 pb-2"><div class="license-wrapper"> This post is licensed under <a href="https://creativecommons.org/licenses/by/4.0/"> CC BY 4.0 </a> by the author.</div><div class="share-wrapper"> <span class="share-label text-muted mr-1">Share</span> <span class="share-icons"> <a href="https://twitter.com/intent/tweet?text=[데브코스] 2주차 - linux 기초(File System) - JaeHo Yoon&amp;url=https://dkssud8150.github.io/posts/mkfs/" data-toggle="tooltip" data-placement="top" title="Twitter" target="_blank" rel="noopener" aria-label="Twitter"> <i class="fa-fw fab fa-twitter"></i> </a> <a href="https://www.facebook.com/sharer/sharer.php?title=[데브코스] 2주차 - linux 기초(File System) - JaeHo Yoon&amp;u=https://dkssud8150.github.io/posts/mkfs/" data-toggle="tooltip" data-placement="top" title="Facebook" target="_blank" rel="noopener" aria-label="Facebook"> <i class="fa-fw fab fa-facebook-square"></i> </a> <a href="https://t.me/share/url?url=https://dkssud8150.github.io/posts/mkfs/&amp;text=[데브코스] 2주차 - linux 기초(File System) - JaeHo Yoon" data-toggle="tooltip" data-placement="top" title="Telegram" target="_blank" rel="noopener" aria-label="Telegram"> <i class="fa-fw fab fa-telegram"></i> </a> <a href="https://www.linkedin.com/sharing/share-offsite/?url=https://dkssud8150.github.io/posts/mkfs/" data-toggle="tooltip" data-placement="top" title="Linkedin" target="_blank" rel="noopener" aria-label="Linkedin"> <i class="fa-fw fab fa-linkedin"></i> </a> <i id="copy-link" class="fa-fw fas fa-link small" data-toggle="tooltip" data-placement="top" title="Copy link" data-title-succeed="Link copied successfully!"> </i> </span></div></div><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6611243953442169" crossorigin="anonymous"></script></div><script src="https://utteranc.es/client.js" repo="dkssud8150/dkssud8150.github.io" issue-term="pathname" theme="github-light" crossorigin="anonymous" async> </script></div></div><div id="panel-wrapper" class="col-xl-3 pl-2 text-muted"><div class="access"><div id="access-lastmod" class="post"><div class="panel-heading">Recently Updated</div><ul class="post-content pl-0 pb-1 ml-1 mt-2"><li><a href="/posts/gitpage/">[깃허브 프로필 꾸미기] github 프로필 만들기</a><li><a href="/posts/product/">[깃허브 프로필 꾸미기] productive box 만들기</a><li><a href="/posts/regex/">[데브코스] 2주차 - linux 기초(REGEX)</a><li><a href="/posts/Kfold/">KFold Cross Validation 과 StratifiedKFold</a><li><a href="/posts/cmake/">[데브코스] 17주차 - CMake OpenCV, Eigen, Pangolin install </a></ul></div><div id="access-tags"><div class="panel-heading">Trending Tags</div><div class="d-flex flex-wrap mt-3 mb-1 mr-3"> <a class="post-tag" href="/tags/devcourse/">devcourse</a> <a class="post-tag" href="/tags/deeplearning/">deeplearning</a> <a class="post-tag" href="/tags/cs231n/">CS231N</a> <a class="post-tag" href="/tags/ros/">ros</a> <a class="post-tag" href="/tags/coding-test/">coding test</a> <a class="post-tag" href="/tags/linux/">linux</a> <a class="post-tag" href="/tags/kooc/">kooc</a> <a class="post-tag" href="/tags/opencv/">OpenCV</a> <a class="post-tag" href="/tags/pytorch-tutorial/">pytorch tutorial</a> <a class="post-tag" href="/tags/autonomous-driving/">Autonomous Driving</a></div></div></div><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@1.0.1/dist/bootstrap-toc.min.js"></script><div id="toc-wrapper" class="pl-0 pr-4 mb-5"><div class="panel-heading pl-3 pt-2 mb-2">Contents</div><nav id="toc" data-toggle="toc"></nav></div></div></div><div class="row"><div class="col-12 col-lg-11 col-xl-8"><div id="tail-wrapper" class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-md-4 pr-md-4"><div id="related-posts" class="mt-5 mb-2 mb-sm-4"><h3 class="pt-2 mt-1 mb-4 ml-1" data-toc-skip>Further Reading</h3><div class="card-deck mb-4"><div class="card"> <a href="/posts/linux1/"><div class="card-body"> <em class="timeago small" date="2022-02-21 13:00:00 +0900" >Feb 21, 2022</em><h3 class="pt-0 mt-1 mb-3" data-toc-skip>[데브코스] 2주차 - linux 기초(역사)</h3><div class="text-muted small"><p> 리눅스의 기초(1) linux역사, 배포판 index linux의 조상, unix의 역사, 배경 c언어는 unix를 만드는 언어 c언어 국제 표준: ISO/IEC 9899 UNIX의 양대산맥: SysV, BSD와 호환성 문제 POSIX 표준 등장: 최소한의 호환성 Linux의 등장과 성공 요인 GNU와 Free So...</p></div></div></a></div><div class="card"> <a href="/posts/linux2/"><div class="card-body"> <em class="timeago small" date="2022-02-22 13:00:00 +0900" >Feb 22, 2022</em><h3 class="pt-0 mt-1 mb-3" data-toc-skip>[데브코스] 2주차 - linux 기초(VMware 설치, 자주 쓰이는 명령어)</h3><div class="text-muted small"><p> linux설치: VMware 가상 머신 기반 ubuntu 18.04 설치 가상 머신(virtual machine) 현재 사용되는 OS위에 다른 OS를 애플리케이션처럼 운용 현재 운영체제: 호스트 운영체제(Host OS) 가상 운영체제: 게스트 운영체제(Guest OS) 가상머신의 장점 간편한 설치 및 구성, 백업 가상머신의...</p></div></div></a></div><div class="card"> <a href="/posts/linux3/"><div class="card-body"> <em class="timeago small" date="2022-02-23 13:00:00 +0900" >Feb 23, 2022</em><h3 class="pt-0 mt-1 mb-3" data-toc-skip>[데브코스] 2주차 - linux 기초(필수 명령어, process)</h3><div class="text-muted small"><p> Linux 필수 개념 i18n internationalization i~n사이의 알파뱃 개수 절대 경로 , 상대 경로 절대 경로(absolute path = abs-path) root directory를 시작으로 하는 경로 e.g. /usr/local/bin 상대 경로(relative path...</p></div></div></a></div></div></div><div class="post-navigation d-flex justify-content-between"> <a href="/posts/regex/" class="btn btn-outline-primary" prompt="Older"><p>[데브코스] 2주차 - linux 기초(REGEX)</p></a> <a href="/posts/rostutorial/" class="btn btn-outline-primary" prompt="Newer"><p>[데브코스] 3주차 - ROS Abstract and Turtlesim</p></a></div></div></div></div><footer class="d-flex w-100 justify-content-center"><div class="d-flex justify-content-between align-items-center text-muted"><div class="footer-left"><p class="mb-0"> © 2023 <a href="https://twitter.com/username">JaeHo YooN</a>. <span data-toggle="tooltip" data-placement="top" title="Except where otherwise noted, the blog posts on this site are licensed under the Creative Commons Attribution 4.0 International (CC BY 4.0) License by the author.">Some rights reserved.</span></p></div><div class="footer-right"><p class="mb-0"> Powered by <a href="https://jekyllrb.com" target="_blank" rel="noopener">Jekyll</a> with <a href="https://github.com/cotes2020/jekyll-theme-chirpy" target="_blank" rel="noopener">Chirpy</a> theme.</p></div></div></footer></div><div id="search-result-wrapper" class="d-flex justify-content-center unloaded"><div class="col-12 col-sm-11 post-content"><div id="search-hints"><div id="access-tags"><div class="panel-heading">Trending Tags</div><div class="d-flex flex-wrap mt-3 mb-1 mr-3"> <a class="post-tag" href="/tags/devcourse/">devcourse</a> <a class="post-tag" href="/tags/deeplearning/">deeplearning</a> <a class="post-tag" href="/tags/cs231n/">CS231N</a> <a class="post-tag" href="/tags/ros/">ros</a> <a class="post-tag" href="/tags/coding-test/">coding test</a> <a class="post-tag" href="/tags/linux/">linux</a> <a class="post-tag" href="/tags/kooc/">kooc</a> <a class="post-tag" href="/tags/opencv/">OpenCV</a> <a class="post-tag" href="/tags/pytorch-tutorial/">pytorch tutorial</a> <a class="post-tag" href="/tags/autonomous-driving/">Autonomous Driving</a></div></div></div><div id="search-results" class="d-flex flex-wrap justify-content-center text-muted mt-3"></div></div></div></div><div id="mask"></div><a id="back-to-top" href="#" aria-label="back-to-top" class="btn btn-lg btn-box-shadow" role="button"> <i class="fas fa-angle-up"></i> </a> <script src="https://cdn.jsdelivr.net/npm/simple-jekyll-search@1.10.0/dest/simple-jekyll-search.min.js"></script> <script> SimpleJekyllSearch({ searchInput: document.getElementById('search-input'), resultsContainer: document.getElementById('search-results'), json: '/assets/js/data/search.json', searchResultTemplate: '<div class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-lg-4 pr-lg-4 pl-xl-0 pr-xl-0"> <a href="{url}">{title}</a><div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1"> {categories} {tags}</div><p>{snippet}</p></div>', noResultsText: '<p class="mt-5">Oops! No result founds.</p>', templateMiddleware: function(prop, value, template) { if (prop === 'categories') { if (value === '') { return `${value}`; } else { return `<div class="mr-sm-4"><i class="far fa-folder fa-fw"></i>${value}</div>`; } } if (prop === 'tags') { if (value === '') { return `${value}`; } else { return `<div><i class="fa fa-tag fa-fw"></i>${value}</div>`; } } } }); </script> <script src="https://cdn.jsdelivr.net/combine/npm/lozad/dist/lozad.min.js,npm/magnific-popup@1/dist/jquery.magnific-popup.min.js,npm/clipboard@2/dist/clipboard.min.js"></script> <script defer src="/assets/js/dist/post.min.js"></script> <script src="https://cdn.jsdelivr.net/combine/npm/popper.js@1.16.1,npm/bootstrap@4/dist/js/bootstrap.min.js"></script> <script defer src="/app.js"></script> <script defer src="https://www.googletagmanager.com/gtag/js?id=G-NC7MWHVXJE"></script> <script> document.addEventListener("DOMContentLoaded", function(event) { window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-NC7MWHVXJE'); }); </script>

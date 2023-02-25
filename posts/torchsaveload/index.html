@@ -1,0 +1,431 @@
+<!DOCTYPE html><html lang="en" data-mode="light" ><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><meta name="day-prompt" content="days ago"><meta name="hour-prompt" content="hours ago"><meta name="minute-prompt" content="minutes ago"><meta name="justnow-prompt" content="just now"><meta name="generator" content="Jekyll v4.3.2" /><meta property="og:title" content="Torch Save and Load, data를 plot해보기" /><meta name="author" content="JaeHo-YooN" /><meta property="og:locale" content="en" /><meta name="description" content="기본 구조" /><meta property="og:description" content="기본 구조" /><link rel="canonical" href="https://dkssud8150.github.io/posts/torchsaveload/" /><meta property="og:url" content="https://dkssud8150.github.io/posts/torchsaveload/" /><meta property="og:site_name" content="JaeHo Yoon" /><meta property="og:type" content="article" /><meta property="article:published_time" content="2021-10-24T13:00:00+09:00" /><meta name="twitter:card" content="summary" /><meta property="twitter:title" content="Torch Save and Load, data를 plot해보기" /><meta name="twitter:site" content="@" /><meta name="twitter:creator" content="@JaeHo-YooN" /><meta name="google-site-verification" content="znvuGsQGYxMZPBslC4XG6doCYao6Y-fWibfGlcaMHH8" /> <script type="application/ld+json"> {"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"JaeHo-YooN"},"dateModified":"2021-10-24T13:00:00+09:00","datePublished":"2021-10-24T13:00:00+09:00","description":"기본 구조","headline":"Torch Save and Load, data를 plot해보기","mainEntityOfPage":{"@type":"WebPage","@id":"https://dkssud8150.github.io/posts/torchsaveload/"},"url":"https://dkssud8150.github.io/posts/torchsaveload/"}</script><title>Torch Save and Load, data를 plot해보기 | JaeHo Yoon</title><link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicons/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicons/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/img/favicons/favicon-16x16.png"><link rel="manifest" href="/assets/img/favicons/site.webmanifest"><link rel="shortcut icon" href="/assets/img/favicons/favicon.ico"><meta name="apple-mobile-web-app-title" content="JaeHo Yoon"><meta name="application-name" content="JaeHo Yoon"><meta name="msapplication-TileColor" content="#da532c"><meta name="msapplication-config" content="/assets/img/favicons/browserconfig.xml"><meta name="theme-color" content="#ffffff"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"><link rel="dns-prefetch" href="https://fonts.gstatic.com"><link rel="preconnect" href="https://www.google-analytics.com" crossorigin="use-credentials"><link rel="dns-prefetch" href="https://www.google-analytics.com"><link rel="preconnect" href="https://www.googletagmanager.com" crossorigin="anonymous"><link rel="dns-prefetch" href="https://www.googletagmanager.com"><link rel="preconnect" href="https://cdn.jsdelivr.net"><link rel="dns-prefetch" href="https://cdn.jsdelivr.net"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.11.2/css/all.min.css"><link rel="stylesheet" href="/assets/css/style.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@1.0.1/dist/bootstrap-toc.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/magnific-popup@1.1.0/dist/magnific-popup.min.css"> <script src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script><body data-spy="scroll" data-target="#toc" data-topbar-visible="true"><div id="sidebar" class="d-flex flex-column align-items-end" lang="en"><div class="profile-wrapper text-center"><div id="avatar"> <a href="/" alt="avatar" class="mx-auto"> <img src="/assets/img/shin_chan.png" alt="avatar" onerror="this.style.display='none'"> </a></div><div class="site-title mt-3"> <a href="/">JaeHo Yoon</a></div><div class="site-subtitle font-italic">Mamba Mentality</div></div><ul class="w-100"><li class="nav-item"> <a href="/" class="nav-link"> <i class="fa-fw fas fa-home ml-xl-3 mr-xl-3 unloaded"></i> <span>HOME</span> </a><li class="nav-item"> <a href="/categories/" class="nav-link"> <i class="fa-fw fas fa-stream ml-xl-3 mr-xl-3 unloaded"></i> <span>CATEGORIES</span> </a><li class="nav-item"> <a href="/tags/" class="nav-link"> <i class="fa-fw fas fa-tag ml-xl-3 mr-xl-3 unloaded"></i> <span>TAGS</span> </a><li class="nav-item"> <a href="/archives/" class="nav-link"> <i class="fa-fw fas fa-archive ml-xl-3 mr-xl-3 unloaded"></i> <span>ARCHIVES</span> </a><li class="nav-item"> <a href="/about/" class="nav-link"> <i class="fa-fw fab fa-angellist ml-xl-3 mr-xl-3 unloaded"></i> <span>ABOUT</span> </a></ul><div class="sidebar-bottom mt-auto d-flex flex-wrap justify-content-center align-items-center"> <a href="https://github.com/dkssud8150" aria-label="github" target="_blank" rel="noopener"> <i class="fab fa-github"></i> </a> <a href=" javascript:location.href = 'mailto:' + ['hoya58150','gmail.com'].join('@')" aria-label="email" > <i class="fas fa-envelope"></i> </a> <a href="https://www.notion.so/18490713817d403696812c57d0abe730" aria-label="notion" target="_blank" rel="noopener"> <i class="fab fa-battle-net"></i> </a> <a href="https://www.linkedin.com/in/jaeho-yoon-90b62b230" aria-label="linkedin" target="_blank" rel="noopener"> <i class="fab fa-linkedin"></i> </a> <a href="https://www.instagram.com/jai_ho8150/" aria-label="instagram" target="_blank" rel="noopener"> <i class="fab fa-instagram"></i> </a></div></div><div id="topbar-wrapper" class="row justify-content-center"><div id="topbar" class="col-11 d-flex h-100 align-items-center justify-content-between"> <span id="breadcrumb"> <span> <a href="/"> Home </a> </span> <span>Torch Save and Load, data를 plot해보기</span> </span> <i id="sidebar-trigger" class="fas fa-bars fa-fw"></i><div id="topbar-title"> Post</div><i id="search-trigger" class="fas fa-search fa-fw"></i> <span id="search-wrapper" class="align-items-center"> <i class="fas fa-search fa-fw"></i> <input class="form-control" id="search-input" type="search" aria-label="search" autocomplete="off" placeholder="Search..."> <i class="fa fa-times-circle fa-fw" id="search-cleaner"></i> </span> <span id="search-cancel" >Cancel</span></div></div><div id="main-wrapper"><div id="main"><div class="row"><div id="core-wrapper" class="col-12 col-lg-11 col-xl-8"><div class="post pl-1 pr-1 pl-sm-2 pr-sm-2 pl-md-4 pr-md-4"><h1 data-toc-skip>Torch Save and Load, data를 plot해보기</h1><div class="post-meta text-muted"><div> By <em> <a href="https://github.com/dkssud8150">JaeHo-YooN</a> </em></div><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6611243953442169" crossorigin="anonymous"></script><div class="d-flex"><div> <span> Posted <em class="timeago" date="2021-10-24 13:00:00 +0900" data-toggle="tooltip" data-placement="bottom" title="Sun, Oct 24, 2021, 1:00 PM +0900" >Oct 24, 2021</em> </span> <span class="readtime" data-toggle="tooltip" data-placement="bottom" title="1228 words"> <em>6 min</em> read</span></div></div></div><div class="post-content"><h1 id="기본-구조">기본 구조</h1><p>기본 구조는 다음과 같다. 자세한 내용은 <a href="https://tutorials.pytorch.kr/beginner/basics/quickstart_tutorial.html">참고 사이트</a>를 참고하길 바란다.</p><h2 id="save">Save <a href="#save" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><p>기본적으로 모델을 저장하는 일반적인 방법은 내부 상태 사전(internal state dictionary)를 직렬화(serialize)하는 것이다.</p><div class="language-python highlighter-rouge"><div class="code-header"> <span data-label-text="Python"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre><span class="n">torch</span><span class="p">.</span><span class="nf">save</span><span class="p">(</span><span class="n">model</span><span class="p">.</span><span class="nf">state_dic</span><span class="p">(),</span> <span class="s">"model.pth"</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="s">"save pytorch model state to model.pth"</span><span class="p">)</span>
+</pre></table></code></div></div><h2 id="load">Load <a href="#load" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><p>모델을 불러오는 과정은 모델 구조를 다시 만들고 상태 사전을 모델에 불러와야 한다.</p><div class="language-python highlighter-rouge"><div class="code-header"> <span data-label-text="Python"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre><span class="n">model</span> <span class="o">=</span> <span class="nc">NeuralNetwork</span><span class="p">()</span>
+<span class="n">model</span><span class="p">.</span><span class="nf">load_state_dict</span><span class="p">(</span><span class="n">torch</span><span class="p">.</span><span class="nf">load</span><span class="p">(</span><span class="s">"model.pth"</span><span class="p">))</span>
+</pre></table></code></div></div><p>이 모델을 통해 예측을 진행한다.</p><div class="language-python highlighter-rouge"><div class="code-header"> <span data-label-text="Python"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+</pre><td class="rouge-code"><pre><span class="n">model</span><span class="p">.</span><span class="nf">eval</span><span class="p">()</span>
+
+<span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">test_data</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">test_data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="k">with</span> <span class="n">torch</span><span class="p">.</span><span class="nf">no_grad</span><span class="p">():</span>
+  <span class="n">pred</span> <span class="o">=</span> <span class="nf">model</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+  <span class="n">predicted</span><span class="p">,</span> <span class="n">actual</span> <span class="o">=</span> <span class="n">classes</span><span class="p">[</span><span class="n">pred</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nf">argmax</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">classes</span><span class="p">[</span><span class="n">y</span><span class="p">]]</span>
+  <span class="nf">print</span><span class="p">(</span><span class="s">"predicted: {}, actual: {}"</span><span class="p">.</span><span class="nf">format</span><span class="p">(</span><span class="n">predicted</span><span class="p">,</span> <span class="n">actual</span><span class="p">))</span>
+</pre></table></code></div></div><h1 id="실제-코드에-적용해보기">실제 코드에 적용해보기</h1><p>image classification에서의 best loss와 best accuracy에 대한 model을 저장하고 평가하고자 한다.</p><div class="language-python highlighter-rouge"><div class="code-header"> <span data-label-text="Python"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+</pre><td class="rouge-code"><pre><span class="c1">#%env CUDA_VISIBLE_DEVICES=2
+</span>
+<span class="kn">import</span> <span class="n">torch</span><span class="p">,</span> <span class="n">torchvision</span>
+<span class="kn">from</span> <span class="n">torchvision</span> <span class="kn">import</span> <span class="n">datasets</span><span class="p">,</span> <span class="n">models</span><span class="p">,</span> <span class="n">transforms</span>
+<span class="kn">import</span> <span class="n">torch.nn</span> <span class="k">as</span> <span class="n">nn</span>
+<span class="kn">import</span> <span class="n">torch.optim</span> <span class="k">as</span> <span class="n">optim</span>
+<span class="kn">from</span> <span class="n">torch.utils.data</span> <span class="kn">import</span> <span class="n">DataLoader</span>
+<span class="kn">import</span> <span class="n">time</span>
+<span class="kn">from</span> <span class="n">torchsummary</span> <span class="kn">import</span> <span class="n">summary</span>
+
+<span class="kn">import</span> <span class="n">numpy</span> <span class="k">as</span> <span class="n">np</span>
+<span class="kn">import</span> <span class="n">matplotlib.pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">import</span> <span class="n">os</span>
+
+<span class="kn">from</span> <span class="n">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
+
+<span class="kn">from</span> <span class="n">tqdm.notebook</span> <span class="kn">import</span> <span class="n">tqdm</span>
+<span class="kn">import</span> <span class="n">warnings</span>
+<span class="n">warnings</span><span class="p">.</span><span class="nf">filterwarnings</span><span class="p">(</span><span class="s">'ignore'</span><span class="p">)</span>
+
+<span class="c1"># Applying Transforms to the Data - normalization
+</span><span class="n">image_transforms</span> <span class="o">=</span> <span class="p">{</span> 
+    <span class="s">'train'</span><span class="p">:</span> <span class="n">transforms</span><span class="p">.</span><span class="nc">Compose</span><span class="p">([</span>
+        <span class="n">transforms</span><span class="p">.</span><span class="nc">RandomResizedCrop</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="p">(</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)),</span> <span class="c1"># 랜덤 크기로 자른 후 잘라낸 이미지의 크기는 256x256로 조정
+</span>        <span class="n">transforms</span><span class="p">.</span><span class="nc">RandomRotation</span><span class="p">(</span><span class="n">degrees</span><span class="o">=</span><span class="mi">15</span><span class="p">),</span>                    <span class="c1"># 영상을 -15~15도 범위에서 랜덤 각도로 회전
+</span>        <span class="n">transforms</span><span class="p">.</span><span class="nc">RandomHorizontalFlip</span><span class="p">(),</span>                        <span class="c1"># 50% 확률로 이미지를 수평으로 랜덤하게 뒤집는다.
+</span>        <span class="n">transforms</span><span class="p">.</span><span class="nc">CenterCrop</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">224</span><span class="p">),</span>                          <span class="c1"># 중앙에서 224x224 이미지를 자른다.
+</span>        <span class="n">transforms</span><span class="p">.</span><span class="nc">ToTensor</span><span class="p">(),</span>
+        <span class="n">transforms</span><span class="p">.</span><span class="nc">Normalize</span><span class="p">([</span><span class="mf">0.485</span><span class="p">,</span> <span class="mf">0.456</span><span class="p">,</span> <span class="mf">0.406</span><span class="p">],</span>
+                             <span class="p">[</span><span class="mf">0.229</span><span class="p">,</span> <span class="mf">0.224</span><span class="p">,</span> <span class="mf">0.225</span><span class="p">])</span>               <span class="c1"># 3채널 tensor을 취하며 각 채널의 입력 평균과 표준 편차로 각 채널을 정규화
+</span>    <span class="p">]),</span>
+    <span class="s">'valid'</span><span class="p">:</span> <span class="n">transforms</span><span class="p">.</span><span class="nc">Compose</span><span class="p">([</span>                                 <span class="c1"># 검증 및 테스트 데이터의 경우 resizedcrop과 rotalrotaion, horizontalfilp을 수행하지 않는다.
+</span>        <span class="n">transforms</span><span class="p">.</span><span class="nc">Resize</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">256</span><span class="p">),</span>
+        <span class="n">transforms</span><span class="p">.</span><span class="nc">CenterCrop</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">224</span><span class="p">),</span>
+        <span class="n">transforms</span><span class="p">.</span><span class="nc">ToTensor</span><span class="p">(),</span>
+        <span class="n">transforms</span><span class="p">.</span><span class="nc">Normalize</span><span class="p">([</span><span class="mf">0.485</span><span class="p">,</span> <span class="mf">0.456</span><span class="p">,</span> <span class="mf">0.406</span><span class="p">],</span>
+                             <span class="p">[</span><span class="mf">0.229</span><span class="p">,</span> <span class="mf">0.224</span><span class="p">,</span> <span class="mf">0.225</span><span class="p">])</span>
+    <span class="p">]),</span>
+    <span class="s">'test'</span><span class="p">:</span> <span class="n">transforms</span><span class="p">.</span><span class="nc">Compose</span><span class="p">([</span>
+        <span class="n">transforms</span><span class="p">.</span><span class="nc">Resize</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">256</span><span class="p">),</span>
+        <span class="n">transforms</span><span class="p">.</span><span class="nc">CenterCrop</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="mi">224</span><span class="p">),</span>
+        <span class="n">transforms</span><span class="p">.</span><span class="nc">ToTensor</span><span class="p">(),</span>
+        <span class="n">transforms</span><span class="p">.</span><span class="nc">Normalize</span><span class="p">([</span><span class="mf">0.485</span><span class="p">,</span> <span class="mf">0.456</span><span class="p">,</span> <span class="mf">0.406</span><span class="p">],</span>
+                             <span class="p">[</span><span class="mf">0.229</span><span class="p">,</span> <span class="mf">0.224</span><span class="p">,</span> <span class="mf">0.225</span><span class="p">])</span>
+    <span class="p">])</span>
+<span class="p">}</span>
+
+<span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="p">.</span><span class="nf">device</span><span class="p">(</span><span class="s">"cuda:0"</span> <span class="k">if</span> <span class="n">torch</span><span class="p">.</span><span class="n">cuda</span><span class="p">.</span><span class="nf">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s">"cpu"</span><span class="p">)</span>
+
+<span class="c1"># Load the Data
+</span>
+<span class="c1"># Set train and valid directory paths
+</span>
+<span class="n">dataset</span> <span class="o">=</span> <span class="s">'/content/drive/MyDrive/data/caltech_10/'</span>
+
+<span class="n">train_directory</span> <span class="o">=</span> <span class="n">os</span><span class="p">.</span><span class="n">path</span><span class="p">.</span><span class="nf">join</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="s">'train'</span><span class="p">)</span>
+<span class="n">valid_directory</span> <span class="o">=</span> <span class="n">os</span><span class="p">.</span><span class="n">path</span><span class="p">.</span><span class="nf">join</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="s">'valid'</span><span class="p">)</span>
+
+<span class="c1"># Batch size
+</span><span class="n">BATCH_SIZE</span> <span class="o">=</span> <span class="mi">32</span>
+
+<span class="c1"># Number of classes
+</span><span class="n">num_classes</span> <span class="o">=</span> <span class="nf">len</span><span class="p">(</span><span class="n">os</span><span class="p">.</span><span class="nf">listdir</span><span class="p">(</span><span class="n">valid_directory</span><span class="p">))</span>  <span class="c1">#10#2#257 bear, chimp...
+</span><span class="nf">print</span><span class="p">(</span><span class="s">'num_class :'</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">)</span>
+
+<span class="c1"># Load Data from folders
+</span><span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">'train'</span><span class="p">:</span> <span class="n">datasets</span><span class="p">.</span><span class="nc">ImageFolder</span><span class="p">(</span><span class="n">root</span><span class="o">=</span><span class="n">train_directory</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">image_transforms</span><span class="p">[</span><span class="s">'train'</span><span class="p">]),</span>
+    <span class="s">'valid'</span><span class="p">:</span> <span class="n">datasets</span><span class="p">.</span><span class="nc">ImageFolder</span><span class="p">(</span><span class="n">root</span><span class="o">=</span><span class="n">valid_directory</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="n">image_transforms</span><span class="p">[</span><span class="s">'valid'</span><span class="p">]))</span>
+<span class="p">}</span>
+
+<span class="c1"># Get a mapping of the indices to the class names, in order to see the output classes of the test images.
+</span><span class="n">idx_to_class</span> <span class="o">=</span> <span class="p">{</span><span class="n">v</span><span class="p">:</span> <span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s">'train'</span><span class="p">].</span><span class="n">class_to_idx</span><span class="p">.</span><span class="nf">items</span><span class="p">()}</span> <span class="c1"># class_to_idx 는 데이터 셋의 클래스 매핑 레이블을 반환
+</span><span class="nf">print</span><span class="p">(</span><span class="n">idx_to_class</span><span class="p">)</span>
+
+<span class="c1"># Size of Data, to be used for calculating Average Loss and Accuracy
+</span><span class="n">train_data_size</span> <span class="o">=</span> <span class="nf">len</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">'train'</span><span class="p">])</span>
+<span class="n">valid_data_size</span> <span class="o">=</span> <span class="nf">len</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">'valid'</span><span class="p">])</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">train_data_size</span><span class="p">,</span> <span class="n">valid_data_size</span><span class="p">)</span>
+
+<span class="c1"># Create iterators for the Data loaded using DataLoader module
+</span><span class="n">train_data_loader</span> <span class="o">=</span> <span class="nc">DataLoader</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">'train'</span><span class="p">],</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">BATCH_SIZE</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">valid_data_loader</span> <span class="o">=</span> <span class="nc">DataLoader</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">'valid'</span><span class="p">],</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">BATCH_SIZE</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></table></code></div></div><div class="language-python highlighter-rouge"><div class="code-header"> <span data-label-text="Python"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+</pre><td class="rouge-code"><pre><span class="k">def</span> <span class="nf">train_and_val</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">25</span><span class="p">):</span>
+
+  <span class="n">best_loss</span> <span class="o">=</span> <span class="mi">5</span>
+  <span class="n">best_epoch</span> <span class="o">=</span> <span class="bp">None</span>
+
+  <span class="n">history</span> <span class="o">=</span> <span class="p">[]</span>
+
+
+
+  <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nf">tqdm</span><span class="p">(</span><span class="nf">range</span><span class="p">(</span><span class="n">epochs</span><span class="p">)):</span>
+    <span class="n">epoch_start</span> <span class="o">=</span> <span class="n">time</span><span class="p">.</span><span class="nf">time</span><span class="p">()</span>
+    <span class="n">model</span><span class="p">.</span><span class="nf">train</span><span class="p">()</span>
+
+    <span class="n">train_loss</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">train_acc</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+    <span class="n">valid_loss</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">valid_acc</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+    <span class="n">correct</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span> <span class="ow">in</span> <span class="nf">enumerate</span><span class="p">(</span><span class="n">train_data_loader</span><span class="p">):</span>
+      <span class="n">images</span> <span class="o">=</span> <span class="n">images</span><span class="p">.</span><span class="nf">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+      <span class="n">labels</span> <span class="o">=</span> <span class="n">labels</span><span class="p">.</span><span class="nf">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+      <span class="n">optimizer</span><span class="p">.</span><span class="nf">zero_grad</span><span class="p">()</span>
+      <span class="n">outputs</span> <span class="o">=</span> <span class="nf">model</span><span class="p">(</span><span class="n">images</span><span class="p">)</span>
+      <span class="n">loss</span> <span class="o">=</span> <span class="nf">criterion</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
+      <span class="n">loss</span><span class="p">.</span><span class="nf">backward</span><span class="p">()</span>
+      <span class="n">optimizer</span><span class="p">.</span><span class="nf">step</span><span class="p">()</span>
+
+      <span class="n">train_loss</span> <span class="o">+=</span> <span class="n">loss</span><span class="p">.</span><span class="nf">item</span><span class="p">()</span>
+
+      <span class="n">predictions</span> <span class="o">=</span> <span class="n">outputs</span><span class="p">.</span><span class="nf">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdim</span> <span class="o">=</span> <span class="bp">True</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+      <span class="n">correct</span> <span class="o">+=</span> <span class="n">predictions</span><span class="p">.</span><span class="nf">eq</span><span class="p">(</span><span class="n">labels</span><span class="p">.</span><span class="n">data</span><span class="p">.</span><span class="nf">view_as</span><span class="p">(</span><span class="n">predictions</span><span class="p">)).</span><span class="nf">sum</span><span class="p">().</span><span class="nf">item</span><span class="p">()</span>
+      
+    <span class="n">train_loss</span> <span class="o">/=</span> <span class="p">(</span><span class="nf">len</span><span class="p">(</span><span class="n">train_data_loader</span><span class="p">.</span><span class="n">dataset</span><span class="p">)</span> <span class="o">/</span> <span class="n">BATCH_SIZE</span><span class="p">)</span>
+    <span class="n">train_acc</span> <span class="o">=</span> <span class="mf">100.</span> <span class="o">*</span> <span class="n">correct</span> <span class="o">/</span> <span class="nf">len</span><span class="p">(</span><span class="n">train_data_loader</span><span class="p">.</span><span class="n">dataset</span><span class="p">)</span>
+    
+
+    <span class="n">correct</span> <span class="o">=</span> <span class="mi">0</span> 
+    
+    <span class="k">with</span> <span class="n">torch</span><span class="p">.</span><span class="nf">no_grad</span><span class="p">():</span>
+      <span class="n">model</span><span class="p">.</span><span class="nf">eval</span><span class="p">()</span>
+
+      <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span> <span class="ow">in</span> <span class="nf">enumerate</span><span class="p">(</span><span class="n">valid_data_loader</span><span class="p">):</span>
+        <span class="n">images</span> <span class="o">=</span> <span class="n">images</span><span class="p">.</span><span class="nf">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="n">labels</span><span class="p">.</span><span class="nf">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">outputs</span> <span class="o">=</span> <span class="nf">model</span><span class="p">(</span><span class="n">images</span><span class="p">)</span>
+
+        <span class="n">valid_loss</span> <span class="o">+=</span> <span class="nf">criterion</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="n">labels</span><span class="p">).</span><span class="nf">item</span><span class="p">()</span>
+        <span class="n">predictions</span> <span class="o">=</span> <span class="n">outputs</span><span class="p">.</span><span class="nf">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdim</span> <span class="o">=</span> <span class="bp">True</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">correct</span> <span class="o">+=</span> <span class="n">predictions</span><span class="p">.</span><span class="nf">eq</span><span class="p">(</span><span class="n">labels</span><span class="p">.</span><span class="n">data</span><span class="p">.</span><span class="nf">view_as</span><span class="p">(</span><span class="n">predictions</span><span class="p">)).</span><span class="nf">sum</span><span class="p">().</span><span class="nf">item</span><span class="p">()</span>
+
+    <span class="n">valid_loss</span> <span class="o">/=</span> <span class="p">(</span><span class="nf">len</span><span class="p">(</span><span class="n">valid_data_loader</span><span class="p">.</span><span class="n">dataset</span><span class="p">)</span> <span class="o">/</span> <span class="n">BATCH_SIZE</span><span class="p">)</span>
+    <span class="n">valid_acc</span> <span class="o">=</span> <span class="mf">100.</span> <span class="o">*</span> <span class="n">correct</span> <span class="o">/</span> <span class="nf">len</span><span class="p">(</span><span class="n">valid_data_loader</span><span class="p">.</span><span class="n">dataset</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">valid_loss</span> <span class="o">&lt;</span> <span class="n">best_loss</span><span class="p">:</span>
+      <span class="n">best_loss</span> <span class="o">=</span> <span class="n">valid_loss</span>
+      <span class="n">best_epoch</span> <span class="o">=</span> <span class="n">epoch</span>
+      <span class="nf">print</span><span class="p">(</span><span class="s">"best_loss: {:.4f} </span><span class="se">\n</span><span class="s"> best_epoch: {}"</span><span class="p">.</span><span class="nf">format</span><span class="p">(</span><span class="n">best_loss</span><span class="p">,</span> <span class="n">best_epoch</span><span class="p">))</span>
+
+    <span class="n">history</span><span class="p">.</span><span class="nf">append</span><span class="p">([</span><span class="n">train_loss</span><span class="p">,</span><span class="n">valid_loss</span><span class="p">,</span> <span class="n">train_acc</span><span class="p">,</span><span class="n">valid_acc</span><span class="p">])</span>
+
+    <span class="n">epoch_end</span> <span class="o">=</span> <span class="n">time</span><span class="p">.</span><span class="nf">time</span><span class="p">()</span>
+
+    <span class="nf">print</span><span class="p">(</span><span class="s">"Epoch : {:03d}, Training: Loss - {:.4f}, Accuracy - {:.2f}%, </span><span class="se">\n\t\t</span><span class="s">Validation : Loss - {:.4f}, Accuracy - {:.2f}%, Time: {:.4f}s"</span><span class="p">.</span><span class="nf">format</span><span class="p">(</span><span class="n">epoch</span><span class="p">,</span> <span class="n">train_loss</span><span class="p">,</span> <span class="n">train_acc</span><span class="p">,</span> <span class="n">valid_loss</span><span class="p">,</span> <span class="n">valid_acc</span><span class="p">,</span> <span class="n">epoch_end</span><span class="o">-</span><span class="n">epoch_start</span><span class="p">))</span> 
+
+  <span class="k">return</span> <span class="n">model</span><span class="p">,</span> <span class="n">history</span><span class="p">,</span> <span class="n">best_epoch</span>
+</pre></table></code></div></div><div class="language-python highlighter-rouge"><div class="code-header"> <span data-label-text="Python"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+</pre><td class="rouge-code"><pre><span class="s">''' pretrained model '''</span>
+<span class="kn">import</span> <span class="n">torchvision.models</span> <span class="k">as</span> <span class="n">models</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">models</span><span class="p">.</span><span class="nf">resnet18</span><span class="p">(</span><span class="n">pretrained</span> <span class="o">=</span> <span class="bp">False</span><span class="p">).</span><span class="nf">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>           
+<span class="n">num_ftrs</span> <span class="o">=</span> <span class="n">model</span><span class="p">.</span><span class="n">fc</span><span class="p">.</span><span class="n">in_features</span>                                                            
+<span class="n">model</span><span class="p">.</span><span class="n">fc</span> <span class="o">=</span> <span class="n">nn</span><span class="p">.</span><span class="nc">Linear</span><span class="p">(</span><span class="n">num_ftrs</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">)</span>      
+<span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="p">.</span><span class="nf">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+
+<span class="n">criterion</span> <span class="o">=</span> <span class="n">nn</span><span class="p">.</span><span class="nc">CrossEntropyLoss</span><span class="p">()</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="p">.</span><span class="n">optim</span><span class="p">.</span><span class="nc">Adam</span><span class="p">(</span><span class="n">model</span><span class="p">.</span><span class="nf">parameters</span><span class="p">(),</span> <span class="n">lr</span> <span class="o">=</span> <span class="mf">0.0001</span><span class="p">)</span>
+
+<span class="n">train_model</span><span class="p">,</span> <span class="n">history</span><span class="p">,</span> <span class="n">best_epoch</span> <span class="o">=</span> <span class="nf">train_and_val</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">)</span>
+
+<span class="n">torch</span><span class="p">.</span><span class="nf">save</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">dataset</span><span class="o">+</span><span class="s">'_model_'</span><span class="o">+</span><span class="nf">str</span><span class="p">(</span><span class="n">best_epoch</span><span class="p">)</span><span class="o">+</span><span class="s">'.pt'</span><span class="p">)</span>
+</pre></table></code></div></div><h2 id="가져온-history를-통해-그래프-그리기">가져온 history를 통해 그래프 그리기 <a href="#가져온-history를-통해-그래프-그리기" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><div class="language-python highlighter-rouge"><div class="code-header"> <span data-label-text="Python"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+</pre><td class="rouge-code"><pre><span class="s">''' loss 그래프 '''</span>
+<span class="n">history</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="nf">array</span><span class="p">(</span><span class="n">history</span><span class="p">)</span>
+<span class="n">plt</span><span class="p">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">history</span><span class="p">[:,</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">])</span>
+<span class="n">plt</span><span class="p">.</span><span class="nf">legend</span><span class="p">([</span><span class="s">'Tr Loss'</span><span class="p">,</span> <span class="s">'Val Loss'</span><span class="p">])</span>
+<span class="n">plt</span><span class="p">.</span><span class="nf">xlabel</span><span class="p">(</span><span class="s">'Epoch Number'</span><span class="p">)</span>
+<span class="n">plt</span><span class="p">.</span><span class="nf">ylabel</span><span class="p">(</span><span class="s">'Loss'</span><span class="p">)</span>
+<span class="c1">#plt.ylim(0,1)
+</span><span class="n">plt</span><span class="p">.</span><span class="nf">savefig</span><span class="p">(</span><span class="n">dataset</span><span class="o">+</span><span class="s">'_loss_curve.png'</span><span class="p">)</span>
+<span class="n">plt</span><span class="p">.</span><span class="nf">show</span><span class="p">()</span>
+</pre></table></code></div></div><div class="language-python highlighter-rouge"><div class="code-header"> <span data-label-text="Python"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+</pre><td class="rouge-code"><pre><span class="s">''' accuracy 그래프 '''</span>
+<span class="n">plt</span><span class="p">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">history</span><span class="p">[:,</span><span class="mi">2</span><span class="p">:</span><span class="mi">4</span><span class="p">])</span>
+<span class="n">plt</span><span class="p">.</span><span class="nf">legend</span><span class="p">([</span><span class="s">'Tr Accuracy'</span><span class="p">,</span> <span class="s">'Val Accuracy'</span><span class="p">])</span>
+<span class="n">plt</span><span class="p">.</span><span class="nf">xlabel</span><span class="p">(</span><span class="s">'Epoch Number'</span><span class="p">)</span>
+<span class="n">plt</span><span class="p">.</span><span class="nf">ylabel</span><span class="p">(</span><span class="s">'Accuracy'</span><span class="p">)</span>
+<span class="c1">#plt.ylim(0,1)
+</span><span class="n">plt</span><span class="p">.</span><span class="nf">savefig</span><span class="p">(</span><span class="n">dataset</span><span class="o">+</span><span class="s">'_accuracy_curve.png'</span><span class="p">)</span>
+<span class="n">plt</span><span class="p">.</span><span class="nf">show</span><span class="p">()</span>
+</pre></table></code></div></div><h2 id="단일-이미지를-best-model로-예측해보기">단일 이미지를 best model로 예측해보기 <a href="#단일-이미지를-best-model로-예측해보기" class="anchor"><i class="fas fa-hashtag"></i></a></h2></h2><p>아래는 topk를 사용해보았다. 이는 topk에 대한 결과값을 받을 수 있다. 아래의 경우 k를 3으로 지정하였기에 확률이 가장 높은 3개에 대한 라벨 확률을 확인 할 수 있다.</p><div class="language-python highlighter-rouge"><div class="code-header"> <span data-label-text="Python"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+</pre><td class="rouge-code"><pre><span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">test_image_name</span><span class="p">):</span>
+  <span class="n">test_image</span> <span class="o">=</span> <span class="n">Image</span><span class="p">.</span><span class="nf">open</span><span class="p">(</span><span class="n">test_image_name</span><span class="p">)</span>
+  <span class="n">plt</span><span class="p">.</span><span class="nf">imshow</span><span class="p">(</span><span class="n">test_image</span><span class="p">)</span>
+
+  <span class="n">transform</span> <span class="o">=</span> <span class="n">image_transforms</span><span class="p">[</span><span class="s">'test'</span><span class="p">]</span>
+  <span class="n">test_image_tensor</span> <span class="o">=</span> <span class="nf">transform</span><span class="p">(</span><span class="n">test_image</span><span class="p">)</span>
+  <span class="n">test_image_tensor</span> <span class="o">=</span> <span class="n">test_image_tensor</span><span class="p">.</span><span class="nf">view</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">224</span><span class="p">,</span><span class="mi">224</span><span class="p">).</span><span class="nf">cuda</span><span class="p">()</span>
+
+  <span class="k">with</span> <span class="n">torch</span><span class="p">.</span><span class="nf">no_grad</span><span class="p">():</span>
+    <span class="n">model</span><span class="p">.</span><span class="nf">eval</span><span class="p">()</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="nf">model</span><span class="p">(</span><span class="n">test_image_tensor</span><span class="p">)</span>
+    <span class="n">ps</span> <span class="o">=</span> <span class="n">torch</span><span class="p">.</span><span class="nf">exp</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+
+    <span class="n">topk</span><span class="p">,</span> <span class="n">topclass</span> <span class="o">=</span> <span class="n">ps</span><span class="p">.</span><span class="nf">topk</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># argmax와 비슷하게 top-k에 대한 결과 값을 받는다.
+</span>    <span class="n">score</span> <span class="o">=</span> <span class="n">topk</span><span class="p">.</span><span class="nf">cpu</span><span class="p">().</span><span class="nf">numpy</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nf">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+      <span class="nf">print</span><span class="p">(</span><span class="s">"Prediction"</span><span class="p">,</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="s">":"</span><span class="p">,</span> <span class="n">idx_to_class</span><span class="p">[</span><span class="n">topclass</span><span class="p">.</span><span class="nf">cpu</span><span class="p">().</span><span class="nf">numpy</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">]],</span> <span class="s">", Score: "</span><span class="p">,</span> <span class="n">topk</span><span class="p">.</span><span class="nf">cpu</span><span class="p">().</span><span class="nf">numpy</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">])</span>
+</pre></table></code></div></div><div class="language-python highlighter-rouge"><div class="code-header"> <span data-label-text="Python"><i class="fas fa-code small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre><td class="rouge-code"><pre><span class="kn">import</span> <span class="n">wget</span>
+
+<span class="err">!</span><span class="n">wget</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">cdn</span><span class="p">.</span><span class="n">pixabay</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="n">photo</span><span class="o">/</span><span class="mi">2018</span><span class="o">/</span><span class="mi">10</span><span class="o">/</span><span class="mi">01</span><span class="o">/</span><span class="mi">12</span><span class="o">/</span><span class="mi">28</span><span class="o">/</span><span class="n">skunk</span><span class="o">-</span><span class="mf">3716043_1280.j</span><span class="n">pg</span> <span class="o">-</span><span class="n">O</span> <span class="n">skunk</span><span class="p">.</span><span class="n">jpg</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">torch</span><span class="p">.</span><span class="nf">load</span><span class="p">(</span><span class="s">"{}_model_{}.pt"</span><span class="p">.</span><span class="nf">format</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">best_epoch</span><span class="p">))</span>
+<span class="nf">predict</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="s">'skunk.jpg'</span><span class="p">)</span>
+</pre></table></code></div></div><h1 id="reference">Reference</h1><ul><li><a href="https://tutorials.pytorch.kr/beginner/basics/quickstart_tutorial.html">https://tutorials.pytorch.kr/beginner/basics/quickstart_tutorial.html</a></ul></div><div class="post-tail-wrapper text-muted"><div style="text-align: left;"> <a href="http://hits.dwyl.com/dkssud8150.github.io/posts/torchsaveload/" target="_blank"> <img data-src="http://hits.dwyl.com/dkssud8150.github.io/posts/torchsaveload.svg" data-proofer-ignore> </a></div><div class="post-meta mb-3"> <i class="far fa-folder-open fa-fw mr-1"></i> <a href='/categories/classlog/'>Classlog</a>, <a href='/categories/pytorch-tutorial/'>Pytorch Tutorial</a></div><div class="post-tags"> <i class="fa fa-tags fa-fw mr-1"></i> <a href="/tags/pytorch-tutorial/" class="post-tag no-text-decoration" >pytorch tutorial</a> <a href="/tags/torch-save/" class="post-tag no-text-decoration" >Torch save</a> <a href="/tags/plot/" class="post-tag no-text-decoration" >plot</a></div><div class="post-tail-bottom d-flex justify-content-between align-items-center mt-3 pt-5 pb-2"><div class="license-wrapper"> This post is licensed under <a href="https://creativecommons.org/licenses/by/4.0/"> CC BY 4.0 </a> by the author.</div><div class="share-wrapper"> <span class="share-label text-muted mr-1">Share</span> <span class="share-icons"> <a href="https://twitter.com/intent/tweet?text=Torch Save and Load, data를 plot해보기 - JaeHo Yoon&amp;url=https://dkssud8150.github.io/posts/torchsaveload/" data-toggle="tooltip" data-placement="top" title="Twitter" target="_blank" rel="noopener" aria-label="Twitter"> <i class="fa-fw fab fa-twitter"></i> </a> <a href="https://www.facebook.com/sharer/sharer.php?title=Torch Save and Load, data를 plot해보기 - JaeHo Yoon&amp;u=https://dkssud8150.github.io/posts/torchsaveload/" data-toggle="tooltip" data-placement="top" title="Facebook" target="_blank" rel="noopener" aria-label="Facebook"> <i class="fa-fw fab fa-facebook-square"></i> </a> <a href="https://t.me/share/url?url=https://dkssud8150.github.io/posts/torchsaveload/&amp;text=Torch Save and Load, data를 plot해보기 - JaeHo Yoon" data-toggle="tooltip" data-placement="top" title="Telegram" target="_blank" rel="noopener" aria-label="Telegram"> <i class="fa-fw fab fa-telegram"></i> </a> <a href="https://www.linkedin.com/sharing/share-offsite/?url=https://dkssud8150.github.io/posts/torchsaveload/" data-toggle="tooltip" data-placement="top" title="Linkedin" target="_blank" rel="noopener" aria-label="Linkedin"> <i class="fa-fw fab fa-linkedin"></i> </a> <i id="copy-link" class="fa-fw fas fa-link small" data-toggle="tooltip" data-placement="top" title="Copy link" data-title-succeed="Link copied successfully!"> </i> </span></div></div><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6611243953442169" crossorigin="anonymous"></script></div><script src="https://utteranc.es/client.js" repo="dkssud8150/dkssud8150.github.io" issue-term="pathname" theme="github-light" crossorigin="anonymous" async> </script></div></div><div id="panel-wrapper" class="col-xl-3 pl-2 text-muted"><div class="access"><div id="access-lastmod" class="post"><div class="panel-heading">Recently Updated</div><ul class="post-content pl-0 pb-1 ml-1 mt-2"><li><a href="/posts/gitpage/">[깃허브 프로필 꾸미기] github 프로필 만들기</a><li><a href="/posts/product/">[깃허브 프로필 꾸미기] productive box 만들기</a><li><a href="/posts/regex/">[데브코스] 2주차 - linux 기초(REGEX)</a><li><a href="/posts/Kfold/">KFold Cross Validation 과 StratifiedKFold</a><li><a href="/posts/cmake/">[데브코스] 17주차 - CMake OpenCV, Eigen, Pangolin install </a></ul></div><div id="access-tags"><div class="panel-heading">Trending Tags</div><div class="d-flex flex-wrap mt-3 mb-1 mr-3"> <a class="post-tag" href="/tags/devcourse/">devcourse</a> <a class="post-tag" href="/tags/deeplearning/">deeplearning</a> <a class="post-tag" href="/tags/cs231n/">CS231N</a> <a class="post-tag" href="/tags/ros/">ros</a> <a class="post-tag" href="/tags/coding-test/">coding test</a> <a class="post-tag" href="/tags/linux/">linux</a> <a class="post-tag" href="/tags/kooc/">kooc</a> <a class="post-tag" href="/tags/opencv/">OpenCV</a> <a class="post-tag" href="/tags/pytorch-tutorial/">pytorch tutorial</a> <a class="post-tag" href="/tags/autonomous-driving/">Autonomous Driving</a></div></div></div><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@1.0.1/dist/bootstrap-toc.min.js"></script><div id="toc-wrapper" class="pl-0 pr-4 mb-5"><div class="panel-heading pl-3 pt-2 mb-2">Contents</div><nav id="toc" data-toggle="toc"></nav></div></div></div><div class="row"><div class="col-12 col-lg-11 col-xl-8"><div id="tail-wrapper" class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-md-4 pr-md-4"><div id="related-posts" class="mt-5 mb-2 mb-sm-4"><h3 class="pt-2 mt-1 mb-4 ml-1" data-toc-skip>Further Reading</h3><div class="card-deck mb-4"><div class="card"> <a href="/posts/Dataset/"><div class="card-body"> <em class="timeago small" date="2021-10-21 13:00:00 +0900" >Oct 21, 2021</em><h3 class="pt-0 mt-1 mb-3" data-toc-skip>Custom Dataset, Dataloader, Transform</h3><div class="text-muted small"><p> 1. landmark가 있는 Custom Dataset 일반적이지 않은 데이터셋으로부터 데이터를 읽어오고 전처리하는 튜토리얼 dataset download url : https://download.pytorch.org/tutorial/faces.zip 이 데이터셋은 landmark가 있는 데이터셋이다. Dataset 클래스 len(datase...</p></div></div></a></div><div class="card"> <a href="/posts/TensorBoard/"><div class="card-body"> <em class="timeago small" date="2021-10-21 13:00:00 +0900" >Oct 21, 2021</em><h3 class="pt-0 mt-1 mb-3" data-toc-skip>TensorBoard 사용해보기</h3><div class="text-muted small"><p> 기본 모델 구조 # imports import matplotlib.pyplot as plt import numpy as np import torch import torchvision import torchvision.transforms as transforms import torch.nn as nn import torch.nn.functi...</p></div></div></a></div><div class="card"> <a href="/posts/Kfold/"><div class="card-body"> <em class="timeago small" date="2021-10-28 13:00:00 +0900" >Oct 28, 2021</em><h3 class="pt-0 mt-1 mb-3" data-toc-skip>KFold Cross Validation 과 StratifiedKFold</h3><div class="text-muted small"><p> KFold Cross Validation 교차검증이란 훈련 시 과적합을 막기 위해 사용하는 것이다. 교차검증은 훈련 데이터 셋을 학습 데이터와 검증 데이터 셋으로 분할하고, 훈련 데이터와 검증 데이터 셋을 교차하면서 검증한다. 학습셋과 검증셋을 나눠 반복해서 검증한다. k만큼의 폴드 셋으로 나누어 k번 반복한다. 그렇게 되면 최종 평가는 k만큼의 ...</p></div></div></a></div></div></div><div class="post-navigation d-flex justify-content-between"> <a href="/posts/TensorBoard/" class="btn btn-outline-primary" prompt="Older"><p>TensorBoard 사용해보기</p></a> <a href="/posts/Kfold/" class="btn btn-outline-primary" prompt="Newer"><p>KFold Cross Validation 과 StratifiedKFold</p></a></div></div></div></div><footer class="d-flex w-100 justify-content-center"><div class="d-flex justify-content-between align-items-center text-muted"><div class="footer-left"><p class="mb-0"> © 2023 <a href="https://twitter.com/username">JaeHo YooN</a>. <span data-toggle="tooltip" data-placement="top" title="Except where otherwise noted, the blog posts on this site are licensed under the Creative Commons Attribution 4.0 International (CC BY 4.0) License by the author.">Some rights reserved.</span></p></div><div class="footer-right"><p class="mb-0"> Powered by <a href="https://jekyllrb.com" target="_blank" rel="noopener">Jekyll</a> with <a href="https://github.com/cotes2020/jekyll-theme-chirpy" target="_blank" rel="noopener">Chirpy</a> theme.</p></div></div></footer></div><div id="search-result-wrapper" class="d-flex justify-content-center unloaded"><div class="col-12 col-sm-11 post-content"><div id="search-hints"><div id="access-tags"><div class="panel-heading">Trending Tags</div><div class="d-flex flex-wrap mt-3 mb-1 mr-3"> <a class="post-tag" href="/tags/devcourse/">devcourse</a> <a class="post-tag" href="/tags/deeplearning/">deeplearning</a> <a class="post-tag" href="/tags/cs231n/">CS231N</a> <a class="post-tag" href="/tags/ros/">ros</a> <a class="post-tag" href="/tags/coding-test/">coding test</a> <a class="post-tag" href="/tags/linux/">linux</a> <a class="post-tag" href="/tags/kooc/">kooc</a> <a class="post-tag" href="/tags/opencv/">OpenCV</a> <a class="post-tag" href="/tags/pytorch-tutorial/">pytorch tutorial</a> <a class="post-tag" href="/tags/autonomous-driving/">Autonomous Driving</a></div></div></div><div id="search-results" class="d-flex flex-wrap justify-content-center text-muted mt-3"></div></div></div></div><script src="https://cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js"></script> <script> $(function() { function updateMermaid(event) { if (event.source === window && event.data && event.data.direction === ModeToggle.ID) { const mode = event.data.message; if (typeof mermaid === "undefined") { return; } let expectedTheme = (mode === ModeToggle.DARK_MODE? "dark" : "default"); let config = { theme: expectedTheme }; /* Re-render the SVG › <https://github.com/mermaid-js/mermaid/issues/311#issuecomment-332557344> */ $(".mermaid").each(function() { let svgCode = $(this).prev().children().html(); $(this).removeAttr("data-processed"); $(this).html(svgCode); }); mermaid.initialize(config); mermaid.init(undefined, ".mermaid"); } } let initTheme = "default"; if ($("html[data-mode=dark]").length > 0 || ($("html[data-mode]").length == 0 && window.matchMedia("(prefers-color-scheme: dark)").matches ) ) { initTheme = "dark"; } let mermaidConf = { theme: initTheme /* <default|dark|forest|neutral> */ }; /* Markdown converts to HTML */ $("pre").has("code.language-mermaid").each(function() { let svgCode = $(this).children().html(); $(this).addClass("unloaded"); $(this).after(`<div class=\"mermaid\">${svgCode}</div>`); }); mermaid.initialize(mermaidConf); window.addEventListener("message", updateMermaid); }); </script><div id="mask"></div><a id="back-to-top" href="#" aria-label="back-to-top" class="btn btn-lg btn-box-shadow" role="button"> <i class="fas fa-angle-up"></i> </a> <script src="https://cdn.jsdelivr.net/npm/simple-jekyll-search@1.10.0/dest/simple-jekyll-search.min.js"></script> <script> SimpleJekyllSearch({ searchInput: document.getElementById('search-input'), resultsContainer: document.getElementById('search-results'), json: '/assets/js/data/search.json', searchResultTemplate: '<div class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-lg-4 pr-lg-4 pl-xl-0 pr-xl-0"> <a href="{url}">{title}</a><div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1"> {categories} {tags}</div><p>{snippet}</p></div>', noResultsText: '<p class="mt-5">Oops! No result founds.</p>', templateMiddleware: function(prop, value, template) { if (prop === 'categories') { if (value === '') { return `${value}`; } else { return `<div class="mr-sm-4"><i class="far fa-folder fa-fw"></i>${value}</div>`; } } if (prop === 'tags') { if (value === '') { return `${value}`; } else { return `<div><i class="fa fa-tag fa-fw"></i>${value}</div>`; } } } }); </script> <script src="https://cdn.jsdelivr.net/combine/npm/lozad/dist/lozad.min.js,npm/magnific-popup@1/dist/jquery.magnific-popup.min.js,npm/clipboard@2/dist/clipboard.min.js"></script> <script defer src="/assets/js/dist/post.min.js"></script> <script> /* see: <https://docs.mathjax.org/en/latest/options/input/tex.html#tex-options> */ MathJax = { tex: { inlineMath: [ /* start/end delimiter pairs for in-line math */ ['$','$'], ['\\(','\\)'] ], displayMath: [ /* start/end delimiter pairs for display math */ ['$$', '$$'], ['\\[', '\\]'] ] } }; </script> <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script> <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"> </script> <script src="https://cdn.jsdelivr.net/combine/npm/popper.js@1.16.1,npm/bootstrap@4/dist/js/bootstrap.min.js"></script> <script defer src="/app.js"></script> <script defer src="https://www.googletagmanager.com/gtag/js?id=G-NC7MWHVXJE"></script> <script> document.addEventListener("DOMContentLoaded", function(event) { window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-NC7MWHVXJE'); }); </script>
