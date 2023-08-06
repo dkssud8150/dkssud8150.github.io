@@ -1,5 +1,5 @@
 ---
-title:    H-모빌리티 클래스 (H-Mobility Class) 2일차. 자율주행 자동차 기술 이해
+title:    H-모빌리티 클래스 (H-Mobility Class) 1주차. 자율주행 자동차 기술 이해
 author:
   name: JaeHo-YooN
   link: https://github.com/dkssud8150
@@ -304,7 +304,7 @@ mermaid: true
 
 1. 자율주행 기술 요소
     1. 센서
-        - 사람의 감각기관 역할
+        - 사람의 감각기관 역할ㄱ
         - 라이다, 카메라, 레이더, 초음파 센서
         - 다중 센서를 활용하여 각 센서의 장점을 융합
     2. 기술 요소
